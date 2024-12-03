@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <h2>Login</h2>
-    <form action="/action_page.php">
+    <form action="{{url('/login')}}">
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">

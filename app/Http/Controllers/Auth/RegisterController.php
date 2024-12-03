@@ -9,69 +9,37 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-class RegisterController extends Controller
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
+class RegisterController extends Controller{
 
-    use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('guest');
     }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
 
     public function showRegistrationForm(){
         return view('auth.register');
     }
 
     public function register(Request $request){
-        return User::create([
+        if(empty($request->email) || empty($request->name) || empty($request->password)){
+            echo '<p class="text-danger">All fields are required...</p>'; exit;
+        }
+
+
+        $checkEmail = User::where(['email' => $request->email])->count();
+        if($checkEmail > 0){
+            echo '<p class="text-danger">Email already exist...</p>'; exit;
+        }
+        $id = User::insertGetId([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        
+        if($id > 0){
+            $msg = '<p class="text-success">User registration success...</p>';
+        }else{
+            $msg = '<p class="text-danger">Opps! Something went wrong...</p>';
+        }
+        echo $msg; exit;
     }
 }

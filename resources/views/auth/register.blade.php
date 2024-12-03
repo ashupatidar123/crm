@@ -5,6 +5,7 @@
 @section('content')
 <div class="container">
     <h2>Register</h2>
+    <h3 id="show_message"></h3>
     <form method="POST" id="formId">
         @csrf
         <div class="form-group">
@@ -27,14 +28,22 @@
     $(document).ready(function () {
         $("#submitButton").click(function (event) {
             event.preventDefault();
+            
+            $('#show_message').html('');
+            $('#submitButton').html('Loading...');
+
             var form = $("#formId");
             $.ajax({
                 type: "POST",
                 url: "{{url('register')}}",
                 data: form.serialize(),
                 success: function (data) {
-                    alert(data);
-                    //alert("Form Submitted Successfully");
+                    $('#submitButton').html('Submit');
+                    $('#formId')[0].reset();
+                    $('#show_message').html(data);
+                    window.setTimeout(function(){
+                        window.location.href = "{{url('login')}}";
+                    },3000);
                 }
             });
         });
