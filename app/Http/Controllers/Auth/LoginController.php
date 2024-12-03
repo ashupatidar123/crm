@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -42,4 +43,26 @@ class LoginController extends Controller
     public function showLoginForm(){
         return view('auth.login');
     }
+
+    public function login(Request $request){
+        if(empty($request->email) || empty($request->password)){
+            return response()->json(['status' =>'failed','message' => '<p class="text-danger">All fields are required...</p>'],200);
+        }
+
+        if(Auth::attempt($request->only('email', 'password'))) {
+            return redirect()->intended('/home');
+        }else{
+           return response()->json(['status' =>'failed','message' => '<p class="text-danger">Invalid login details...</p>'],500); 
+        }
+    }
+
+
+    public function logout(){
+        Session::flush();
+        Auth::logout();
+        //Session::destroy();
+        return redirect('/login',301);
+    }
+
+    
 }

@@ -4,8 +4,9 @@
 
 @section('content')
 <div class="container">
-    <h2>Login</h2>
-    <form action="{{url('/login')}}">
+    <h2>Login {{@Auth::user()->email}}</h2>
+    <form method="POST" action="{{url('/login')}}">
+        @csrf
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">

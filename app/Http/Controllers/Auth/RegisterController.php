@@ -21,13 +21,12 @@ class RegisterController extends Controller{
 
     public function register(Request $request){
         if(empty($request->email) || empty($request->name) || empty($request->password)){
-            echo '<p class="text-danger">All fields are required...</p>'; exit;
+            return response()->json(['status' =>'failed','message' => '<p class="text-danger">All fields are required...</p>'],200);
         }
-
 
         $checkEmail = User::where(['email' => $request->email])->count();
         if($checkEmail > 0){
-            echo '<p class="text-danger">Email already exist...</p>'; exit;
+            return response()->json(['status' =>'failed','message' => '<p class="text-danger">Email already exist...</p>'],500);
         }
         $id = User::insertGetId([
             'name' => $request->name,
@@ -36,10 +35,9 @@ class RegisterController extends Controller{
         ]);
         
         if($id > 0){
-            $msg = '<p class="text-success">User registration success...</p>';
+            return response()->json(['status' =>'success','message' => '<p class="text-success">User registration success...</p>'],200);
         }else{
-            $msg = '<p class="text-danger">Opps! Something went wrong...</p>';
+            return response()->json(['status' =>'failed','message' => '<p class="text-danger">Opps! Something went wrong...</p>'],500);
         }
-        echo $msg; exit;
     }
 }

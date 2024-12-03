@@ -37,13 +37,15 @@
                 type: "POST",
                 url: "{{url('register')}}",
                 data: form.serialize(),
-                success: function (data) {
+                success: function (resp) {
                     $('#submitButton').html('Submit');
-                    $('#formId')[0].reset();
-                    $('#show_message').html(data);
-                    window.setTimeout(function(){
-                        window.location.href = "{{url('login')}}";
-                    },3000);
+                    $('#show_message').html(resp.message);
+                    if(resp.status == 'success'){
+                        $('#formId')[0].reset();
+                        window.setTimeout(function(){
+                            window.location.href = "{{url('login')}}";
+                        },3000);
+                    }
                 }
             });
         });
