@@ -46,13 +46,15 @@ class LoginController extends Controller
 
     public function login(Request $request){
         if(empty($request->email) || empty($request->password)){
-            return response()->json(['status' =>'failed','message' => '<p class="text-danger">All fields are required...</p>'],200);
+            session()->flash('error', 'All fields are required...');
+            return redirect()->back();
         }
-
+        
         if(Auth::attempt($request->only('email', 'password'))) {
             return redirect()->intended('/home');
         }else{
-           return response()->json(['status' =>'failed','message' => '<p class="text-danger">Invalid login details...</p>'],500); 
+           session()->flash('error', 'Invalid login details...');
+           return redirect()->back();
         }
     }
 

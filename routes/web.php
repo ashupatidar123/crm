@@ -25,7 +25,7 @@ Route::get('/', function () {
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 //Route::get('logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('logout', [HomeController::class, 'logout'])->name('logout');
+Route::post('logout', [HomeController::class, 'logout'])->name('logout');
 
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
@@ -36,8 +36,6 @@ Route::get('password/reset/{token}', [ResetPasswordController::class, 'showReset
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 
 
-Route::middleware(['check_login'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'home'])->name('home');
 });
-
-return hasMany(User::class,);

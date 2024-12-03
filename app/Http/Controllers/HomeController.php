@@ -24,8 +24,8 @@ class HomeController extends Controller
      */
     public function home()
     {
-        echo Auth::user();
-        //return view('home');
+        //echo Auth::user();
+        return view('home');
     }
 
     public function logout(){
