@@ -26,9 +26,13 @@ class UserController extends Controller
     }
 
     public function userList(Request $request){
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):'';
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):0;
+        if($start_limit < 1){
+            $start_limit = $request->input('start');
+            $end_limit   = $request->input('length');
+        }
         
-        $start = $request->input('start');
-        $end   = $request->input('length');
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
@@ -41,7 +45,7 @@ class UserController extends Controller
             $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
         }
         $query->orderBy($orderColumnIndex, $orderDirection);
-        $users = $query->skip($start)->take($end)->get(); 
+        $users = $query->skip($start_limit)->take($end_limit)->get(); 
 
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;

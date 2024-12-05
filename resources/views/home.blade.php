@@ -10,6 +10,10 @@
         <button type="submit" class="btn btn-danger">Logout</button>
     </form>
     <h2>Use List</h2>
+    <!-- <input type="text" id="start_limit" placeholder="Start limit">
+    <input type="text" id="end_limit" placeholder="End limit" onkeyup="return data_table_list();">
+    <button type="button" class="btn btn-danger btn-sm" id="reset_filter" onclick="return reset_filter();">Reset</button> -->
+
     <div class="table-responsive">
         <table class="table" id="tableList" class="display" style="width:100%">
             <thead>
@@ -38,7 +42,10 @@
 
     function data_table_list(){
         $('#tableList').DataTable().clear().destroy();
-        var start_limit = 10;
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit   = $('#end_limit').val();
+        var pageLength = (end_limit > 0)?end_limit:10;
+        
         $('#tableList').DataTable({
             processing: true,
             serverSide: true,
@@ -46,7 +53,7 @@
             ajax: {
                 url: '{{url('userList')}}',
                 type: 'GET',
-                data:{start_limit},
+                data:{start_limit,end_limit},
             },
             columns: [
                 { data: 'id' },
@@ -58,10 +65,16 @@
             ],
             order: [[0, 'DESC']],
             "lengthMenu": [10, 25, 50,100,150,200,500],
-            "pageLength": 10,
-            "dom": 'Bfrtip',
+            "pageLength": pageLength,
+            //"dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print']
         });
+    }
+
+    function reset_filter(){
+        $('#start_limit').val('');
+        $('#end_limit').val('');
+        data_table_list();
     }
 </script>
 @endsection
