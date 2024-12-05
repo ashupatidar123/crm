@@ -7,6 +7,10 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
+
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,5 +41,11 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [HomeController::class, 'home'])->name('home');
+    //Route::get('/home', [HomeController::class, 'home'])->name('home');
+    Route::get('/home', [UserController::class, 'home'])->name('home');
+    Route::get('/userList', [UserController::class, 'userList']);
+    
+    Route::get('user_export', function () {
+        return Excel::download(new UsersExport, 'users.xlsx');
+    });
 });
