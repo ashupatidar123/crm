@@ -22,9 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
@@ -41,11 +39,18 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 
 
 Route::middleware(['auth'])->group(function () {
-    //Route::get('/home', [HomeController::class, 'home'])->name('home');
-    Route::get('/home', [UserController::class, 'home'])->name('home');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
     Route::get('/userList', [UserController::class, 'userList']);
-    
     Route::get('user_export', function () {
         return Excel::download(new UsersExport, 'users.xlsx');
     });
+
+    Route::get('/profile', [UserController::class, 'showProfile']);
+    Route::post('/profile', [UserController::class, 'updateProfile']);
+    Route::get('/change-password', [UserController::class, 'showChangePassword'])->name('password.change');
+    Route::post('/change-password', [UserController::class, 'changePassword'])->name('password.update');
+
+
+    Route::get('/advanced-form', [UserController::class, 'advanced_form']);
+    Route::get('/user-tables', [UserController::class, 'user_tables']);
 });

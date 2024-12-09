@@ -44,14 +44,56 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    public function g_recaptcha_verify($recaptcha) {
+        $secret = '6LeTj4sqAAAAAMFOkql5qnMU7PlZQlqbtxe_a490';
+        $response = $recaptcha;
+        $remote_ip = $_SERVER['REMOTE_ADDR'];
+        $verify_url = "https://www.google.com/recaptcha/api/siteverify";
+        
+        $data = [
+            'secret' => $secret,
+            'response' => $response,
+            'remoteip' => $remote_ip
+        ];
+        
+        $options = [
+            'http' => [
+                'method'  => 'POST',
+                'header'  => 'Content-type: application/x-www-form-urlencoded',
+                'content' => http_build_query($data)
+            ]
+        ];
+        
+        $context  = stream_context_create($options);
+        $verify_response = file_get_contents($verify_url, false, $context);
+        $response_data = json_decode($verify_response);
+        if($response_data->success) {
+            return 'success';
+        }else {
+            return 'failed';
+        }
+    }
+
     public function login(Request $request){
+        $postData = $request->all();
+        
         if(empty($request->email) || empty($request->password)){
             session()->flash('error', 'All fields are required...');
             return redirect()->back();
         }
+        else if(empty($postData['g-recaptcha-response'])){
+            session()->flash('error', 'reCAPTCHA verification is required....');
+            return redirect()->back();
+        }
+
+        $gCaptch = $this->g_recaptcha_verify($postData['g-recaptcha-response']);
+        if($gCaptch == 'failed'){
+            session()->flash('error', 'reCAPTCHA verification failed. Please try again....');
+            return redirect()->back();
+        }
         
         if(Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->intended('/home');
+            return redirect()->intended('/dashboard');
         }else{
            session()->flash('error', 'Invalid login details...');
            return redirect()->back();

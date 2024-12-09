@@ -5,14 +5,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function __construct(){
+
     }
 
     public function home(){
-        return view('home');
+        return view('dashboard');
+    }
+
+    public function dashboard(){
+        return view('dashboard');
     }
 
     public function userList_filter_count($search){
@@ -72,4 +78,60 @@ class UserController extends Controller
         ]);
     }
     
+    public function advanced_form(){
+        return view('forms.advanced_form');
+    }
+
+    public function user_tables(){
+        return view('forms.user_tables');
+    }
+
+    public function showProfile(){
+        $data = User::where('id',Auth::user()->id)->first();
+        
+        return view('admin.profile.profile',compact('data'));
+    }
+
+    public function updateProfile(Request $request){
+        User::where('id',Auth::user()->id)->update([
+            'name' => $request->name,
+            'mobile' => $request->mobile,
+        ]);
+        session()->flash('success', 'Profile updated...');
+        return redirect()->back();
+    }
+
+    public function showChangePassword(){
+        return view('admin.profile.change_password');
+    }
+
+    public function changePassword(Request $request){
+        $validated = $request->validate([
+            'opass' => 'required',
+            'npass' => 'required',
+            'cpass' => 'required',
+        ]);
+
+        if(empty($request->opass) || empty($request->npass) || empty($request->cpass)){
+            session()->flash('error', 'All fields are required...');
+            return redirect()->back();
+        }
+        else if($request->npass != $request->cpass){
+            session()->flash('error', 'Confirm password is not match...');
+            return redirect()->back();
+        }
+
+        if(!Hash::check($request->opass, Auth::user()->password)) {
+            session()->flash('error', 'The current password is incorrect...');
+            return redirect()->back();
+
+        } 
+
+        Auth::user()->update([
+            'password' => Hash::make($request->cpass),
+        ]);
+
+        session()->flash('success', 'Password updated...');
+        return redirect()->back();
+    }
 }

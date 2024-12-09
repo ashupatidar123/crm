@@ -1,31 +1,92 @@
-@extends('layouts.header')
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>@yield('title', 'WELCOME TO CRM')</title>
+        <!-- Google Font: Source Sans Pro -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{{ url('public/assets/plugins/fontawesome-free/css/all.min.css') }}">
+        <!-- icheck bootstrap -->
+        <link rel="stylesheet" href="{{ url('public/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="{{ url('public/assets/dist/css/adminlte.min.css') }}">
 
-@section('title') Login @endsection
-
-@section('content')
-<div class="container">
-    <h2>Login {{@Auth::user()->email}}</h2>
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <script src="{{ url('public/assets/plugins/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url('public/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <style type="text/css">
+            body {
+              background-image: url("{{url('public/images/img/login-backgrond.jpg')}}");
+            }
+            .logo-img{
+                height: 100px;
+                margin-left: 35px;
+            }
+        </style>
+    </head>
+    <body class="hold-transition login-page">
+        <div class="login-box">
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @elseif(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <a href="{{url('/')}}" class="h1"><b>WELCOME TO CRM</a>
+                </div>
+                <div class="card-body">
+                    <img class="logo-img" src="{{url('public/images/img/sts-marine.png')}}">
+                    <p class="login-box-msg">STS Marine Management Pvt. Ltd.</p>
+                    
+                    <form action="{{url('/login')}}" method="post">
+                        @csrf
+                        <div class="input-group mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="g-recaptcha" data-sitekey="6LeTj4sqAAAAAI8296xKQZveu3-qttAbuUv3DVjc"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="icheck-primary">
+                                    <input type="checkbox" id="remember">
+                                    <label for="remember">Remember Me</label>
+                                </div>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </form>
+                    <p class="mb-1">
+                        <a href="{{url('/forgot my password')}}">I forgot my password</a>
+                    </p>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
         </div>
-    @elseif(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <form method="POST" action="{{url('/login')}}">
-        @csrf
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-        </div>
-        <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
-@endsection
+    </body>
+</html>
