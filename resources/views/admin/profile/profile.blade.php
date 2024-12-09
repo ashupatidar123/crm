@@ -1,6 +1,6 @@
 @extends('layouts.head')
 
-@section('title') Home @endsection
+@section('title') Profile @endsection
 
 @section('content')
     <div class="content-wrapper">

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Address;
 
 class UserController extends Controller
 {
@@ -86,9 +87,35 @@ class UserController extends Controller
         return view('forms.user_tables');
     }
 
+    public function showRegistration(){
+        $data = User::where('id',Auth::user()->id)->first();
+        return view('admin.profile.register',compact('data'));
+    }
+
+    public function register(Request $request){
+        if(empty($request->email) || empty($request->name) || empty($request->password)){
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>'],200);
+        }
+
+        $checkEmail = User::where(['email' => $request->email])->count();
+        if($checkEmail > 0){
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>'],500);
+        }
+        $id = User::insertGetId([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        
+        if($id > 0){
+            return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User registration success...</p>'],200);
+        }else{
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>'],500);
+        }
+    }
+
     public function showProfile(){
         $data = User::where('id',Auth::user()->id)->first();
-        
         return view('admin.profile.profile',compact('data'));
     }
 

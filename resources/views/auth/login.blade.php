@@ -47,24 +47,27 @@
                     
                     <form action="{{url('/login')}}" method="post">
                         @csrf
-                        <div class="input-group mb-3">
-                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        <div class="input-group">
+                            <input type="text" name="email" id="email" class="form-control" placeholder="Email or username*" required>
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-envelope"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="input-group mb-3">
-                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <p id="usernameError" class="text-danger"></p>
+                        <div class="input-group">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password*" required>
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-lock"></span>
                                 </div>
                             </div>
                         </div>
+                        <p id="passwordError" class="text-danger"></p>
                         <div class="input-group mb-3">
                             <div class="g-recaptcha" data-sitekey="6LeTj4sqAAAAAI8296xKQZveu3-qttAbuUv3DVjc"></div>
+                            <p id="googleError" class="text-danger"></p>
                         </div>
                         <div class="row">
                             <div class="col-8">
@@ -75,7 +78,7 @@
                             </div>
                             <!-- /.col -->
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                                <button type="submit" class="btn btn-primary btn-block" onclick="return user_login();">Sign In</button>
                             </div>
                             <!-- /.col -->
                         </div>
@@ -90,3 +93,22 @@
         </div>
     </body>
 </html>
+<script type="text/javascript">
+    function user_login(){
+        $('#emailError, #passwordError').html('');
+        var check = 0;
+        
+        if($('#email').val() == ''){
+            var check = 1;
+            $('#usernameError').html('Email or username is required');
+        }
+        if($('#password').val() == ''){
+            var check = 1;
+            $('#passwordError').html('Password is required');
+        }
+        if(check == 1){
+            return false;
+        }
+        return true;
+    }
+</script>
