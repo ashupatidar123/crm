@@ -39,16 +39,16 @@
                                 @csrf
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input type="text" name="name" class="form-control" id="name" placeholder="Enter name" value="{{$data->name}}">
+                                        <label for="first_name">Name</label>
+                                        <input type="text" name="first_name" class="form-control" id="first_name" placeholder="Enter first name" value="{{$data->first_name}}">
                                     </div>
                                     <div class="form-group">
                                         <label>Email</label>
                                         <input type="text" class="form-control" placeholder="Enter email" value="{{$data->email}}" disabled>
                                     </div>
                                     <div class="form-group">
-                                        <label for="mobile">Mobile</label>
-                                        <input type="number" name="mobile" class="form-control" id="mobile" placeholder="Enter mobile" value="{{$data->mobile}}">
+                                        <label for="phone">Phone</label>
+                                        <input type="number" name="phone" class="form-control" id="phone" placeholder="Enter phone" value="{{$data->phone}}">
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary">Submit</button>

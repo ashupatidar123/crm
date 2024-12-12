@@ -30,18 +30,71 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-users"></i>
+                        <p>Users
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('users')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>User List</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('register')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Register</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-map-marker"></i>
+                        <p>Region Master
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('region/country')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Country</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('region/state')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>State</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('region/city')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>City</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                @if(1==2)
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-edit"></i>
                         <p>Forms
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <!-- <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>General Elements</p>
-                            </a>
-                        </li> -->
                         <li class="nav-item">
                             <a href="{{url('advanced-form')}}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -67,6 +120,7 @@
                         
                     </ul>
                 </li>
+                @endif
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

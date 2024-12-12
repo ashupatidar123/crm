@@ -121,8 +121,8 @@ class UserController extends Controller
 
     public function updateProfile(Request $request){
         User::where('id',Auth::user()->id)->update([
-            'name' => $request->name,
-            'mobile' => $request->mobile,
+            'first_name' => $request->first_name,
+            'phone' => $request->phone,
         ]);
         session()->flash('success', 'Profile updated...');
         return redirect()->back();

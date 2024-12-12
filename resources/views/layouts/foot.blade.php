@@ -16,6 +16,22 @@
 <script src="{{ url('public/assets/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ url('public/assets/dist/js/pages/dashboard.js') }}"></script>
+<!-- Select2 -->
+<script src="{{ url('public/assets/plugins/select2/js/select2.full.min.js') }}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{{ url('public/assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ url('public/assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.14.5/sweetalert2.min.js"></script>
 
 <footer class="main-footer text-sm">
     <strong>2024 <a href="{{url('/dashboard')}}">© iShip_Fr8</a>.</strong>

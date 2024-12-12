@@ -130,7 +130,7 @@
 
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fa fa-user"></i> {{ ucwords(Auth::user()->name) }}
+            <i class="fa fa-user"></i> {{ ucwords(Auth::user()->first_name) }}
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <span class="dropdown-item dropdown-header">User Profile</span>

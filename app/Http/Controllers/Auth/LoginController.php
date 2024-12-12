@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -77,22 +78,23 @@ class LoginController extends Controller
     public function login(Request $request){
         $postData = $request->all();
         
-        if(empty($request->email) || empty($request->password)){
+        if(empty($request->username) || empty($request->password)){
             session()->flash('error', 'All fields are required...');
             return redirect()->back();
         }
         else if(empty($postData['g-recaptcha-response'])){
-            session()->flash('error', 'reCAPTCHA verification is required....');
-            return redirect()->back();
+            //session()->flash('error', 'reCAPTCHA verification is required....');
+            //return redirect()->back();
         }
 
         $gCaptch = $this->g_recaptcha_verify($postData['g-recaptcha-response']);
         if($gCaptch == 'failed'){
-            session()->flash('error', 'reCAPTCHA verification failed. Please try again....');
-            return redirect()->back();
+            //session()->flash('error', 'reCAPTCHA verification failed. Please try again....');
+            //return redirect()->back();
         }
         
-        if(Auth::attempt($request->only('email', 'password'))) {
+
+        if (Auth::attempt(['login_id' => $request->username, 'password' => $request->password])) {
             return redirect()->intended('/dashboard');
         }else{
            session()->flash('error', 'Invalid login details...');

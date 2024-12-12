@@ -48,7 +48,7 @@
                     <form action="{{url('/login')}}" method="post">
                         @csrf
                         <div class="input-group">
-                            <input type="text" name="email" id="email" class="form-control" placeholder="Email or username*" required>
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Username*" required autocomplete="off">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-envelope"></span>
@@ -57,7 +57,7 @@
                         </div>
                         <p id="usernameError" class="text-danger"></p>
                         <div class="input-group">
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Password*" required>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password*" required autocomplete="off">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-lock"></span>
@@ -84,7 +84,7 @@
                         </div>
                     </form>
                     <p class="mb-1">
-                        <a href="{{url('/forgot my password')}}">I forgot my password</a>
+                        <a href="{{url('/login')}}">I forgot my password</a>
                     </p>
                 </div>
                 <!-- /.card-body -->
@@ -95,12 +95,12 @@
 </html>
 <script type="text/javascript">
     function user_login(){
-        $('#emailError, #passwordError').html('');
+        $('#usernameError, #passwordError').html('');
         var check = 0;
         
-        if($('#email').val() == ''){
+        if($('#username').val() == ''){
             var check = 1;
-            $('#usernameError').html('Email or username is required');
+            $('#usernameError').html('Username is required');
         }
         if($('#password').val() == ''){
             var check = 1;
