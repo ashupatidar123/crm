@@ -59,6 +59,9 @@
                 url: '{{url("region/country_list")}}',
                 type: 'GET',
                 data:{start_limit,end_limit},
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
             },
             columns: [
                 { data: 'id' },
