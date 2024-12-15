@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Address;
+use App\Models\Role;
+use App\Models\UserAddress;
 
 class UserController extends Controller
 {
@@ -23,7 +24,6 @@ class UserController extends Controller
     }
 
     public function userList_filter_count($search){
-        
         if(!empty($search)) {
             $filter_count = User::where('name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->count();
         }else{
@@ -78,22 +78,28 @@ class UserController extends Controller
             'data' => $all_data,
         ]);
     }
-    
-    public function advanced_form(){
-        return view('forms.advanced_form');
-    }
-
-    public function user_tables(){
-        return view('forms.user_tables');
-    }
 
     public function showRegistration(){
-        $data = User::where('id',Auth::user()->id)->first();
-        return view('admin.profile.register',compact('data'));
+        $user = User::where('id',Auth::user()->id)->first();
+        $role = Role::select('id','role_name')->where('is_active',1)->get();
+        return view('admin.profile.register',compact('user','role'));
+    }
+
+    public function ajax_user_check_record(Request $request){
+        $check_type = !empty($request->check_type)?$request->check_type:'';
+        $where_value_id = !empty($request->where_value)?$request->where_value:0;
+        $count = 0;
+        if($check_type == 'username_login_id'){
+            $count = User::where('login_id',$where_value_id)->count();
+        }
+        else if($check_type == 'email'){
+            $count = User::where('email',$where_value_id)->count();
+        }
+        return $count;
     }
 
     public function register(Request $request){
-        if(empty($request->email) || empty($request->name) || empty($request->password)){
+        if(empty($request->first_name) || empty($request->role) || empty($request->login_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>'],200);
         }
 
@@ -101,13 +107,36 @@ class UserController extends Controller
         if($checkEmail > 0){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>'],500);
         }
+        $checkLoginId = User::where(['login_id' => $request->login_id])->count();
+        if($checkLoginId > 0){
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Login id already exist...</p>'],500);
+        }
+        
         $id = User::insertGetId([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
+            'date_birth' => date('Y-m-d',strtotime($request->date_birth)),
+            'is_active' => $request->is_active,
+            'role_id' => $request->role,
+            'login_id' => $request->login_id,
             'password' => Hash::make($request->password),
+            'created_by'=>User::Auth()->id
         ]);
         
         if($id > 0){
+            $address = UserAddress::insertGetId([
+                'country' => $request->country,
+                'state' => $request->state,
+                'city' => $request->city,
+                'zip_code' => $request->zip_code,
+                'phone1' => $request->phone1,
+                'phone2' => $request->phone2,
+                'address1' => $request->address1,
+                'address2' => $request->address2
+            ]);
+
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User registration success...</p>'],200);
         }else{
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>'],500);

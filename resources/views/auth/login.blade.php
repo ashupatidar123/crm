@@ -7,12 +7,12 @@
         <!-- Google Font: Source Sans Pro -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="{{ url('public/assets/plugins/fontawesome-free/css/all.min.css') }}">
-        <!-- icheck bootstrap -->
         <link rel="stylesheet" href="{{ url('public/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url('public/assets/plugins/fontawesome-free/css/all.min.css') }}">
         <!-- Theme style -->
         <link rel="stylesheet" href="{{ url('public/assets/dist/css/adminlte.min.css') }}">
 
+        
         <script src="{{ url('public/assets/plugins/jquery/jquery.min.js') }}"></script>
         <script src="{{ url('public/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -28,6 +28,8 @@
     </head>
     <body class="hold-transition login-page">
         <div class="login-box">
+    <body class="hold-transition register-page">
+        <div class="register-box">
             @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -41,13 +43,15 @@
                 <div class="card-header text-center">
                     <a href="{{url('/')}}" class="h1"><b>WELCOME TO CRM</a>
                 </div>
+                
                 <div class="card-body">
                     <img class="logo-img" src="{{url('public/images/img/sts-marine.png')}}">
                     <p class="login-box-msg">STS Marine Management Pvt. Ltd.</p>
                     
                     <form action="{{url('/login')}}" method="post">
+                        <p class="login-box-msg" id="show_message"></p>
                         @csrf
-                        <div class="input-group">
+                        <div class="input-group mb-3">
                             <input type="text" name="username" id="username" class="form-control" placeholder="Username*" required autocomplete="off">
                             <div class="input-group-append">
                                 <div class="input-group-text">
@@ -56,7 +60,7 @@
                             </div>
                         </div>
                         <p id="usernameError" class="text-danger"></p>
-                        <div class="input-group">
+                        <div class="input-group mb-3">
                             <input type="password" name="password" id="password" class="form-control" placeholder="Password*" required autocomplete="off">
                             <div class="input-group-append">
                                 <div class="input-group-text">
@@ -67,7 +71,7 @@
                         <p id="passwordError" class="text-danger"></p>
                         <div class="input-group mb-3">
                             <div class="g-recaptcha" data-sitekey="6LeTj4sqAAAAAI8296xKQZveu3-qttAbuUv3DVjc"></div>
-                            <p id="googleError" class="text-danger"></p>
+                            <p id="googleError" class="text-danger"></p> 
                         </div>
                         <div class="row">
                             <div class="col-8">
@@ -84,13 +88,42 @@
                         </div>
                     </form>
                     <p class="mb-1">
-                        <a href="{{url('/login')}}">I forgot my password</a>
+                        <a href="{{url('/login')}}">I forgot my password?</a>
                     </p>
                 </div>
                 <!-- /.card-body -->
+                <!-- /.form-box -->
             </div>
             <!-- /.card -->
         </div>
+        <!-- /.register-box -->
+        <script>
+            $(document).ready(function () {
+                $("#submitButton").click(function (event) {
+                    event.preventDefault();
+                    
+                    $('#show_message').html('');
+                    $('#submitButton').html('Loading...');
+
+                    var form = $("#formId");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{url('register')}}",
+                        data: form.serialize(),
+                        success: function (resp) {
+                            $('#submitButton').html('Submit');
+                            $('#show_message').html(resp.message);
+                            if(resp.status == 'success'){
+                                $('#formId')[0].reset();
+                                window.setTimeout(function(){
+                                    window.location.href = "{{url('login')}}";
+                                },3000);
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
 <script type="text/javascript">
@@ -112,3 +145,4 @@
         return true;
     }
 </script>
+</html>

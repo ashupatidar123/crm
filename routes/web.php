@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('register', [UserController::class, 'showRegistration'])->name('register');
     Route::post('register', [UserController::class, 'register']);
+    Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
 
     Route::get('/profile', [UserController::class, 'showProfile']);
     Route::post('/profile', [UserController::class, 'updateProfile']);
@@ -51,7 +52,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('region/country', [RegionController::class,'country']);
     Route::get('region/country_list', [RegionController::class,'country_list']);
     Route::post('region/country_delete', [RegionController::class,'country_delete']);
-
-    Route::get('/advanced-form', [UserController::class, 'advanced_form']);
-    Route::get('/user-tables', [UserController::class, 'user_tables']);
+    Route::post('region/update_country', [RegionController::class,'update_country']);
 });

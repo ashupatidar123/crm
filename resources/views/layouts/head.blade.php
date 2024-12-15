@@ -35,7 +35,8 @@
     
     <script src="{{ url('public/assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ url('public/assets/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script type="text/javascript">const base_url = "{{url('/')}}" </script>
+    <script type="text/javascript">const base_url = "{{ url('/') }}" </script>
+    <script type="text/javascript">const csrf_token = "{{ csrf_token() }}" </script>
     @if(1==11)
         <!-- Include DataTables CSS -->
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">

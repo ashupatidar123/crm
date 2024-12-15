@@ -30,4 +30,10 @@
         });
         return false;
     }
+
+    function reset_filter(type=''){
+        $('#start_limit').val('');
+        $('#end_limit').val('');
+        data_table_list();
+    }
 </script>

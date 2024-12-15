@@ -16,16 +16,24 @@ class RegionController extends Controller{
     }
 
     public function get_ajax_country(Request $request){
-        $data = Country::select('id','name')->where('flag',1)->orderBy('name','ASC')->limit(500)->get();
-        $html = '<option value="" hidden="">Select country</option>';
-        if(!empty($data)){
-            foreach($data as $record){
-                $html .= '<option value="'.$record->id.'">'.$record->name.'</option>';
+        $show_type = !empty($request->type)?$request->type:'all';
+        
+        if($show_type == 'ajax_list'){
+            $data = Country::select('id','name')->where('flag',1)->orderBy('name','ASC')->limit(500)->get();
+            $html = '<option value="" hidden="">Select country</option>';
+            if(!empty($data)){
+                foreach($data as $record){
+                    $html .= '<option value="'.$record->id.'">'.$record->name.'</option>';
+                }
+            }else{
+                $html .= '<option value="" hidden>Not found</option>';
             }
-        }else{
-            $html .= '<option value="" hidden>Not found</option>';
+            echo $html;
         }
-        echo $html;
+        else if($show_type == 'ajax_single'){
+            $data = Country::select('id','name','iso3','numeric_code','iso2','phonecode','capital','currency','currency_name')->where('id',$request->p_id)->where('flag',1)->first();
+            echo json_encode(['data'=>$data]);
+        }
     }
 
     public function get_ajax_state(Request $request){
@@ -98,7 +106,6 @@ class RegionController extends Controller{
             $recordsTotal = Country::count();
             
             foreach($listData as $record){
-                $edit1 = '<a class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>';
                 $edit = '<button class="btn btn-info btn-sm" onclick="return country_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
                 $delete = '<button class="btn btn-danger btn-sm" onclick="return country_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
 
@@ -130,6 +137,43 @@ class RegionController extends Controller{
             return response()->json(['status' =>'success','message' => 'Country deleted successfully'],200); 
         }else{
             return response()->json(['status' =>'error','message' => 'Country deletion failed'],201);
+        }
+    }
+
+    public function update_country(Request $request){
+        //printr($request->all());
+
+        $check = Country::find($request->p_id);
+        if($check) {
+            $data = [];
+            if(!empty($request->name)){
+                $data['name'] = $request->name;
+            }
+            if(!empty($request->iso3)){
+                $data['iso3'] = $request->iso3;
+            }
+            if(!empty($request->numeric_code)){
+                $data['numeric_code'] = $request->numeric_code;
+            }
+            if(!empty($request->iso2)){
+                $data['iso2'] = $request->iso2;
+            }
+            if(!empty($request->phonecode)){
+                $data['phonecode'] = $request->phonecode;
+            }
+            if(!empty($request->capital)){
+                $data['capital'] = $request->capital;
+            }
+            if(!empty($request->currency)){
+                $data['currency'] = $request->currency;
+            }
+            if(!empty($request->currency_name)){
+                $data['currency_name'] = $request->currency_name;
+            }
+            Country::where('id',$request->p_id)->update($data);
+            return response()->json(['status' =>'success','message' => 'Updation successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'Something went wrong'],201);
         }
     }
 }
