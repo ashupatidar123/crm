@@ -35,12 +35,10 @@ Route::any('get_ajax_city', [RegionController::class,'get_ajax_city']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
-    Route::get('/userList', [UserController::class, 'userList']);
-    Route::get('user_export', function () {
-        return Excel::download(new UsersExport, 'users.xlsx');
-    });
-
     Route::get('register', [UserController::class, 'showRegistration'])->name('register');
+    Route::get('/users', [UserController::class, 'users']);
+    Route::get('/user_list', [UserController::class, 'user_list']);
+
     Route::post('register', [UserController::class, 'register']);
     Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
 

@@ -23,18 +23,22 @@ class UserController extends Controller
         return view('dashboard');
     }
 
+    public function users(){
+        return view('master.user.user_list');
+    }
+
     public function userList_filter_count($search){
         if(!empty($search)) {
-            $filter_count = User::where('name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->count();
+            $filter_count = User::where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->count();
         }else{
             $filter_count = User::count();
         }
         return $filter_count;
     }
 
-    public function userList(Request $request){
-        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):'';
-        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):0;
+    public function user_list(Request $request){
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
         if($start_limit < 1){
             $start_limit = $request->input('start');
             $end_limit   = $request->input('length');
@@ -43,30 +47,35 @@ class UserController extends Controller
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['id','name','email','mobile','amount','created_at'];
+        $columns = ['id','first_name','last_name','email','date_birth','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = User::select('id','name','email','mobile','amount','created_at');
+        $query = User::select('id','first_name','last_name','email','date_birth','created_at');
         if(!empty($search)) {
-            $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
+            $query->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
         }
         $query->orderBy($orderColumnIndex, $orderDirection);
-        $users = $query->skip($start_limit)->take($end_limit)->get(); 
-
+        $users = $query->offset($start_limit)->limit($end_limit)->get(); 
+        //printr($users);
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($users)){
             $recordsTotal = User::count();
-            
+            $sn = 1+$start_limit;
             foreach($users as $record){
+                $edit = '<button class="btn btn-info btn-sm" onclick="return user_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-danger btn-sm" onclick="return user_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+
                 $all_data[] = [
+                    'sno'=> $sn++,
                     'id'=> $record->id,
-                    'name'=> $record->name,
+                    'first_name'=> $record->first_name,
+                    'last_name'=> $record->last_name,
                     'email'=> $record->email,
-                    'mobile'=> $record->mobile,
-                    'amount'=> $record->amount,
-                    'created_at'=> date('d/M/Y',strtotime($record->created_at))
+                    'date_birth'=> $record->date_birth,
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                    'action'=>$edit.' '.$delete
                 ];
             }
         }
@@ -100,7 +109,7 @@ class UserController extends Controller
 
     public function register(Request $request){
         if(empty($request->first_name) || empty($request->role) || empty($request->login_id) || empty($request->password) || empty($request->email)){
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>'],200);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
 
         $checkEmail = User::where(['email' => $request->email])->count();
@@ -113,20 +122,22 @@ class UserController extends Controller
         }
         
         $id = User::insertGetId([
+            'user_id'=>Auth::user()->id,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'date_birth' => date('Y-m-d',strtotime($request->date_birth)),
-            'is_active' => $request->is_active,
+            'is_active' => ($request->is_active==1)?1:2,
             'role_id' => $request->role,
             'login_id' => $request->login_id,
             'password' => Hash::make($request->password),
-            'created_by'=>User::Auth()->id
+            'created_by'=>Auth::user()->id
         ]);
         
         if($id > 0){
             $address = UserAddress::insertGetId([
+                'user_id'=>Auth::user()->id,
                 'country' => $request->country,
                 'state' => $request->state,
                 'city' => $request->city,
@@ -134,12 +145,14 @@ class UserController extends Controller
                 'phone1' => $request->phone1,
                 'phone2' => $request->phone2,
                 'address1' => $request->address1,
-                'address2' => $request->address2
+                'address2' => $request->address2,
+                'is_active' => ($request->is_active==1)?1:2,
+                'created_by'=>Auth::user()->id
             ]);
 
-            return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User registration success...</p>'],200);
+            return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User registration success...</p>','s_msg'=>'User registration success...'],200);
         }else{
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>'],500);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],500);
         }
     }
 

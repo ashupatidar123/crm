@@ -71,7 +71,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="phone1">Phone 1<span class="text-danger">*</span></label>
-                                            <input type="text" name="phone" id="phone1" class="form-control"  placeholder="Enter phone 1 number">
+                                            <input type="text" name="phone1" id="phone1" class="form-control"  placeholder="Enter phone 1 number">
                                             <p class="text-danger" id="phone1Error"></p>
                                         </div>
                                     </div>
@@ -274,11 +274,11 @@
                 }
                 if($('#address1').val() == ''){
                     var check = 1;
-                    $('#address1Error').html('Address1 is required');
+                    $('#address1Error').html('Address line 1 is required');
                 }
                 if($('#address2').val() == ''){
                     var check = 1;
-                    $('#address2Error').html('Address2 is required');
+                    $('#address2Error').html('Address line 2 is required');
                 }
                 if(check == 1){
                     //return false;
@@ -299,10 +299,12 @@
                         $('#submitButton').html('Submit');
                         $('.show_message').html(resp.message);
                         if(resp.status == 'success'){
-                            $('#formId')[0].reset();
+                            swal_success(resp.s_msg);
                             window.setTimeout(function(){
                                 window.location.href = "{{url('register')}}";
-                            },3000);
+                            },5000);
+                        }else{
+                            swal_error(resp.s_msg);
                         }
                     }
                 });

@@ -23,7 +23,7 @@ class RegionController extends Controller{
             $html = '<option value="" hidden="">Select country</option>';
             if(!empty($data)){
                 foreach($data as $record){
-                    $html .= '<option value="'.$record->id.'">'.$record->name.'</option>';
+                    $html .= '<option value="'.$record->name.'">'.$record->name.'</option>';
                 }
             }else{
                 $html .= '<option value="" hidden>Not found</option>';
@@ -42,7 +42,7 @@ class RegionController extends Controller{
         $html = '<option value="" hidden="">Select state</option>';
         if(!empty($data)){
             foreach($data as $record){
-                $html .= '<option value="'.$record->id.'">'.$record->name.'</option>';
+                $html .= '<option value="'.$record->name.'">'.$record->name.'</option>';
             }
         }else{
             $html .= '<option value="" hidden>Not found</option>';
@@ -56,7 +56,7 @@ class RegionController extends Controller{
         $html = '<option value="" hidden="">Select city</option>';
         if(!empty($data)){
             foreach($data as $record){
-                $html .= '<option value="'.$record->id.'">'.$record->name.'</option>';
+                $html .= '<option value="'.$record->name.'">'.$record->name.'</option>';
             }
         }else{
             $html .= '<option value="" hidden>Not found</option>';
