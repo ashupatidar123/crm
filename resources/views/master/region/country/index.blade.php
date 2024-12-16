@@ -1,6 +1,6 @@
 @extends('layouts.head')
 
-@section('title') User List @endsection
+@section('title') Countries @endsection
 
 @section('content')
 <div class="content-wrapper">
@@ -14,7 +14,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a></li>
-                        <li class="breadcrumb-item active">Users</li>
+                        <li class="breadcrumb-item active">Country</li>
                     </ol>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                     <!-- /.card -->
                     <div class="card card-primary">
                         <div class="card-header card_header_color">
-                            <h3 class="card-title">All User List</h3>
+                            <h3 class="card-title">All Country List</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body responsive">
@@ -38,10 +38,11 @@
                                     <tr>
                                         <th>Sno</th>
                                         <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Date Birth</th>
+                                        <th>Name</th>
+                                        <th>ISO 3</th>
+                                        <th>Numeric Code</th>
+                                        <th>Capital</th>
+                                        <th>Currency</th>
                                         <th>Date</th>
                                         <th>Action</th>
                                     </tr>
@@ -50,11 +51,12 @@
                                 <tfoot>
                                     <tr>
                                         <th>Sno</th>
-                                         <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Date Birth</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>ISO 3</th>
+                                        <th>Numeric Code</th>
+                                        <th>Capital</th>
+                                        <th>Currency</th>
                                         <th>Date</th>
                                         <th>Action</th>
                                     </tr>
@@ -79,7 +81,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">User</h4>
+                        <h4 class="modal-title">Country</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -89,7 +91,7 @@
                                 <input type="hidden" name="p_id" id="p_id">
                                 <div class="col-md-12">
                                     <div class="card card-primary">
-                                        <div class="card-header card_header_color"><h3 class="card-title">Update User</h3>
+                                        <div class="card-header card_header_color"><h3 class="card-title">Update Country</h3>
                                         </div>
                                         <div class="show_message"></div>
                                         <div class="card-body row">
@@ -160,10 +162,12 @@
 </div>
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<script type="text/javascript">
+<script>
     $(document).ready(function() {
-        user_data_table_list();
+        country_data_table_list();
     });
 </script>
-@include('script.user_js')
+@include('script.comman_js')
+@include('script.country_state_city_js')
+
 @endsection

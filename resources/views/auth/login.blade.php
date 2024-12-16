@@ -52,7 +52,7 @@
                         <p class="login-box-msg" id="show_message"></p>
                         @csrf
                         <div class="input-group mb-3">
-                            <input type="text" name="username" id="username" class="form-control" placeholder="Username*" required autocomplete="off">
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Login id or Username*" required autocomplete="off">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-envelope"></span>

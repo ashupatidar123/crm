@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\User;
 use App\Models\Role;
 use App\Models\UserAddress;
+use App\Models\Country;
+use App\Models\State;
+use App\Models\City;
+use App\Traits\FileUploadTrait;
 
 class UserController extends Controller
-{
+{   
+    use FileUploadTrait;
     public function __construct(){
 
     }
@@ -47,7 +53,7 @@ class UserController extends Controller
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['id','first_name','last_name','email','date_birth','created_at'];
+        $columns = ['','id','first_name','last_name','email','date_birth','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
@@ -62,18 +68,18 @@ class UserController extends Controller
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($users)){
             $recordsTotal = User::count();
-            $sn = 1+$start_limit;
+            $sno = 1+$start_limit;
             foreach($users as $record){
                 $edit = '<button class="btn btn-info btn-sm" onclick="return user_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
                 $delete = '<button class="btn btn-danger btn-sm" onclick="return user_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
 
                 $all_data[] = [
-                    'sno'=> $sn++,
+                    'sno'=> $sno++,
                     'id'=> $record->id,
                     'first_name'=> $record->first_name,
                     'last_name'=> $record->last_name,
                     'email'=> $record->email,
-                    'date_birth'=> $record->date_birth,
+                    'date_birth'=> !empty($record->date_birth)?date('d/M/Y',strtotime($record->date_birth)):'',
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'action'=>$edit.' '.$delete
                 ];
@@ -108,6 +114,7 @@ class UserController extends Controller
     }
 
     public function register(Request $request){
+        
         if(empty($request->first_name) || empty($request->role) || empty($request->login_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
@@ -121,12 +128,19 @@ class UserController extends Controller
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Login id already exist...</p>'],500);
         }
         
+        $user_image = '';
+        if(!empty($request->file('user_image'))){
+            $user_image = $this->uploadFile($request, 'user_image', 'uploads/image/users');
+        }
+
         $id = User::insertGetId([
             'user_id'=>Auth::user()->id,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'user_image' => $user_image,
+            'phone' => $request->phone1,
             'date_birth' => date('Y-m-d',strtotime($request->date_birth)),
             'is_active' => ($request->is_active==1)?1:2,
             'role_id' => $request->role,
@@ -136,11 +150,15 @@ class UserController extends Controller
         ]);
         
         if($id > 0){
+            $country = Country::select('name')->where('id',$request->country)->first();
+            $state   = State::select('name')->where('id',$request->state)->first();
+            $city    = City::select('name')->where('id',$request->city)->first();
+
             $address = UserAddress::insertGetId([
-                'user_id'=>Auth::user()->id,
-                'country' => $request->country,
-                'state' => $request->state,
-                'city' => $request->city,
+                'user_id'=>$id,
+                'country' => !empty($country->name)?$country->name:'',
+                'state' => !empty($state->name)?$state->name:'',
+                'city' => !empty($city->name)?$city->name:'',
                 'zip_code' => $request->zip_code,
                 'phone1' => $request->phone1,
                 'phone2' => $request->phone2,

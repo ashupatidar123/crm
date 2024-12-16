@@ -30,7 +30,7 @@
         </section>
         <section class="content">
             <div class="container-fluid">
-                <form method="POST" id="formId">
+                <form method="POST" id="registerFormId" enctype="multipart/form-data">
                     @csrf    
                     <div class="row">
                         <div class="col-md-12">
@@ -43,13 +43,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="first_name">First Name<span class="text-danger">*</span></label>
-                                            <input type="text" name="first_name" id="first_name" class="form-control"  placeholder="Enter first name">
+                                            <input type="text" name="first_name" id="first_name" class="form-control"  placeholder="Enter first name" required>
                                             <p class="text-danger" id="first_nameError"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="middle_name">Middle Name<span class="text-danger">*</span></label>
+                                            <label for="middle_name">Middle Name</label>
                                             <input type="text" name="middle_name" id="middle_name" class="form-control"  placeholder="Enter middle name">
                                             <p class="text-danger" id="middle_nameError"></p>
                                         </div>
@@ -77,7 +77,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="phone2">Phone 2<span class="text-danger">*</span></label>
+                                            <label for="phone2">Phone 2</label>
                                             <input type="text" name="phone2" id="phone2" class="form-control"  placeholder="Enter phone 2 number">
                                             <p class="text-danger" id="phone2Error"></p>
                                         </div>
@@ -176,14 +176,14 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Address line 1</label>
+                                            <label>Address line 1<span class="text-danger">*</span></label>
                                             <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name">
                                             <p class="text-danger" id="address1Error"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Address line 2</label>
+                                            <label>Address line 2<span class="text-danger">*</span></label>
                                             <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor">
                                             <p class="text-danger" id="address2Error"></p>
                                         </div>
@@ -197,7 +197,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+                                            <button id="submitRegister" type="button" class="btn btn-primary">Submit</button>
                                             <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
                                         </div>
                                     </div>
@@ -214,104 +214,8 @@
             get_ajax_country('','country');
             $('.select2').select2();
         });
-
-        $(document).ready(function(){
-            $("#submitButton").click(function (event) {
-                event.preventDefault();
-                $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #login_idError, #passwordError, #countryError, #phone1Error, #stateError, #cityError, #address1Error, #address2Error').html('');
-                var check = 0;
-                if($('#first_name').val() == ''){
-                    var check = 1;
-                    $('#first_nameError').html('First name is required');
-                }
-                if($('#last_nameError').val() == ''){
-                    var check = 1;
-                    $('#last_nameError').html('Last name is required');
-                }
-                if($('#email').val() == ''){
-                    var check = 1;
-                    $('#emailError').html('Email is required');
-                }
-                if($('#phone1').val() == ''){
-                    var check = 1;
-                    $('#phone1Error').html('Phone is required');
-                }
-                if($('#date_birth').val() == ''){
-                    var check = 1;
-                    $('#date_birthError').html('Date of birth is required');
-                }
-                if($('#role').val() == ''){
-                    var check = 1;
-                    $('#roleError').html('Role is required');
-                }
-                if($('#login_id').val() == ''){
-                    var check = 1;
-                    $('#login_idError').html('Login id is required');
-                }
-                if($('#password').val() == ''){
-                    var check = 1;
-                    $('#passwordError').html('Password id is required');
-                }
-                if($('#country').val() == ''){
-                    var check = 1;
-                    $('#countryError').html('Country is required');
-                }
-                if($('#state').val() == ''){
-                    var check = 1;
-                    $('#stateError').html('State is required');
-                }
-                if($('#city').val() == ''){
-                    var check = 1;
-                    $('#cityError').html('City is required');
-                }
-                if($('#city').val() == ''){
-                    var check = 1;
-                    $('#cityError').html('City is required');
-                }
-                if($('#zip_code').val() == ''){
-                    var check = 1;
-                    $('#zip_codeError').html('ZIP code is required');
-                }
-                if($('#address1').val() == ''){
-                    var check = 1;
-                    $('#address1Error').html('Address line 1 is required');
-                }
-                if($('#address2').val() == ''){
-                    var check = 1;
-                    $('#address2Error').html('Address line 2 is required');
-                }
-                if(check == 1){
-                    //return false;
-                }
-
-                $('.show_message').html('');
-                $('#submitButton').html('Loading...');
-
-                var form = $("#formId");
-                $.ajax({
-                    type: "POST",
-                    url: "{{url('register')}}",
-                    data: form.serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': csrf_token
-                    },
-                    success: function (resp) {
-                        $('#submitButton').html('Submit');
-                        $('.show_message').html(resp.message);
-                        if(resp.status == 'success'){
-                            swal_success(resp.s_msg);
-                            window.setTimeout(function(){
-                                window.location.href = "{{url('register')}}";
-                            },5000);
-                        }else{
-                            swal_error(resp.s_msg);
-                        }
-                    }
-                });
-            });
-        });
     </script>
     @include('script.comman_js')
     @include('script.country_state_city_js')
-    @include('script.check_record_js')
+    @include('script.user_js')
 @endsection

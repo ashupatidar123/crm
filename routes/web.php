@@ -26,12 +26,6 @@ Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [HomeController::class, 'logout'])->name('logout');
 
-// Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-// Route::post('register', [RegisterController::class, 'register']);
-
-Route::any('get_ajax_country', [RegionController::class,'get_ajax_country']);
-Route::any('get_ajax_state', [RegionController::class,'get_ajax_state']);
-Route::any('get_ajax_city', [RegionController::class,'get_ajax_city']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
@@ -46,9 +40,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile', [UserController::class, 'updateProfile']);
     Route::get('/change-password', [UserController::class, 'showChangePassword'])->name('password.change');
     Route::post('/change-password', [UserController::class, 'changePassword'])->name('password.update');
-
-    Route::get('region/country', [RegionController::class,'country']);
-    Route::get('region/country_list', [RegionController::class,'country_list']);
-    Route::post('region/country_delete', [RegionController::class,'country_delete']);
-    Route::post('region/update_country', [RegionController::class,'update_country']);
 });

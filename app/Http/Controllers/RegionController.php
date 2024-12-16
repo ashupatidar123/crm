@@ -19,11 +19,11 @@ class RegionController extends Controller{
         $show_type = !empty($request->type)?$request->type:'all';
         
         if($show_type == 'ajax_list'){
-            $data = Country::select('id','name')->where('flag',1)->orderBy('name','ASC')->limit(500)->get();
+            $data = Country::select('id','name')->where('is_active',1)->orderBy('name','ASC')->limit(500)->get();
             $html = '<option value="" hidden="">Select country</option>';
             if(!empty($data)){
                 foreach($data as $record){
-                    $html .= '<option value="'.$record->name.'">'.$record->name.'</option>';
+                    $html .= '<option value="'.$record->id.'" data-name="'.$record->name.'">'.$record->name.'</option>';
                 }
             }else{
                 $html .= '<option value="" hidden>Not found</option>';
@@ -31,23 +31,31 @@ class RegionController extends Controller{
             echo $html;
         }
         else if($show_type == 'ajax_single'){
-            $data = Country::select('id','name','iso3','numeric_code','iso2','phonecode','capital','currency','currency_name')->where('id',$request->p_id)->where('flag',1)->first();
+            $data = Country::select('id','name','iso3','numeric_code','iso2','phonecode','capital','currency','currency_name')->where('id',$request->p_id)->where('is_active',1)->first();
             echo json_encode(['data'=>$data]);
         }
     }
 
     public function get_ajax_state(Request $request){
+        $show_type = !empty($request->type)?$request->type:'all';
+
         $country_id = ($request['country_id'] > 0)?$request['country_id']:0;
-        $data = State::select('id','name')->where('country_id',$country_id)->orderBy('name','ASC')->where('flag',1)->limit(500)->get();
-        $html = '<option value="" hidden="">Select state</option>';
-        if(!empty($data)){
-            foreach($data as $record){
-                $html .= '<option value="'.$record->name.'">'.$record->name.'</option>';
+        if($show_type == 'ajax_list'){
+            $data = State::select('id','name')->where('country_id',$country_id)->orderBy('name','ASC')->where('is_active',1)->limit(500)->get();
+            $html = '<option value="" hidden="">Select state</option>';
+            if(!empty($data)){
+                foreach($data as $record){
+                    $html .= '<option value="'.$record->id.'"data-name="'.$record->name.'">'.$record->name.'</option>';
+                }
+            }else{
+                $html .= '<option value="" hidden>Not found</option>';
             }
-        }else{
-            $html .= '<option value="" hidden>Not found</option>';
+            echo $html;
         }
-        echo $html;
+        else if($show_type == 'ajax_single'){
+            $data = State::select('id','name','iso2','country_id','country_code')->where('id',$request->p_id)->where('is_active',1)->first();
+            echo json_encode(['data'=>$data]);
+        }
     }
 
     public function get_ajax_city(Request $request){
@@ -56,7 +64,7 @@ class RegionController extends Controller{
         $html = '<option value="" hidden="">Select city</option>';
         if(!empty($data)){
             foreach($data as $record){
-                $html .= '<option value="'.$record->name.'">'.$record->name.'</option>';
+                $html .= '<option value="'.$record->id.'" data-name="'.$record->name.'">'.$record->name.'</option>';
             }
         }else{
             $html .= '<option value="" hidden>Not found</option>';
@@ -64,8 +72,9 @@ class RegionController extends Controller{
         echo $html;
     }
 
+    /* Country section */
     public function country(){
-        return view('admin.region.country');
+        return view('master.region.country.index');
     }
 
     public function country_list_filter_count($search){
@@ -89,7 +98,7 @@ class RegionController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['id','name','iso3','numeric_code','capital','currency','created_at'];
+        $columns = ['','id','name','iso3','numeric_code','capital','currency','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
         
@@ -104,12 +113,13 @@ class RegionController extends Controller{
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($listData)){
             $recordsTotal = Country::count();
-            
+            $sno = 1+$start_limit;
             foreach($listData as $record){
                 $edit = '<button class="btn btn-info btn-sm" onclick="return country_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
                 $delete = '<button class="btn btn-danger btn-sm" onclick="return country_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
 
                 $all_data[] = [
+                    'sno'=> $sno++,
                     'id'=> $record->id,
                     'name'=> $record->name,
                     'iso3'=> $record->iso3,
@@ -130,19 +140,7 @@ class RegionController extends Controller{
         ]);
     }
 
-    public function country_delete(Request $request){
-        $record_dlt = Country::find($request->p_id);
-        if($record_dlt) {
-            $record_dlt->delete();
-            return response()->json(['status' =>'success','message' => 'Country deleted successfully'],200); 
-        }else{
-            return response()->json(['status' =>'error','message' => 'Country deletion failed'],201);
-        }
-    }
-
-    public function update_country(Request $request){
-        //printr($request->all());
-
+    public function country_update(Request $request){
         $check = Country::find($request->p_id);
         if($check) {
             $data = [];
@@ -171,9 +169,120 @@ class RegionController extends Controller{
                 $data['currency_name'] = $request->currency_name;
             }
             Country::where('id',$request->p_id)->update($data);
-            return response()->json(['status' =>'success','message' => 'Updation successfully'],200); 
+            return response()->json(['status' =>'success','message' => 'Country updated successfully'],200); 
         }else{
             return response()->json(['status' =>'error','message' => 'Something went wrong'],201);
+        }
+    }
+
+    public function country_delete(Request $request){
+        $record_dlt = Country::find($request->p_id);
+        if($record_dlt) {
+            $record_dlt->delete();
+            return response()->json(['status' =>'success','message' => 'Country deleted successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'Country deletion failed'],201);
+        }
+    }
+
+    /* State section */
+    public function state(){
+        return view('master.region.state.index');
+    }
+
+    public function state_list_filter_count($search){
+        
+        if(!empty($search)) {
+            $filter_count = State::where('name', 'LIKE', '%'.$search.'%')->orWhere('iso2', 'LIKE', '%'.$search.'%')->count();
+        }else{
+            $filter_count = State::count();
+        }
+        return $filter_count;
+    }
+
+    public function state_list(Request $request){
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):'';
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
+        if($start_limit < 1){
+            $start_limit = !empty($request->input('start'))?$request->input('start'):1;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
+        }
+        
+        $draw  = $request->input('draw');
+        $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
+
+        $columns = ['','id','name','iso2','country_code','country_id','created_at'];
+        $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
+        $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
+        
+        $query = State::with('single_country')->select('id','name','iso2','country_code','country_id','created_at');
+        if(!empty($search)) {
+            $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('iso2', 'LIKE', '%'.$search.'%');
+        }
+        $query->orderBy($orderColumnIndex, $orderDirection);
+        $listData = $query->skip($start_limit)->take($end_limit)->get(); 
+        
+        $all_data = [];
+        $recordsTotal = $recordsFiltered = 0;
+        if(!empty($listData)){
+            $recordsTotal = State::count();
+            $sno = 1+$start_limit;
+            foreach($listData as $record){
+                $edit = '<button class="btn btn-info btn-sm" onclick="return state_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-danger btn-sm" onclick="return state_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+
+                $all_data[] = [
+                    'sno'=> $sno++,
+                    'id'=> $record->id,
+                    'name'=> $record->name,
+                    'country_name'=> $record->single_country->name,
+                    'iso2'=> $record->iso2,
+                    'country_code'=> $record->country_code,
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                    'action'=>$edit.' '.$delete
+                ];
+            }
+        }
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $this->state_list_filter_count($search),
+            'data' => $all_data,
+        ]);
+    }
+
+    public function state_update(Request $request){
+        $check = State::find($request->p_id);
+        
+        if($check) {
+            $data = [];
+            if(!empty($request->name)){
+                $data['name'] = $request->name;
+            }
+            if(!empty($request->country_id)){
+                $data['country_id'] = $request->country_id;
+            }
+            if(!empty($request->country_code)){
+                $data['country_code'] = $request->country_code;
+            }
+            if(!empty($request->iso2)){
+                $data['iso2'] = $request->iso2;
+            }
+            State::where('id',$request->p_id)->update($data);
+            return response()->json(['status' =>'success','message' => 'State updated successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'Something went wrong'],201);
+        }
+    }
+
+    public function state_delete(Request $request){
+        $record_dlt = State::find($request->p_id);
+        if($record_dlt) {
+            $record_dlt->delete();
+            return response()->json(['status' =>'success','message' => 'State deleted successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'State deletion failed'],201);
         }
     }
 }
