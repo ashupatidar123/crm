@@ -35,7 +35,7 @@ class UserController extends Controller
 
     public function userList_filter_count($search){
         if(!empty($search)) {
-            $filter_count = User::where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->count();
+            $filter_count = User::where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
         }else{
             $filter_count = User::count();
         }
@@ -46,20 +46,20 @@ class UserController extends Controller
         $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
         $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
         if($start_limit < 1){
-            $start_limit = $request->input('start');
-            $end_limit   = $request->input('length');
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
         }
         
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','first_name','last_name','email','date_birth','created_at'];
+        $columns = ['','id','first_name','last_name','email','date_birth','created_at','is_active'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = User::select('id','first_name','last_name','email','date_birth','created_at');
+        $query = User::select('id','first_name','last_name','email','date_birth','created_at','is_active');
         if(!empty($search)) {
-            $query->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
+            $query->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
         }
         $query->orderBy($orderColumnIndex, $orderDirection);
         $users = $query->offset($start_limit)->limit($end_limit)->get(); 
@@ -70,8 +70,14 @@ class UserController extends Controller
             $recordsTotal = User::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<button class="btn btn-info btn-sm" onclick="return user_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
+                $edit = '<a href="'.url('master/edit-user').'/'.$record->id.'" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>';
                 $delete = '<button class="btn btn-danger btn-sm" onclick="return user_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+
+                if($record->is_active == 1){
+                    $status = '<button class="btn btn-primary btn-sm" onclick="return user_active_inactive('.$record->id.',1,\'user\');">Active</button>';
+                }else{
+                    $status = '<button class="btn btn-danger btn-sm" onclick="return user_active_inactive('.$record->id.',2,\'user\');">In-Active</button>';
+                }
 
                 $all_data[] = [
                     'sno'=> $sno++,
@@ -81,6 +87,7 @@ class UserController extends Controller
                     'email'=> $record->email,
                     'date_birth'=> !empty($record->date_birth)?date('d/M/Y',strtotime($record->date_birth)):'',
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                    'status'=>$status,
                     'action'=>$edit.' '.$delete
                 ];
             }
@@ -94,12 +101,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function showRegistration(){
-        $user = User::where('id',Auth::user()->id)->first();
-        $role = Role::select('id','role_name')->where('is_active',1)->get();
-        return view('admin.profile.register',compact('user','role'));
-    }
-
     public function ajax_user_check_record(Request $request){
         $check_type = !empty($request->check_type)?$request->check_type:'';
         $where_value_id = !empty($request->where_value)?$request->where_value:0;
@@ -111,6 +112,41 @@ class UserController extends Controller
             $count = User::where('email',$where_value_id)->count();
         }
         return $count;
+    }
+
+    public function user_active_inactive(Request $request){
+        $type = ($request->type==1)?2:1;
+        $tbl = $request->tbl;
+        
+        if($request->p_id < 1){
+           return response()->json(['status' =>'error','message' => 'Something went wrong'],201); 
+        }
+        else if($tbl == 'user'){
+            User::where('id',$request->p_id)->update(['is_active'=>$type]);
+            if($type == 1){
+                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+            }else{
+                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
+            }
+        }else{
+            return response()->json(['status' =>'error','message' => 'Something went wrong'],201);  
+        } 
+    }
+
+    public function user_delete(Request $request){
+        $record_dlt = User::find($request->p_id);
+        if($record_dlt) {
+            $record_dlt->delete();
+            return response()->json(['status' =>'success','message' => 'User deleted successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'User deletion failed'],201);
+        }
+    }
+
+    public function showRegistration(){
+        $user = User::where('id',Auth::user()->id)->first();
+        $role = Role::select('id','role_name')->where('is_active',1)->get();
+        return view('admin.profile.register',compact('user','role'));
     }
 
     public function register(Request $request){
@@ -172,6 +208,17 @@ class UserController extends Controller
         }else{
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],500);
         }
+    }
+
+    public function showEditUser(Request $request){
+        $data = User::where('id',$request->id)->first();
+        if(empty($data)){
+            return redirect(url('users'),302);
+        }
+        $address = UserAddress::where('user_id',$request->id)->first();
+        $role = Role::select('id','role_name')->where('is_active',1)->get();
+    
+        return view('master.user.edit_user',compact('data','role','address'));
     }
 
     public function showProfile(){

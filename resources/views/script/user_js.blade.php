@@ -22,6 +22,7 @@
                 { data: 'email' },
                 { data: 'date_birth' },
                 { data: 'created_at', type: 'date' },
+                { data: 'status' },
                 { data: 'action' }
             ],
             "order": [[1, 'DESC']],
@@ -30,40 +31,8 @@
             "responsive": true,
             "dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,7],"orderable": false}]
+            "columnDefs": [{"targets": [0,8],"orderable": false}]
         });
-    }
-
-    function user_delete(p_id){
-        Swal.fire({
-            title: "Are you sure to delete?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if(result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{url('master/user_delete')}}",
-                    data: {p_id},
-                    headers: {
-                        'X-CSRF-TOKEN': csrf_token
-                    },
-                    dataType:"JSON",
-                    success: function (resp) {
-                        if(resp.status == 'success'){
-                            data_table_list();
-                            swal_success(resp.message,1800);
-                        }else{
-                            swal_error(resp.message,1800); 
-                        }
-                    }
-                });
-            }
-        });        
     }
 
     function check_user_record(where_value,check_type=''){
@@ -193,4 +162,75 @@
             }
         });
     });  
+
+    function user_active_inactive(p_id='',type='',tbl=''){
+        if(type == 1){
+           var title =  "Are you sure to In-Active?";
+        }else{
+           var title =  "Are you sure to Active?"; 
+        }
+        Swal.fire({
+            title: title,
+            text: "You will be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, ok it!"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('user_active_inactive')}}",
+                    data: {p_id,type,tbl},
+                    headers: {
+                        'X-CSRF-TOKEN': csrf_token
+                    },
+                    dataType:"JSON",
+                    success: function (resp) {
+                        if(resp.status == 'success'){
+                            if(tbl == 'user'){
+                                user_data_table_list();
+                            }
+                            swal_success(resp.message,1800);
+                        }else{
+                            swal_error(resp.message,1800); 
+                        }
+                    }
+                });
+            }
+        });        
+    }
+
+    function user_delete(p_id){
+        Swal.fire({
+            title: "Are you sure to delete?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('user_delete')}}",
+                    data: {p_id},
+                    headers: {
+                        'X-CSRF-TOKEN': csrf_token
+                    },
+                    dataType:"JSON",
+                    success: function (resp) {
+                        if(resp.status == 'success'){
+                            user_data_table_list();
+                            swal_success(resp.message,1800);
+                        }else{
+                            swal_error(resp.message,1800); 
+                        }
+                    }
+                });
+            }
+        });        
+    }
 </script>

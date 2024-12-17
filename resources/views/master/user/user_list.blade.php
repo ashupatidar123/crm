@@ -1,6 +1,6 @@
 @extends('layouts.head')
 
-@section('title') User List @endsection
+@section('title') Users @endsection
 
 @section('content')
 <div class="content-wrapper">
@@ -43,6 +43,7 @@
                                         <th>Email</th>
                                         <th>Date Birth</th>
                                         <th>Date</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -56,6 +57,7 @@
                                         <th>Email</th>
                                         <th>Date Birth</th>
                                         <th>Date</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>
@@ -166,4 +168,5 @@
     });
 </script>
 @include('script.user_js')
+@include('script.comman_js')
 @endsection

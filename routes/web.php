@@ -35,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('register', [UserController::class, 'register']);
     Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
+    Route::post('user_active_inactive', [UserController::class, 'user_active_inactive']);
+    Route::post('user_delete', [UserController::class, 'user_delete']);
 
     Route::get('/profile', [UserController::class, 'showProfile']);
     Route::post('/profile', [UserController::class, 'updateProfile']);
