@@ -41,4 +41,6 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::get('region/city_list', [RegionController::class,'city_list']);
     Route::post('region/city_delete', [RegionController::class,'city_delete']);
     Route::post('region/city_update', [RegionController::class,'city_update']);
+
+    Route::post('region/region_active_inactive', [RegionController::class,'region_active_inactive']);
 });

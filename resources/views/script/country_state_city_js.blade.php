@@ -75,15 +75,16 @@
                 { data: 'capital' },
                 { data: 'currency' },
                 { data: 'created_at', type: 'date' },
+                { data: 'status' },
                 { data: 'action' }
             ],
             "order": [[2, 'ASC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "dom": 'Bfrtip',
+            //"dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,8],"orderable": false}]
+            "columnDefs": [{"targets": [0,9],"orderable": false}]
         });
     }
 
@@ -222,15 +223,16 @@
                 { data: 'iso2' },
                 { data: 'country_code' },
                 { data: 'created_at', type: 'date' },
+                { data: 'status' },
                 { data: 'action' }
             ],
             "order": [[2, 'ASC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "dom": 'Bfrtip',
+            //"dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,3,7],"orderable": false}]
+            "columnDefs": [{"targets": [0,3,8],"orderable": false}]
         });
     }
 
@@ -328,6 +330,195 @@
                     success: function (resp) {
                         if(resp.status == 'success'){
                             state_data_table_list();
+                            swal_success(resp.message,1800);
+                        }else{
+                            swal_error(resp.message,1800); 
+                        }
+                    }
+                });
+            }
+        });        
+    }
+
+    /* city section */
+    function city_data_table_list(){
+        $('#tableList').DataTable().clear().destroy();
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit   = $('#end_limit').val();
+        var end_limit = (end_limit > 0)?end_limit:10;
+        var pageLength = (end_limit > 0)?end_limit:10;
+        
+        $('#tableList').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{url("master/region/city_list")}}',
+                type: 'GET',
+                data:{start_limit,end_limit},
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
+            },
+            columns: [
+                { data: 'sno' },
+                { data: 'id' },
+                { data: 'name' },
+                { data: 'country_name' },
+                { data: 'state_name' },
+                { data: 'state_code' },
+                { data: 'created_at', type: 'date' },
+                { data: 'status' },
+                { data: 'action' }
+            ],
+            "order": [[2, 'ASC']],
+            "lengthMenu": [10,25,75,50,100,500,550,1000],
+            "pageLength": pageLength,
+            "responsive": true,
+            //"dom": 'Bfrtip',
+            "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
+            "columnDefs": [{"targets": [0,3,4,8],"orderable": false}]
+        });
+    }
+
+    function city_edit(p_id=''){
+        var type = 'ajax_single';
+        $.ajax({
+            type: "POST",
+            url: "{{url('get_ajax_city')}}",
+            data: {p_id,type},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            dataType:'JSON',
+            success: function (resp) {
+                if(resp.data != ''){
+                    var rep = resp.data;
+                    $('#p_id').val(p_id);
+                    $('#name').val(rep.name);
+                    $('#country_id').val(rep.country_id);
+                    $('#state_id').val(rep.state_id);
+                    $('#state_code').val(rep.state_code);
+                    $("#cityModal").modal();
+                }else{
+                    swal_error('Something went wrong');
+                    return false;
+                }
+            }
+        });   
+    }
+
+    $("#update_city").on("click",function (event) {
+        event.preventDefault();
+        $('#nameError, #country_idError, #state_idError, #state_codeError').html('');
+        var check = 0;
+        if($('#name').val() == ''){
+            var check = 1;
+            $('#nameError').html('State name is required');
+        }
+        if($('#country_id').val() == ''){
+            var check = 1;
+            $('#country_idError').html('Country name is required');
+        }
+        if($('#state_id').val() == ''){
+            var check = 1;
+            $('#state_idError').html('State name is required');
+        }
+        if($('#state_code').val() == ''){
+            var check = 1;
+            $('#state_codeError').html('State code is required');
+        }
+        if(check == 1){
+            return false;
+        }
+
+        $('.show_message').html('');
+        $('#update_city').html('Loading...');
+
+        var form = $("#cityFormId");
+        $.ajax({
+            type: "POST",
+            url: "{{url('master/region/city_update')}}",
+            data: form.serialize(),
+            success: function (resp) {
+                $('#update_city').html('Submit');
+                if(resp.status == 'success'){
+                    city_data_table_list();
+                    $('#cityModal').modal('hide');
+                    swal_success(resp.message);
+                }else{
+                    swal_error(resp.message);
+                }
+            }
+        });
+    });
+
+    function city_delete(p_id){
+        Swal.fire({
+            title: "Are you sure to delete?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('master/region/city_delete')}}",
+                    data: {p_id},
+                    headers: {
+                        'X-CSRF-TOKEN': csrf_token
+                    },
+                    dataType:"JSON",
+                    success: function (resp) {
+                        if(resp.status == 'success'){
+                            city_data_table_list();
+                            swal_success(resp.message,1800);
+                        }else{
+                            swal_error(resp.message,1800); 
+                        }
+                    }
+                });
+            }
+        });        
+    }
+
+    function region_active_inactive(p_id='',type='',tbl=''){
+        if(type == 1){
+           var title =  "Are you sure to In-Active?";
+        }else{
+           var title =  "Are you sure to Active?"; 
+        }
+        Swal.fire({
+            title: title,
+            text: "You will be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, ok it!"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('master/region/region_active_inactive')}}",
+                    data: {p_id,type,tbl},
+                    headers: {
+                        'X-CSRF-TOKEN': csrf_token
+                    },
+                    dataType:"JSON",
+                    success: function (resp) {
+                        if(resp.status == 'success'){
+                            if(tbl == 'country'){
+                                country_data_table_list();
+                            }
+                            else if(tbl == 'state'){
+                                state_data_table_list();
+                            }
+                            else if(tbl == 'city'){
+                                city_data_table_list();
+                            }
                             swal_success(resp.message,1800);
                         }else{
                             swal_error(resp.message,1800); 

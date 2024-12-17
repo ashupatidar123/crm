@@ -59,17 +59,25 @@ class RegionController extends Controller{
     }
 
     public function get_ajax_city(Request $request){
+        $show_type = !empty($request->type)?$request->type:'all';
+
         $state_id = ($request['state_id'] > 0)?$request['state_id']:0;
-        $data = City::select('id','name')->where('state_id',$state_id)->where('flag',1)->orderBy('name','ASC')->limit(500)->get();
-        $html = '<option value="" hidden="">Select city</option>';
-        if(!empty($data)){
-            foreach($data as $record){
-                $html .= '<option value="'.$record->id.'" data-name="'.$record->name.'">'.$record->name.'</option>';
+        if($show_type == 'ajax_list'){
+            $data = City::select('id','name')->where('state_id',$state_id)->where('flag',1)->orderBy('name','ASC')->limit(500)->get();
+            $html = '<option value="" hidden="">Select city</option>';
+            if(!empty($data)){
+                foreach($data as $record){
+                    $html .= '<option value="'.$record->id.'" data-name="'.$record->name.'">'.$record->name.'</option>';
+                }
+            }else{
+                $html .= '<option value="" hidden>Not found</option>';
             }
-        }else{
-            $html .= '<option value="" hidden>Not found</option>';
+            echo $html;
         }
-        echo $html;
+        else if($show_type == 'ajax_single'){
+            $data = City::select('id','name','country_id','state_id','state_code')->where('id',$request->p_id)->where('is_active',1)->first();
+            echo json_encode(['data'=>$data]);
+        }
     }
 
     /* Country section */
@@ -98,11 +106,11 @@ class RegionController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','name','iso3','numeric_code','capital','currency','created_at'];
+        $columns = ['','id','name','iso3','numeric_code','capital','currency','created_at','is_active'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
         
-        $query = Country::select('id','name','iso3','numeric_code','capital','currency','created_at');
+        $query = Country::select('id','name','iso3','numeric_code','capital','currency','is_active','created_at');
         if(!empty($search)) {
             $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('iso3', 'LIKE', '%'.$search.'%');
         }
@@ -118,6 +126,12 @@ class RegionController extends Controller{
                 $edit = '<button class="btn btn-info btn-sm" onclick="return country_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
                 $delete = '<button class="btn btn-danger btn-sm" onclick="return country_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
 
+                if($record->is_active == 1){
+                    $status = '<button class="btn btn-primary btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'country\');">Active</button>';
+                }else{
+                    $status = '<button class="btn btn-danger btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'country\');">In-Active</button>';
+                }
+
                 $all_data[] = [
                     'sno'=> $sno++,
                     'id'=> $record->id,
@@ -127,6 +141,7 @@ class RegionController extends Controller{
                     'capital'=> $record->capital,
                     'currency'=> $record->currency,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                    'status'=>$status,
                     'action'=>$edit.' '.$delete
                 ];
             }
@@ -204,18 +219,18 @@ class RegionController extends Controller{
         $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):'';
         $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
         if($start_limit < 1){
-            $start_limit = !empty($request->input('start'))?$request->input('start'):1;
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
             $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
         }
         
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','name','iso2','country_code','country_id','created_at'];
+        $columns = ['','id','name','iso2','country_code','country_id','created_at','is_active'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
         
-        $query = State::with('single_country')->select('id','name','iso2','country_code','country_id','created_at');
+        $query = State::with('single_country')->select('id','name','iso2','country_code','country_id','is_active','created_at');
         if(!empty($search)) {
             $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('iso2', 'LIKE', '%'.$search.'%');
         }
@@ -231,6 +246,12 @@ class RegionController extends Controller{
                 $edit = '<button class="btn btn-info btn-sm" onclick="return state_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
                 $delete = '<button class="btn btn-danger btn-sm" onclick="return state_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
 
+                if($record->is_active == 1){
+                    $status = '<button class="btn btn-primary btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'state\');">Active</button>';
+                }else{
+                    $status = '<button class="btn btn-danger btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'state\');">In-Active</button>';
+                }
+
                 $all_data[] = [
                     'sno'=> $sno++,
                     'id'=> $record->id,
@@ -239,6 +260,7 @@ class RegionController extends Controller{
                     'iso2'=> $record->iso2,
                     'country_code'=> $record->country_code,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                    'status'=>$status,
                     'action'=>$edit.' '.$delete
                 ];
             }
@@ -284,5 +306,148 @@ class RegionController extends Controller{
         }else{
             return response()->json(['status' =>'error','message' => 'State deletion failed'],201);
         }
+    }
+
+    /* State section */
+    public function city(){
+        return view('master.region.city.index');
+    }
+
+    public function city_list_filter_count($search){
+        
+        if(!empty($search)) {
+            $filter_count = City::where('name', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('state_code', 'LIKE', '%'.$search.'%')->count();
+        }else{
+            $filter_count = City::count();
+        }
+        return $filter_count;
+    }
+
+    public function city_list(Request $request){
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
+        if($start_limit < 1){
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
+        }
+        
+        $draw  = $request->input('draw');
+        $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
+
+        $columns = ['','id','name','country_id','state_id','state_code','created_at','is_active'];
+        $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
+        $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
+        
+        $query = City::with('single_country','single_state')->select('id','name','country_id','state_id','state_code','is_active','created_at');
+        if(!empty($search)) {
+            $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('state_code', 'LIKE', '%'.$search.'%');
+        }
+        $query->orderBy($orderColumnIndex, $orderDirection);
+        $listData = $query->skip($start_limit)->take($end_limit)->get(); 
+        
+        $all_data = [];
+        $recordsTotal = $recordsFiltered = 0;
+        if(!empty($listData)){
+            $recordsTotal = City::count();
+            $sno = 1+$start_limit;
+            foreach($listData as $record){
+                $edit = '<button class="btn btn-info btn-sm" onclick="return city_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-danger btn-sm" onclick="return city_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+
+                if($record->is_active == 1){
+                    $status = '<button class="btn btn-primary btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'city\');">Active</button>';
+                }else{
+                    $status = '<button class="btn btn-danger btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'city\');">In-Active</button>';
+                }
+
+                $all_data[] = [
+                    'sno'=> $sno++,
+                    'id'=> $record->id,
+                    'name'=> $record->name,
+                    'country_name'=> $record->single_country->name,
+                    'state_name'=> $record->single_state->name,
+                    'state_code'=> $record->state_code,
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                    'status'=>$status,
+                    'action'=>$edit.' '.$delete
+                ];
+            }
+        }
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $this->city_list_filter_count($search),
+            'data' => $all_data,
+        ]);
+    }
+
+    public function city_update(Request $request){
+        $check = City::find($request->p_id);
+        
+        if($check) {
+            $data = [];
+            if(!empty($request->name)){
+                $data['name'] = $request->name;
+            }
+            if(!empty($request->country_id)){
+                $data['country_id'] = $request->country_id;
+            }
+            if(!empty($request->state_id)){
+                $data['state_id'] = $request->state_id;
+            }
+            if(!empty($request->country_code)){
+                $data['state_code'] = $request->state_code;
+            }
+            City::where('id',$request->p_id)->update($data);
+            return response()->json(['status' =>'success','message' => 'City updated successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'Something went wrong'],201);
+        }
+    }
+
+    public function city_delete(Request $request){
+        $record_dlt = City::find($request->p_id);
+        if($record_dlt) {
+            $record_dlt->delete();
+            return response()->json(['status' =>'success','message' => 'City deleted successfully'],200); 
+        }else{
+            return response()->json(['status' =>'error','message' => 'City deletion failed'],201);
+        }
+    }
+
+    public function region_active_inactive(Request $request){
+        $type = ($request->type==1)?2:1;
+        $tbl = $request->tbl;
+        
+        if($request->p_id < 1){
+           return response()->json(['status' =>'error','message' => 'Something went wrong'],201); 
+        }
+        else if($tbl == 'country'){
+            Country::where('id',$request->p_id)->update(['is_active'=>$type]);
+            if($type == 1){
+                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+            }else{
+                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
+            }
+        }
+        else if($tbl == 'state'){
+            State::where('id',$request->p_id)->update(['is_active'=>$type]);
+            if($type == 1){
+                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+            }else{
+                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
+            }
+        }
+        else if($tbl == 'city'){
+            City::where('id',$request->p_id)->update(['is_active'=>$type]);
+            if($type == 1){
+                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+            }else{
+                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
+            }
+        }
+
+        return response()->json(['status' =>'error','message' => 'Something went wrong'],201);
     }
 }

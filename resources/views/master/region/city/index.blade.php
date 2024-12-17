@@ -1,6 +1,6 @@
 @extends('layouts.head')
 
-@section('title') States @endsection
+@section('title') Cities @endsection
 
 @section('content')
 <div class="content-wrapper">
@@ -14,7 +14,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a></li>
-                        <li class="breadcrumb-item active">State</li>
+                        <li class="breadcrumb-item active">City</li>
                     </ol>
                 </div>
             </div>
@@ -29,19 +29,19 @@
                     <!-- /.card -->
                     <div class="card card-primary">
                         <div class="card-header card_header_color">
-                            <h3 class="card-title">All State List</h3>
+                            <h3 class="card-title">All City List</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body responsive">
-                            <table id="tableList" class="table responsive table-bordered table-striped">
+                            <table id="tableList" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Country Name</th>
-                                        <th>ISO 2</th>
-                                        <th>Country Code</th>
+                                        <th>State Name</th>
+                                        <th>State Code</th>
                                         <th>Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -54,8 +54,8 @@
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Country Name</th>
-                                        <th>ISO 2</th>
-                                        <th>Country Code</th>
+                                        <th>State Name</th>
+                                        <th>State Code</th>
                                         <th>Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -77,21 +77,21 @@
 
     <!-- Modal -->
     <section class="content">
-        <div class="modal fade" id="stateModal" role="dialog">
+        <div class="modal fade" id="cityModal" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">State</h4>
+                        <h4 class="modal-title">City</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" id="stateFormId">
+                        <form method="POST" id="cityFormId">
                             @csrf    
                             <div class="row">
                                 <input type="hidden" name="p_id" id="p_id">
                                 <div class="col-md-12">
                                     <div class="card card-primary">
-                                        <div class="card-header card_header_color"><h3 class="card-title">Update State</h3>
+                                        <div class="card-header card_header_color"><h3 class="card-title">Update City</h3>
                                         </div>
                                         <div class="show_message"></div>
                                         <div class="card-body row">
@@ -111,22 +111,21 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Country Code<span class="text-danger">*</span></label>
-                                                    <input type="text" name="country_code" id="country_code" class="form-control" placeholder="Enter country code">
-                                                    <p class="text-danger" id="country_codeError"></p>
+                                                    <label>State Name<span class="text-danger">*</span></label>
+                                                    <input type="text" name="state_id" id="state_id" class="form-control" placeholder="Enter State name">
+                                                    <p class="text-danger" id="state_idError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>ISO 2<span class="text-danger">*</span></label>
-                                                    <input type="text" name="iso2" id="iso2" class="form-control" placeholder="Enter iso2">
-                                                    <p class="text-danger" id="iso2Error"></p>
+                                                    <label>State Code<span class="text-danger">*</span></label>
+                                                    <input type="text" name="state_code" id="state_code" class="form-control" placeholder="Enter state code">
+                                                    <p class="text-danger" id="state_codeError"></p>
                                                 </div>
                                             </div>
-
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <button id="update_state" type="submit" class="btn btn-primary">Submit</button>
+                                                    <button id="update_city" type="submit" class="btn btn-primary">Submit</button>
                                                     <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
                                                 </div>
                                             </div>
@@ -142,10 +141,10 @@
     </section>
 </div>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
 <script>
     $(document).ready(function() {
-        state_data_table_list();
+        city_data_table_list();
     });
 </script>
 @include('script.comman_js')

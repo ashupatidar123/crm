@@ -44,6 +44,7 @@
                                         <th>Capital</th>
                                         <th>Currency</th>
                                         <th>Date</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -58,6 +59,7 @@
                                         <th>Capital</th>
                                         <th>Currency</th>
                                         <th>Date</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>
