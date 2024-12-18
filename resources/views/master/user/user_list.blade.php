@@ -9,7 +9,8 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <!-- <h1>DataTables</h1> -->
+                    <a href="{{url('master/add-user')}}" class="btn btn-sm btn-default" title="Add new user"><i class="fa fa-plus"></i> Add</a>
+                    <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -29,7 +30,7 @@
                     <!-- /.card -->
                     <div class="card card-primary">
                         <div class="card-header card_header_color">
-                            <h3 class="card-title">All User List</h3>
+                            <h3 class="card-title">All Users</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body responsive">
@@ -38,8 +39,8 @@
                                     <tr>
                                         <th>Sno</th>
                                         <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
+                                        <th>Name</th>
+                                        <th>Login ID</th>
                                         <th>Email</th>
                                         <th>Date Birth</th>
                                         <th>Date</th>
@@ -51,9 +52,9 @@
                                 <tfoot>
                                     <tr>
                                         <th>Sno</th>
-                                         <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Login ID</th>
                                         <th>Email</th>
                                         <th>Date Birth</th>
                                         <th>Date</th>

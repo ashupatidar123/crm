@@ -1,6 +1,6 @@
 @extends('layouts.head')
 
-@section('title') Registration @endsection
+@section('title') Add user @endsection
 
 @section('content')
     <div class="content-wrapper">
@@ -8,6 +8,9 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
+                        <a href="{{url('master/user')}}" class="btn btn-sm btn-default" title="All users"><i class="fa fa-list"></i> List</a>
+                        <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
+
                         <div class="show_message"></div>
                         @if(session('success'))
                             <div class="alert alert-success">
@@ -22,7 +25,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a></li>
-                            <li class="breadcrumb-item active">Registration</li>
+                            <li class="breadcrumb-item active">Add User</li>
                         </ol>
                     </div>
                 </div>
@@ -36,7 +39,7 @@
                         <div class="col-md-12">
                             <div class="card card-primary">
                                 <div class="card-header card_header_color">
-                                    <h3 class="card-title">Registration</h3>
+                                    <h3 class="card-title">Add User</h3>
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
@@ -145,7 +148,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Country<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="country" id="country" onchange="return get_ajax_state(this.value,'state');">
+                                            <select class="form-control select2" name="country_id" id="country_id" onchange="return get_ajax_state(this.value,'state_id');">
                                                 <option value="">Select country</option>
                                             </select>
                                             <p class="text-danger" id="countryError"></p>
@@ -153,7 +156,7 @@
 
                                         <div class="form-group">
                                             <label>City<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="city" id="city">
+                                            <select class="form-control select2" name="city_id" id="city_id">
                                                 <option value="">Select city</option>
                                             </select>
                                             <p class="text-danger" id="cityError"></p>
@@ -162,7 +165,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>State<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="state" id="state" onchange="return get_ajax_city(this.value,'city');">
+                                            <select class="form-control select2" name="state_id" id="state_id" onchange="return get_ajax_city(this.value,'city_id');">
                                                 <option value="">Select state</option>
                                             </select>
                                             <p class="text-danger" id="stateError"></p>
@@ -191,7 +194,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 3</label>
-                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter further address details or landmarks">
+                                            <input type="text" name="address3" id="address3" class="form-control"  placeholder="Enter further address details or landmarks">
                                             <p class="text-danger" id="address3Error"></p>
                                         </div>
                                     </div>
@@ -211,7 +214,7 @@
     </div>
     <script>
         $(document).ready(function(){
-            get_ajax_country('','country');
+            get_ajax_country('','country_id');
             $('.select2').select2();
         });
     </script>

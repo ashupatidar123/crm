@@ -29,17 +29,8 @@ Route::post('logout', [HomeController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
-    Route::get('register', [UserController::class, 'showRegistration'])->name('register');
-    Route::get('/users', [UserController::class, 'users']);
-    Route::get('/user_list', [UserController::class, 'user_list']);
-
-    Route::post('register', [UserController::class, 'register']);
-    Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
-    Route::post('user_active_inactive', [UserController::class, 'user_active_inactive']);
-    Route::post('user_delete', [UserController::class, 'user_delete']);
-
-    Route::get('/profile', [UserController::class, 'showProfile']);
-    Route::post('/profile', [UserController::class, 'updateProfile']);
-    Route::get('/change-password', [UserController::class, 'showChangePassword'])->name('password.change');
-    Route::post('/change-password', [UserController::class, 'changePassword'])->name('password.update');
+    Route::get('profile', [UserController::class, 'showProfile']);
+    Route::post('profile', [UserController::class, 'updateProfile']);
+    Route::get('change-password', [UserController::class, 'showChangePassword'])->name('password.change');
+    Route::post('change-password', [UserController::class, 'changePassword'])->name('password.update');
 });

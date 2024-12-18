@@ -94,7 +94,7 @@ class LoginController extends Controller
         }
         
 
-        if (Auth::attempt(['login_id' => $request->username, 'password' => $request->password])) {
+        if (Auth::attempt(['login_id' => $request->username, 'password' => $request->password, 'is_active' => 1])) {
             return redirect()->intended('/dashboard');
         }else{
            session()->flash('error', 'Invalid login details...');
@@ -106,7 +106,6 @@ class LoginController extends Controller
     public function logout(){
         Session::flush();
         Auth::logout();
-        //Session::destroy();
         return redirect('/login',301);
     }
 

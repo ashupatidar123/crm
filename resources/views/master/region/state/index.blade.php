@@ -105,7 +105,9 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Country Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="country_id" id="country_id" class="form-control" placeholder="Enter country name">
+                                                    <select class="form-control select2" name="country_id" id="country_id">
+                                                        <option value="">Select country</option>
+                                                    </select>
                                                     <p class="text-danger" id="country_idError"></p>
                                                 </div>
                                             </div>
@@ -146,6 +148,7 @@
 <script>
     $(document).ready(function() {
         state_data_table_list();
+        $('.select2').select2();
     });
 </script>
 @include('script.comman_js')

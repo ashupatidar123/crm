@@ -16,6 +16,7 @@ class RegionController extends Controller{
     }
 
     public function get_ajax_country(Request $request){
+        $id = !empty($request->p_id)?$request->p_id:'';
         $show_type = !empty($request->type)?$request->type:'all';
         
         if($show_type == 'ajax_list'){
@@ -23,7 +24,11 @@ class RegionController extends Controller{
             $html = '<option value="" hidden="">Select country</option>';
             if(!empty($data)){
                 foreach($data as $record){
-                    $html .= '<option value="'.$record->id.'" data-name="'.$record->name.'">'.$record->name.'</option>';
+                    $selected = '';
+                    if($id == $record->id){
+                        $selected = 'selected';
+                    }
+                    $html .= '<option value="'.$record->id.'" '.$selected.' data-name="'.$record->name.'">'.$record->name.'</option>';
                 }
             }else{
                 $html .= '<option value="" hidden>Not found</option>';
@@ -38,14 +43,20 @@ class RegionController extends Controller{
 
     public function get_ajax_state(Request $request){
         $show_type = !empty($request->type)?$request->type:'all';
-
         $country_id = ($request['country_id'] > 0)?$request['country_id']:0;
+        $state_id = ($request['state_id'] > 0)?$request['state_id']:0;
+
         if($show_type == 'ajax_list'){
             $data = State::select('id','name')->where('country_id',$country_id)->orderBy('name','ASC')->where('is_active',1)->limit(500)->get();
             $html = '<option value="" hidden="">Select state</option>';
             if(!empty($data)){
                 foreach($data as $record){
-                    $html .= '<option value="'.$record->id.'"data-name="'.$record->name.'">'.$record->name.'</option>';
+                    $selected = '';
+                    if($state_id == $record->id){
+                        $selected = 'selected';
+                    }
+
+                    $html .= '<option value="'.$record->id.'" '.$selected.' data-name="'.$record->name.'">'.$record->name.'</option>';
                 }
             }else{
                 $html .= '<option value="" hidden>Not found</option>';
@@ -60,14 +71,19 @@ class RegionController extends Controller{
 
     public function get_ajax_city(Request $request){
         $show_type = !empty($request->type)?$request->type:'all';
-
         $state_id = ($request['state_id'] > 0)?$request['state_id']:0;
+        $city_id = ($request['city_id'] > 0)?$request['city_id']:0;
+
         if($show_type == 'ajax_list'){
-            $data = City::select('id','name')->where('state_id',$state_id)->where('flag',1)->orderBy('name','ASC')->limit(500)->get();
+            $data = City::select('id','name')->where('state_id',$state_id)->where('is_active',1)->orderBy('name','ASC')->limit(500)->get();
             $html = '<option value="" hidden="">Select city</option>';
             if(!empty($data)){
                 foreach($data as $record){
-                    $html .= '<option value="'.$record->id.'" data-name="'.$record->name.'">'.$record->name.'</option>';
+                    $selected = '';
+                    if($city_id == $record->id){
+                        $selected = 'selected';
+                    }
+                    $html .= '<option value="'.$record->id.'" '.$selected.' data-name="'.$record->name.'">'.$record->name.'</option>';
                 }
             }else{
                 $html .= '<option value="" hidden>Not found</option>';
@@ -123,13 +139,13 @@ class RegionController extends Controller{
             $recordsTotal = Country::count();
             $sno = 1+$start_limit;
             foreach($listData as $record){
-                $edit = '<button class="btn btn-info btn-sm" onclick="return country_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-danger btn-sm" onclick="return country_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm" onclick="return country_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm" onclick="return country_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-primary btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'country\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'country\');">Active</button>';
                 }else{
-                    $status = '<button class="btn btn-danger btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'country\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'country\');">In-Active</button>';
                 }
 
                 $all_data[] = [
@@ -156,6 +172,7 @@ class RegionController extends Controller{
     }
 
     public function country_update(Request $request){
+        
         $check = Country::find($request->p_id);
         if($check) {
             $data = [];
@@ -243,13 +260,13 @@ class RegionController extends Controller{
             $recordsTotal = State::count();
             $sno = 1+$start_limit;
             foreach($listData as $record){
-                $edit = '<button class="btn btn-info btn-sm" onclick="return state_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-danger btn-sm" onclick="return state_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm" onclick="return state_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm" onclick="return state_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-primary btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'state\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'state\');">Active</button>';
                 }else{
-                    $status = '<button class="btn btn-danger btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'state\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'state\');">In-Active</button>';
                 }
 
                 $all_data[] = [
@@ -351,13 +368,13 @@ class RegionController extends Controller{
             $recordsTotal = City::count();
             $sno = 1+$start_limit;
             foreach($listData as $record){
-                $edit = '<button class="btn btn-info btn-sm" onclick="return city_edit('.$record->id.');"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-danger btn-sm" onclick="return city_delete('.$record->id.');"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm" onclick="return city_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm" onclick="return city_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-primary btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'city\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'city\');">Active</button>';
                 }else{
-                    $status = '<button class="btn btn-danger btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'city\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'city\');">In-Active</button>';
                 }
 
                 $all_data[] = [

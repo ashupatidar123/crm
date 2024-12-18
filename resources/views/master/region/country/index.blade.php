@@ -100,7 +100,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="name" id="name" class="form-control"  placeholder="Enter name">
+                                                    <input type="text" name="name" id="name" class="form-control" placeholder="Enter numeric code">
                                                     <p class="text-danger" id="nameError"></p>
                                                 </div>
                                                 <div class="form-group">
@@ -154,9 +154,6 @@
                             </div>
                         </form>
                     </div>
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -167,6 +164,7 @@
 <script>
     $(document).ready(function() {
         country_data_table_list();
+        $('.select2').select2();
     });
 </script>
 @include('script.comman_js')

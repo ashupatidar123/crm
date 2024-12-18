@@ -1,6 +1,6 @@
 <script type="text/javascript">
     function get_ajax_country(p_id='',html_id=''){
-        $('#city').find('option').not(':first').remove();
+        $('#city_id').find('option').not(':first').remove();
         var type = 'ajax_list';
         $.ajax({
             type: "POST",
@@ -10,34 +10,37 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#'+html_id).html(resp);  
+                $('#'+html_id).html(resp);
+                $('#city_id').empty();
+                $('#city_id').html('<option value="" hidden="">Select city</option>');
             }
         });
     }
 
-    function get_ajax_state(country_id='',html_id=''){
+    function get_ajax_state(country_id='',html_id='',state_id=''){
         var type = 'ajax_list';
         $.ajax({
             type: "POST",
             url: "{{url('get_ajax_state')}}",
-            data: {country_id,type},
+            data: {country_id,type,state_id},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
                 $('#'+html_id).html(resp);
-                $('#city').empty();
-                $('#city').html('<option value="" hidden="">Select city</option>');
+                $('#city_id').empty();
+                $('#city_id').html('<option value="" hidden="">Select city</option>');
             }
         });
     }
 
-    function get_ajax_city(state_id='',html_id=''){
+    function get_ajax_city(state_id='',html_id='',city_id=''){
         var type = 'ajax_list';
+        
         $.ajax({
             type: "POST",
             url: "{{url('get_ajax_city')}}",
-            data: {state_id,type},
+            data: {state_id,type,city_id},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
@@ -101,7 +104,7 @@
             success: function (resp) {
                 if(resp.data != ''){
                     var rep = resp.data;
-                    $('#p_id').val(p_id);
+                    $('#p_id').val(rep.id);
                     $('#name').val(rep.name);
                     $('#iso3').val(rep.iso3);
                     $('#numeric_code').val(rep.numeric_code);
@@ -153,23 +156,24 @@
 
     $("#update_country").on("click",function (event) {
         event.preventDefault();
-        $('#nameError, #mobileError, #emailError, #passwordError').html('');
+        $('#nameError, #iso3Error, #numeric_codeError, #phonecodeError').html('');
         var check = 0;
+
         if($('#name').val() == ''){
             var check = 1;
-            $('#nameError').html('Name is required');
+            $('#nameError').html('This field is required');
         }
-        if($('#mobile').val() == ''){
+        if($('#iso3').val() == ''){
             var check = 1;
-            $('#mobileError').html('Mobile is required');
+            $('#iso3Error').html('This field is required');
         }
-        if($('#email').val() == ''){
+        if($('#numeric_code').val() == ''){
             var check = 1;
-            $('#emailError').html('Email is required');
+            $('#numeric_codeError').html('This field is required');
         }
-        if($('#password').val() == ''){
+        if($('#phonecode').val() == ''){
             var check = 1;
-            $('#passwordError').html('Password is required');
+            $('#phonecodeError').html('This field is required');
         }
         if(check == 1){
             return false;
@@ -177,7 +181,7 @@
 
         $('.show_message').html('');
         $('#update_country').html('Loading...');
-
+        $('#update_country').attr('disabled',true);
         var form = $("#countryFormId");
         $.ajax({
             type: "POST",
@@ -185,6 +189,7 @@
             data: form.serialize(),
             success: function (resp) {
                 $('#update_country').html('Submit');
+                $('#update_country').attr('disabled',false);
                 if(resp.status == 'success'){
                     country_data_table_list();
                     $('#countryModal').modal('hide');
@@ -249,18 +254,33 @@
             success: function (resp) {
                 if(resp.data != ''){
                     var rep = resp.data;
-                    $('#p_id').val(p_id);
+                    $('#p_id').val(rep.id);
                     $('#name').val(rep.name);
                     $('#country_id').val(rep.country_id);
                     $('#iso2').val(rep.iso2);
                     $('#country_code').val(rep.country_code);
                     $("#stateModal").modal();
+                    
+                    var type = 'ajax_list';
+                    var p_id = rep.country_id;
+                    $.ajax({
+                        type: "POST",
+                        url: "{{url('get_ajax_country')}}",
+                        data: {p_id,type},
+                        headers: {
+                            'X-CSRF-TOKEN': csrf_token
+                        },
+                        success: function (resp) {
+                            $('#country_id').html(resp);
+                        }
+                    });
+
                 }else{
                     swal_error('Something went wrong');
                     return false;
                 }
             }
-        });   
+        });  
     }
 
     $("#update_state").on("click",function (event) {
@@ -289,6 +309,7 @@
 
         $('.show_message').html('');
         $('#update_state').html('Loading...');
+        $('#update_state').attr('disabled',true);
 
         var form = $("#stateFormId");
         $.ajax({
@@ -297,6 +318,7 @@
             data: form.serialize(),
             success: function (resp) {
                 $('#update_state').html('Submit');
+                $('#update_state').attr('disabled',false);
                 if(resp.status == 'success'){
                     state_data_table_list();
                     $('#stateModal').modal('hide');

@@ -28,21 +28,14 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-users"></i>
                         <p>Users
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{url('users')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>User List</p>
-                            </a>
-                        </li>
-                    </ul>
+                    
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{url('register')}}" class="nav-link">
@@ -51,19 +44,28 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fa fa-map-marker"></i>
+                        <i class="nav-icon fa fa-database"></i>
                         <p>Master Section
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{{url('master/user')}}" class="nav-link">
+                                <i class="far fa fa-users nav-icon"></i>
+                                <p>Users</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
                             <a href="{{url('master/region/country')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>Country</p>
                             </a>
                         </li>
@@ -71,7 +73,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{url('master/region/state')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>State</p>
                             </a>
                         </li>
@@ -79,7 +81,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{url('master/region/city')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>City</p>
                             </a>
                         </li>

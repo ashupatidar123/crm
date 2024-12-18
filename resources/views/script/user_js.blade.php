@@ -10,7 +10,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{url("user_list")}}',
+                url: '{{url("master/user_list")}}',
                 type: 'GET',
                 data:{start_limit,end_limit},
             },
@@ -18,7 +18,7 @@
                 { data: 'sno' },
                 { data: 'id' },
                 { data: 'first_name' },
-                { data: 'last_name' },
+                { data: 'login_id' },
                 { data: 'email' },
                 { data: 'date_birth' },
                 { data: 'created_at', type: 'date' },
@@ -35,14 +35,14 @@
         });
     }
 
-    function check_user_record(where_value,check_type=''){
+    function check_user_record(where_value,check_type='',id=''){
         if(where_value == ''){
             return false;
         }
         $.ajax({
             type: "POST",
-            url: "{{url('ajax_user_check_record')}}",
-            data: {where_value,check_type},
+            url: "{{url('master/ajax_user_check_record')}}",
+            data: {where_value,check_type,id},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
@@ -115,10 +115,6 @@
             var check = 1;
             $('#cityError').html('City is required');
         }
-        if($('#city').val() == ''){
-            var check = 1;
-            $('#cityError').html('City is required');
-        }
         if($('#zip_code').val() == ''){
             var check = 1;
             $('#zip_codeError').html('ZIP code is required');
@@ -140,22 +136,21 @@
         
         $.ajax({
             type: "POST",
-            url: "{{url('register')}}",
+            url: "{{url('master/add-user')}}",
             data: formData,
             processData: false,
             contentType: false,
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
-            success: function (resp) {
-                
+            success: function(resp) {
                 $('#submitRegister').html('Submit');
                 $('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
                     window.setTimeout(function(){
-                        window.location.href = "{{url('users')}}";
-                    },5000);
+                        window.location.href = "{{url('master/user')}}";
+                    },3000);
                 }else{
                     swal_error(resp.s_msg);
                 }
@@ -181,7 +176,7 @@
             if(result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "{{url('user_active_inactive')}}",
+                    url: "{{url('master/user_active_inactive')}}",
                     data: {p_id,type,tbl},
                     headers: {
                         'X-CSRF-TOKEN': csrf_token
@@ -215,7 +210,7 @@
             if(result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "{{url('user_delete')}}",
+                    url: "{{url('master/user_delete')}}",
                     data: {p_id},
                     headers: {
                         'X-CSRF-TOKEN': csrf_token
@@ -233,4 +228,87 @@
             }
         });        
     }
+
+    $("#userSubmitButton").on("click",function (e) {
+        event.preventDefault();
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #countryError, #phone1Error, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        var check = 0;
+        if($('#first_name').val() == ''){
+            var check = 1;
+            $('#first_nameError').html('First name is required');
+        }
+        if($('#last_name').val() == ''){
+            var check = 1;
+            $('#last_nameError').html('Last name is required');
+        }
+        if($('#email').val() == ''){
+            var check = 1;
+            $('#emailError').html('Email is required');
+        }
+        if($('#phone1').val() == ''){
+            var check = 1;
+            $('#phone1Error').html('Phone is required');
+        }
+        if($('#date_birth').val() == ''){
+            var check = 1;
+            $('#date_birthError').html('Date of birth is required');
+        }
+        if($('#role').val() == ''){
+            var check = 1;
+            $('#roleError').html('Role is required');
+        }
+        if($('#country').val() == ''){
+            var check = 1;
+            $('#countryError').html('Country is required');
+        }
+        if($('#state').val() == ''){
+            var check = 1;
+            $('#stateError').html('State is required');
+        }
+        if($('#city').val() == ''){
+            var check = 1;
+            $('#cityError').html('City is required');
+        }
+        if($('#zip_code').val() == ''){
+            var check = 1;
+            $('#zip_codeError').html('ZIP code is required');
+        }
+        if($('#address1').val() == ''){
+            var check = 1;
+            $('#address1Error').html('Address line 1 is required');
+        }
+        if($('#address2').val() == ''){
+            var check = 1;
+            $('#address2Error').html('Address line 2 is required');
+        }
+        if(check == 1){
+            return false;
+        }
+        $('.show_message').html('');
+        $('#userSubmitButton').html('Loading...');
+        var formData = new FormData($("#formId")[0]);
+        
+        $.ajax({
+            type: "POST",
+            url: "{{url('master/update_user')}}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function(resp) {
+                $('#userSubmitButton').html('Submit');
+                $('.show_message').html(resp.message);
+                if(resp.status == 'success'){
+                    swal_success(resp.s_msg);
+                    window.setTimeout(function(){
+                        window.location.href = "{{url('master/user')}}";
+                    },3000);
+                }else{
+                    swal_error(resp.s_msg);
+                }
+            }
+        });
+    });
 </script>

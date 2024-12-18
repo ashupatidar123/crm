@@ -8,6 +8,8 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
+                        <a href="{{url('master/user')}}" class="btn btn-sm btn-default" title="All users"><i class="fa fa-list"></i> List</a>
+                        <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
                         <div class="show_message"></div>
                         @if(session('success'))
                             <div class="alert alert-success">
@@ -22,7 +24,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a></li>
-                            <li class="breadcrumb-item active">Registration</li>
+                            <li class="breadcrumb-item active">Update user</li>
                         </ol>
                     </div>
                 </div>
@@ -30,13 +32,15 @@
         </section>
         <section class="content">
             <div class="container-fluid">
-                <form method="POST" id="registerFormId" enctype="multipart/form-data">
-                    @csrf    
+                <form method="POST" id="formId" enctype="multipart/form-data">
+                    @csrf   
+                    <input type="hidden" name="user_id" value="{{$data->id}}">
+                    <input type="hidden" name="address_id" value="{{$address->id}}"> 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card card-primary">
                                 <div class="card-header card_header_color">
-                                    <h3 class="card-title">Edit</h3>
+                                    <h3 class="card-title">Update user</h3>
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
@@ -64,7 +68,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Email<span class="text-danger">*</span></label>
-                                            <input type="text" name="email" id="email" class="form-control" placeholder="Enter email" onkeyup="return check_user_record(this.value,'email');" autocomplete="off" value="{{$data->email}}">
+                                            <input type="text" name="email" id="email" class="form-control" placeholder="Enter email" onkeyup="return check_user_record(this.value,'email','{{$data->id}}');" autocomplete="off" value="{{$data->email}}">
                                             <p class="text-danger" id="emailError"></p>
                                         </div> 
                                     </div>
@@ -104,6 +108,7 @@
                                             <label>User Image</label>
                                             <input type="file" name="user_image" id="user_image" class="form-control">
                                             <p class="text-danger" id="user_imageError"></p>
+                                            <img src="{{asset('storage/app/public/uploads/image/users')}}/{{$data->user_image}}" width="47" height="47">
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +136,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="login_id">Login ID (Username)<span class="text-danger">*</span></label>
-                                            <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter login id" onkeyup="return check_user_record(this.value,'username_login_id');" value="{{$data->login_id}}">
+                                            <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter login id" onkeyup="return check_user_record(this.value,'username_login_id');" value="{{$data->login_id}}" disabled>
                                             <p class="text-danger" id="login_idError"></p>
                                         </div>
                                     </div>
@@ -142,7 +147,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Country<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="country" id="country" onchange="return get_ajax_state(this.value,'state');">
+                                            <select class="form-control select2" name="country_id" id="country_id" onchange="return get_ajax_state(this.value,'state_id');">
                                                 <option value="">Select country</option>
                                             </select>
                                             <p class="text-danger" id="countryError"></p>
@@ -150,7 +155,7 @@
 
                                         <div class="form-group">
                                             <label>City<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="city" id="city">
+                                            <select class="form-control select2" name="city_id" id="city_id">
                                                 <option value="">Select city</option>
                                             </select>
                                             <p class="text-danger" id="cityError"></p>
@@ -159,7 +164,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>State<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="state" id="state" onchange="return get_ajax_city(this.value,'city');">
+                                            <select class="form-control select2" name="state_id" id="state_id" onchange="return get_ajax_city(this.value,'city_id');">
                                                 <option value="">Select state</option>
                                             </select>
                                             <p class="text-danger" id="stateError"></p>
@@ -167,34 +172,34 @@
                                         
                                         <div class="form-group">
                                             <label>ZIP Code / Postal code<span class="text-danger">*</span></label>
-                                            <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code">
+                                            <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code" value="{{$address->zip_code}}">
                                             <p class="text-danger" id="zip_codeError"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 1<span class="text-danger">*</span></label>
-                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name">
+                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name" value="{{$address->address1}}">
                                             <p class="text-danger" id="address1Error"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 2<span class="text-danger">*</span></label>
-                                            <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor">
+                                            <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor" value="{{$address->address2}}">
                                             <p class="text-danger" id="address2Error"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 3</label>
-                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter further address details or landmarks">
+                                            <input type="text" name="address3" id="address3" class="form-control"  placeholder="Enter further address details or landmarks" value="{{$address->address3}}">
                                             <p class="text-danger" id="address3Error"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <button id="submitRegister" type="button" class="btn btn-primary">Submit</button>
+                                            <button id="userSubmitButton" type="button" class="btn btn-primary">Submit</button>
                                             <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
                                         </div>
                                     </div>
@@ -208,8 +213,10 @@
     </div>
     <script>
         $(document).ready(function(){
-            get_ajax_country('','country');
-            $('.select2').select2();
+            get_ajax_country('{{$address->country_id}}','country_id');
+            get_ajax_state('{{$address->country_id}}','state_id','{{$address->state_id}}');
+            get_ajax_city('{{$address->state_id}}','city_id','{{$address->city_id}}');
+            $('.select2').select2();   
         });
     </script>
     @include('script.comman_js')

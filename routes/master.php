@@ -27,8 +27,17 @@ Route::any('get_ajax_state', [RegionController::class,'get_ajax_state']);
 Route::any('get_ajax_city', [RegionController::class,'get_ajax_city']);
 
 Route::prefix('master')->middleware('auth')->group(function () {
-    Route::get('/edit-user/{id}', [UserController::class, 'showEditUser']);
-    Route::post('/edit-user', [UserController::class, 'edit_user']);
+    Route::get('add-user', [UserController::class, 'showAddUser']);
+    Route::post('add-user', [UserController::class, 'add_user']);
+    Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
+
+    Route::get('user', [UserController::class, 'user']);
+    Route::get('user_list', [UserController::class, 'user_list']);
+    Route::post('user_active_inactive', [UserController::class, 'user_active_inactive']);
+    Route::post('user_delete', [UserController::class, 'user_delete']);
+
+    Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
+    Route::post('update_user', [UserController::class, 'update_user']);
 
 
     Route::get('region/country', [RegionController::class,'country']);
