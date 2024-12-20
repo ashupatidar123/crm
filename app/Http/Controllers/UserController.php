@@ -67,12 +67,12 @@ class UserController extends Controller
             $sno = 1+$start_limit;
             foreach($users as $record){
                 $edit = '<a href="'.url('master/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return user_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm" onclick="return ajax_delete('.$record->id.',\'user\');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return user_active_inactive('.$record->id.',1,\'user\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',1,\'user\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return user_active_inactive('.$record->id.',2,\'user\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'user\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -97,50 +97,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function ajax_user_check_record(Request $request){
-        $check_type = !empty($request->check_type)?$request->check_type:'';
-        $where_value_id = !empty($request->where_value)?$request->where_value:0;
-        $user_id = !empty($request->id)?$request->id:0;
-
-        $count = 0;
-        if($check_type == 'username_login_id'){
-            $count = User::where('id', '!=', $user_id)->where('login_id', $where_value_id)->count();
-        }
-        else if($check_type == 'email'){
-            $count = User::where('id', '!=', $user_id)->where('email', $where_value_id)->count();
-        }
-        return $count;
-    }
-
-    public function user_active_inactive(Request $request){
-        $type = ($request->type==1)?2:1;
-        $tbl = $request->tbl;
-        
-        if($request->p_id < 1){
-           return response()->json(['status' =>'error','message' => 'Something went wrong'],201); 
-        }
-        else if($tbl == 'user'){
-            User::where('id',$request->p_id)->update(['is_active'=>$type]);
-            if($type == 1){
-                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
-            }else{
-                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
-            }
-        }else{
-            return response()->json(['status' =>'error','message' => 'Something went wrong'],201);  
-        } 
-    }
-
-    public function user_delete(Request $request){
-        $record_dlt = User::find($request->p_id);
-        if($record_dlt) {
-            $record_dlt->delete();
-            return response()->json(['status' =>'success','message' => 'User deleted successfully'],200); 
-        }else{
-            return response()->json(['status' =>'error','message' => 'User deletion failed'],201);
-        }
-    }
-
     public function showAddUser(){
         $user = User::where('id',Auth::user()->id)->first();
         $role = Role::select('id','role_name')->where('is_active',1)->get();
@@ -155,11 +111,11 @@ class UserController extends Controller
 
         $checkEmail = User::where(['email' => $request->email])->count();
         if($checkEmail > 0){
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>'],500);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>'],200);
         }
         $checkLoginId = User::where(['login_id' => $request->login_id])->count();
         if($checkLoginId > 0){
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Login id already exist...</p>'],500);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Login id already exist...</p>'],200);
         }
         
         $user_image = '';
@@ -201,14 +157,14 @@ class UserController extends Controller
 
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User registration success...</p>','s_msg'=>'User registration success...'],200);
         }else{
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],500);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],200);
         }
     }
 
     public function showEditUser(Request $request){
         $data = User::where('id',$request->id)->first();
         if(empty($data)){
-            return redirect(url('users'),302);
+            return redirect(url('master/user'),302);
         }
         $address = UserAddress::where('user_id',$request->id)->first();
         $role = Role::select('id','role_name')->where('is_active',1)->get();
@@ -223,7 +179,7 @@ class UserController extends Controller
 
         $checkEmail = User::where('id', '!=',$request->user_id)->where('email',$request->email)->count();
         if($checkEmail > 0){
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>'],500);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>','s_msg'=>'Email already exist...'],200);
         }
         
         $update_data = [
@@ -260,7 +216,7 @@ class UserController extends Controller
 
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User updated successfully...</p>','s_msg'=>'User updated successfully...'],200);
         }else{
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],500);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],200);
         }
     }
 

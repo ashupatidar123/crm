@@ -1,6 +1,5 @@
 <script type="text/javascript">
     function get_ajax_country(p_id='',html_id=''){
-        $('#city_id').find('option').not(':first').remove();
         var type = 'ajax_list';
         $.ajax({
             type: "POST",
@@ -11,8 +10,6 @@
             },
             success: function (resp) {
                 $('#'+html_id).html(resp);
-                $('#city_id').empty();
-                $('#city_id').html('<option value="" hidden="">Select city</option>');
             }
         });
     }
@@ -27,9 +24,9 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#'+html_id).html(resp);
                 $('#city_id').empty();
                 $('#city_id').html('<option value="" hidden="">Select city</option>');
+                $('#'+html_id).html(resp);
             }
         });
     }
@@ -415,12 +412,41 @@
             success: function (resp) {
                 if(resp.data != ''){
                     var rep = resp.data;
-                    $('#p_id').val(p_id);
+                    $('#p_id').val(rep.id);
                     $('#name').val(rep.name);
                     $('#country_id').val(rep.country_id);
                     $('#state_id').val(rep.state_id);
                     $('#state_code').val(rep.state_code);
                     $("#cityModal").modal();
+
+                    var type = 'ajax_list';
+                    var p_id = rep.country_id;
+                    $.ajax({
+                        type: "POST",
+                        url: "{{url('get_ajax_country')}}",
+                        data: {p_id,type},
+                        headers: {
+                            'X-CSRF-TOKEN': csrf_token
+                        },
+                        success: function (resp) {
+                            $('#country_id').html(resp);
+                        }
+                    });
+
+                    var country_id = rep.country_id;
+                    var state_id = rep.state_id
+                    $.ajax({
+                        type: "POST",
+                        url: "{{url('get_ajax_state')}}",
+                        data: {country_id,type,state_id},
+                        headers: {
+                            'X-CSRF-TOKEN': csrf_token
+                        },
+                        success: function (resp) {
+                            $('#state_id').html(resp);
+                        }
+                    });
+
                 }else{
                     swal_error('Something went wrong');
                     return false;

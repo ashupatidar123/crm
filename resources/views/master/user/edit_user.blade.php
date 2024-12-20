@@ -10,7 +10,7 @@
                     <div class="col-sm-6">
                         <a href="{{url('master/user')}}" class="btn btn-sm btn-default" title="All users"><i class="fa fa-list"></i> List</a>
                         <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
-                        <div class="show_message"></div>
+                        <!-- <div class="show_message"></div> -->
                         @if(session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
@@ -202,6 +202,9 @@
                                             <button id="userSubmitButton" type="button" class="btn btn-primary">Submit</button>
                                             <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
                                         </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="show_message"></div>
                                     </div>
                                 </div>
                             </div>

@@ -14,7 +14,6 @@ class RegionController extends Controller{
     public function __construct(){
 
     }
-
     public function get_ajax_country(Request $request){
         $id = !empty($request->p_id)?$request->p_id:'';
         $show_type = !empty($request->type)?$request->type:'all';
@@ -86,7 +85,7 @@ class RegionController extends Controller{
                     $html .= '<option value="'.$record->id.'" '.$selected.' data-name="'.$record->name.'">'.$record->name.'</option>';
                 }
             }else{
-                $html .= '<option value="" hidden>Not found</option>';
+                $html .= '<option value="" hidden="">Not found</option>';
             }
             echo $html;
         }
@@ -143,9 +142,9 @@ class RegionController extends Controller{
                 $delete = '<button class="btn btn-default btn-sm" onclick="return country_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'country\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'country\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'country\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'country\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -264,9 +263,9 @@ class RegionController extends Controller{
                 $delete = '<button class="btn btn-default btn-sm" onclick="return state_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'state\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'state\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'state\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'state\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -372,9 +371,9 @@ class RegionController extends Controller{
                 $delete = '<button class="btn btn-default btn-sm" onclick="return city_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'city\');">Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'city\');"title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'city\');">In-Active</button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'city\');"title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -416,6 +415,7 @@ class RegionController extends Controller{
             if(!empty($request->country_code)){
                 $data['state_code'] = $request->state_code;
             }
+            
             City::where('id',$request->p_id)->update($data);
             return response()->json(['status' =>'success','message' => 'City updated successfully'],200); 
         }else{
