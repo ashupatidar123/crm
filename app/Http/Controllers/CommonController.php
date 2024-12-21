@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Department;
 use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\State;
@@ -43,6 +44,14 @@ class CommonController extends Controller{
                 return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
             }
         }
+        else if($tbl == 'department'){
+            Department::where('id',$request->p_id)->update(['is_active'=>$type]);
+            if($type == 1){
+                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+            }else{
+                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
+            }
+        }
         else{
             return response()->json(['status' =>'error','message' => 'Something went wrong'],201);  
         } 
@@ -63,6 +72,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'role'){
             $record_dlt = Role::find($request->p_id);
+        }
+        else if($tbl == 'department'){
+            $record_dlt = Department::find($request->p_id);
         }
 
         if($record_dlt) {

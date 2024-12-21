@@ -113,12 +113,12 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <strong class="ml-4">Login Credentials</strong>
+                                <strong class="ml-3">Role Permission</strong>
                                 <div class="card-body row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>User Role<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="role" id="role">
+                                            <select class="form-control select2" name="role" id="role" onchange="return get_role_reporting('','reporting_role_id');">
                                                 <option value="" hidden="">Select role</option>
                                                 @if(!empty($role))
                                                     @foreach($role as $recod)
@@ -126,23 +126,43 @@
                                                             $role_id_selected = ($data->role_id == $recod->id)?'selected':'';
                                                         ?>
 
-                                                        <option value="{{$recod->id}}" {{$role_id_selected}}>{{ucwords($recod->role_name)}}</option>
+                                                        <option value="{{$recod->id}}" {{$role_id_selected}} data-rank="{{$recod->rank}}">{{ucwords($recod->role_name)}}</option>
                                                     @endforeach
                                                 @endif        
                                             </select>
                                             <p class="text-danger" id="roleError"></p>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="login_id">Login ID (Username)<span class="text-danger">*</span></label>
-                                            <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter login id" onkeyup="return check_user_record(this.value,'username_login_id');" value="{{$data->login_id}}" disabled>
-                                            <p class="text-danger" id="login_idError"></p>
+                                            <label>Reporting<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="reporting_role_id" id="reporting_role_id">
+                                                <option value="" hidden="">Select reporting</option>
+                                            </select>
+                                            <p class="text-danger" id="reporting_role_idError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Department<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="department_id" id="department_id">
+                                                <option value="" hidden="">Select department</option>
+                                                @if(!empty($department))
+                                                    @foreach($department as $recod)
+                                                        <?php
+                                                            $department_id_selected = ($data->department_id == $recod->id)?'selected':'';
+                                                        ?>
+
+                                                        <option value="{{$recod->id}}" {{$department_id_selected}} data-name="{{$recod->department_name}}">{{ucwords($recod->department_name)}}</option>
+                                                    @endforeach
+                                                @endif        
+                                            </select>
+                                            <p class="text-danger" id="department_idError"></p>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <strong class="text-center1 ml-4">Address Information</strong>
+                                <strong class="text-center1 ml-3">Address Information</strong>
                                 <div class="card-body row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -200,7 +220,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <button id="userSubmitButton" type="button" class="btn btn-primary">Submit</button>
-                                            <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
+                                            <button type="button" class="btn btn-danger referesh_form" onclick="return referesh_form();">Refresh</button>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -219,6 +239,8 @@
             get_ajax_country('{{$address->country_id}}','country_id');
             get_ajax_state('{{$address->country_id}}','state_id','{{$address->state_id}}');
             get_ajax_city('{{$address->state_id}}','city_id','{{$address->city_id}}');
+
+            get_role_reporting('{{$data->reporting_role_id}}','reporting_role_id');
             $('.select2').select2();   
         });
     </script>

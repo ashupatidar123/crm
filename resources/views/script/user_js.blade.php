@@ -65,11 +65,35 @@
                 }
             }
         });
+    }
+
+    function get_role_reporting(p_id='',html_id=''){
+        var selectedOption = $('#role').find('option:selected');
+        var rank = selectedOption.data('rank');
+        
+        var type = 'ajax_list';
+        $.ajax({
+            type: "POST",
+            url: "{{route('get_role_reporting')}}",
+            data: {p_id,type,rank},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#'+html_id).html(resp);
+            }
+        });
     } 
 
+    /* add user */
     $("#submitRegister").on("click",function (e) {
         event.preventDefault();
-        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #login_idError, #passwordError, #countryError, #phone1Error, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #reporting_role_idError, #department_idError, #login_idError, #passwordError, #confirm_passwordError, #countryError, #phone1Error, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        var mobilePattern = /^[6789]\d{9}$/;
+        var passwordPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{}|;:'",.<>?/-])[a-zA-Z\d!@#$%^&*()_+[\]{}|;:'",.<>?/-]{6,}$/;
+
         var check = 0;
         if($('#first_name').val() == ''){
             var check = 1;
@@ -82,18 +106,24 @@
         if($('#email').val() == ''){
             var check = 1;
             $('#emailError').html('Email is required');
+        }else{
+            if(!emailPattern.test($('#email').val())) {
+                var check = 1; 
+                $('#emailError').html('Please enter a valid email address');
+            }
         }
         if($('#phone1').val() == ''){
             var check = 1;
             $('#phone1Error').html('Phone is required');
+        }else{
+            if(!mobilePattern.test($('#phone1').val())) {
+                var check = 1; 
+                $('#phone1Error').html('Please enter a valid phone number');
+            }
         }
         if($('#date_birth').val() == ''){
             var check = 1;
             $('#date_birthError').html('Date of birth is required');
-        }
-        if($('#role').val() == ''){
-            var check = 1;
-            $('#roleError').html('Role is required');
         }
         if($('#login_id').val() == ''){
             var check = 1;
@@ -101,17 +131,46 @@
         }
         if($('#password').val() == ''){
             var check = 1;
-            $('#passwordError').html('Password id is required');
+            $('#passwordError').html('Password is required');
+        }else{
+            if(!passwordPattern.test($('#password').val())) {
+                var check = 1;
+                $('#confirm_password').val('');
+                $('#passwordError').html('Enter vaild password for secure account');
+                swal_error('Password should be at least 6 characters long, including a number, special character, and a lowercase letter.');
+                return false;
+            }
         }
-        if($('#country').val() == ''){
+        if($('#confirm_password').val() == ''){
+            var check = 1;
+            $('#confirm_passwordError').html('Confirm password is required');
+        }else{
+            if($('#password').val() != $('#confirm_password').val()){
+                var check = 1;
+                $('#confirm_passwordError').html('Confirm password is wrong');
+            }
+        }
+        if($('#role').val() == ''){
+            var check = 1;
+            $('#roleError').html('Role is required');
+        }
+        if($('#reporting_role_id').val() == ''){
+            var check = 1;
+            $('#reporting_role_idError').html('Reporting role is required');
+        }
+        if($('#department_id').val() == ''){
+            var check = 1;
+            $('#department_idError').html('Department is required');
+        }
+        if($('#country_id').val() == ''){
             var check = 1;
             $('#countryError').html('Country is required');
         }
-        if($('#state').val() == ''){
+        if($('#state_id').val() == ''){
             var check = 1;
             $('#stateError').html('State is required');
         }
-        if($('#city').val() == ''){
+        if($('#city_id').val() == ''){
             var check = 1;
             $('#cityError').html('City is required');
         }
@@ -128,6 +187,7 @@
             $('#address2Error').html('Address line 2 is required');
         }
         if(check == 1){
+            $('.show_message').html('Some fields are required');
             return false;
         }
         $('.show_message').html('');
@@ -158,9 +218,14 @@
         });
     });  
 
+    /* update user */
     $("#userSubmitButton").on("click",function (e) {
         event.preventDefault();
-        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #countryError, #phone1Error, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #reporting_role_idError, #department_idError, #phone1Error, #countryError, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        var mobilePattern = /^[6789]\d{9}$/;
+
         var check = 0;
         if($('#first_name').val() == ''){
             var check = 1;
@@ -173,10 +238,20 @@
         if($('#email').val() == ''){
             var check = 1;
             $('#emailError').html('Email is required');
+        }else{
+            if(!emailPattern.test($('#email').val())) {
+                var check = 1; 
+                $('#emailError').html('Please enter a valid email address');
+            }
         }
         if($('#phone1').val() == ''){
             var check = 1;
             $('#phone1Error').html('Phone is required');
+        }else{
+            if(!mobilePattern.test($('#phone1').val())) {
+                var check = 1; 
+                $('#phone1Error').html('Please enter a valid phone number');
+            }
         }
         if($('#date_birth').val() == ''){
             var check = 1;
@@ -186,15 +261,23 @@
             var check = 1;
             $('#roleError').html('Role is required');
         }
-        if($('#country').val() == ''){
+        if($('#reporting_role_id').val() == ''){
+            var check = 1;
+            $('#reporting_role_idError').html('Reporting role is required');
+        }
+        if($('#department_id').val() == ''){
+            var check = 1;
+            $('#department_idError').html('Department is required');
+        }
+        if($('#country_id').val() == ''){
             var check = 1;
             $('#countryError').html('Country is required');
         }
-        if($('#state').val() == ''){
+        if($('#state_id').val() == ''){
             var check = 1;
             $('#stateError').html('State is required');
         }
-        if($('#city').val() == ''){
+        if($('#city_id').val() == ''){
             var check = 1;
             $('#cityError').html('City is required');
         }
@@ -211,6 +294,7 @@
             $('#address2Error').html('Address line 2 is required');
         }
         if(check == 1){
+            swal_error('Some fields are required');
             return false;
         }
         $('.show_message').html('');

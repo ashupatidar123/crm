@@ -104,28 +104,15 @@
                                     <div class="col-md-12">    
                                         <div class="form-group">
                                             <label>User Image</label>
-                                            <input type="file" name="user_image" id="user_image" class="form-control">
+                                            <input type="file" name="user_image" id="user_image" class="form-control" accept="image/*">
                                             <p class="text-danger" id="user_imageError"></p>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <strong class="ml-4">Login Credentials</strong>
+                                <strong class="ml-3">Login Credentials</strong>
+                                <p class="ml-3 text-danger">*Password should be at least 6 characters including a number (123), special characters (@) and a lowercase letter.</p>
                                 <div class="card-body row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>User Role<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="role" id="role">
-                                                <option value="" hidden="">Select role</option>
-                                                @if(!empty($role))
-                                                    @foreach($role as $recod)
-                                                        <option value="{{$recod->id}}">{{ucwords($recod->role_name)}}</option>
-                                                    @endforeach
-                                                @endif        
-                                            </select>
-                                            <p class="text-danger" id="roleError"></p>
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="login_id">Login ID (Username)<span class="text-danger">*</span></label>
@@ -136,13 +123,61 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Password<span class="text-danger">*</span></label>
-                                            <input type="text" name="password" id="password" class="form-control" placeholder="Enter password" minlength="6">
+                                            <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" minlength="6">
                                             <p class="text-danger" id="passwordError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Confirm Password<span class="text-danger">*</span></label>
+                                            <input type="password" id="confirm_password" class="form-control" placeholder="Enter confirm password" minlength="6">
+                                            <p class="text-danger" id="confirm_passwordError"></p>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <strong class="text-center1 ml-4">Address Information</strong>
+                                <strong class="ml-3">Role Permission</strong>
+                                <div class="card-body row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Role<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="role" id="role" onchange="return get_role_reporting('','reporting_role_id');">
+                                                <option value="" hidden="">Select role</option>
+                                                @if(!empty($role))
+                                                    @foreach($role as $recod)
+                                                        <option value="{{$recod->id}}" data-rank="{{$recod->rank}}">{{ucwords($recod->role_name)}}</option>
+                                                    @endforeach
+                                                @endif        
+                                            </select>
+                                            <p class="text-danger" id="roleError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Reporting<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="reporting_role_id" id="reporting_role_id">
+                                                <option value="" hidden="">Select reporting</option>
+                                            </select>
+                                            <p class="text-danger" id="reporting_role_idError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Department<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="department_id" id="department_id">
+                                                <option value="" hidden="">Select department</option>
+                                                @if(!empty($department))
+                                                    @foreach($department as $recod)
+                                                        <option value="{{$recod->id}}" data-name="{{$recod->department_name}}">{{ucwords($recod->department_name)}}</option>
+                                                    @endforeach
+                                                @endif        
+                                            </select>
+                                            <p class="text-danger" id="department_idError"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <strong class="text-center1 ml-3">Address Information</strong>
                                 <div class="card-body row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -200,7 +235,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <button id="submitRegister" type="button" class="btn btn-primary">Submit</button>
-                                            <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
+                                            <button type="button" class="btn btn-danger referesh_form" onclick="return referesh_form();">Refresh</button>
                                         </div>
                                     </div>
                                     <div class="col-md-12">

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Department;
 use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\State;
@@ -36,6 +37,19 @@ class UserController extends Controller
             $filter_count = User::count();
         }
         return $filter_count;
+    }
+
+    public function ajax_user_check_record(Request $request){
+        $check_type = !empty($request->check_type)?$request->check_type:'';
+        $where_value_id = !empty($request->where_value)?$request->where_value:0;
+        $count = 0;
+        if($check_type == 'username_login_id'){
+            $count = User::where('login_id',$where_value_id)->count();
+        }
+        else if($check_type == 'email'){
+            $count = User::where('email',$where_value_id)->count();
+        }
+        return $count;
     }
 
     public function user_list(Request $request){
@@ -99,23 +113,24 @@ class UserController extends Controller
 
     public function showAddUser(){
         $user = User::where('id',Auth::user()->id)->first();
-        $role = Role::select('id','role_name')->where('is_active',1)->get();
-        return view('master.user.add_user',compact('user','role'));
+        $role = Role::select('id','role_name','rank')->where('is_active',1)->get();
+        $department = Department::select('id','department_name')->where('is_active',1)->get();
+        return view('master.user.add_user',compact('user','role','department'));
     }
 
     public function add_user(Request $request){
         
-        if(empty($request->first_name) || empty($request->role) || empty($request->login_id) || empty($request->password) || empty($request->email)){
+        if(empty($request->first_name) || empty($request->login_id) || empty($request->role) || empty($request->reporting_role_id) || empty($request->department_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
 
         $checkEmail = User::where(['email' => $request->email])->count();
         if($checkEmail > 0){
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>'],200);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Email already exist...</p>','s_msg'=>'Email already exist...'],200);
         }
         $checkLoginId = User::where(['login_id' => $request->login_id])->count();
         if($checkLoginId > 0){
-            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Login id already exist...</p>'],200);
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Login id already exist...</p>','s_msg'=>'Login id already exist...'],200);
         }
         
         $user_image = '';
@@ -133,8 +148,10 @@ class UserController extends Controller
             'phone' => $request->phone1,
             'date_birth' => date('Y-m-d',strtotime($request->date_birth)),
             'is_active' => ($request->is_active==1)?1:2,
-            'role_id' => $request->role,
             'login_id' => $request->login_id,
+            'role_id' => $request->role,
+            'reporting_role_id' => $request->reporting_role_id,
+            'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
             'created_by'=>Auth::user()->id
         ]);
@@ -161,19 +178,47 @@ class UserController extends Controller
         }
     }
 
+    public function get_role_reporting(Request $request){
+        $id = !empty($request->p_id)?$request->p_id:'';
+        $show_type = !empty($request->type)?$request->type:'all';
+        $rank = !empty($request->rank)?$request->rank:0;
+        
+        if($show_type == 'ajax_list'){
+            $data = Role::select('id','role_name','rank')->where('rank','<=',$rank)->where('is_active',1)->orderBy('role_name','ASC')->limit(500)->get();
+            $html = '<option value="" hidden="">Select reporting</option>';
+            if(!empty($data)){
+                foreach($data as $record){
+                    $selected = '';
+                    if($id == $record->id){
+                        $selected = 'selected';
+                    }
+                    $html .= '<option value="'.$record->id.'" '.$selected.' data-name="'.$record->role_name.'">'.ucwords($record->role_name).'</option>';
+                }
+            }else{
+                $html .= '<option value="" hidden>Not found</option>';
+            }
+            echo $html;
+        }
+        else if($show_type == 'ajax_single'){
+            $data = Role::select('id','role_name','rank')->where('id',$request->p_id)->where('is_active',1)->first();
+            echo json_encode(['data'=>$data]);
+        }
+    }
+
     public function showEditUser(Request $request){
         $data = User::where('id',$request->id)->first();
         if(empty($data)){
             return redirect(url('master/user'),302);
         }
         $address = UserAddress::where('user_id',$request->id)->first();
-        $role = Role::select('id','role_name')->where('is_active',1)->get();
-    
-        return view('master.user.edit_user',compact('data','role','address'));
+        $role = Role::select('id','role_name','rank')->where('is_active',1)->get();
+        $department = Department::select('id','department_name')->where('is_active',1)->get();
+
+        return view('master.user.edit_user',compact('data','role','address','department'));
     }
 
     public function update_user(Request $request){
-        if(empty($request->first_name) || empty($request->role) || empty($request->user_id) || empty($request->address_id) || empty($request->email)){
+        if(empty($request->first_name) || empty($request->role) || empty($request->reporting_role_id) || empty($request->department_id) || empty($request->user_id) || empty($request->address_id) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
 
@@ -191,6 +236,8 @@ class UserController extends Controller
             'date_birth' => date('Y-m-d',strtotime($request->date_birth)),
             'is_active' => ($request->is_active==1)?1:2,
             'role_id' => $request->role,
+            'reporting_role_id' => $request->reporting_role_id,
+            'department_id' => $request->department_id,
             'created_by'=>Auth::user()->id
         ];
 
@@ -266,5 +313,12 @@ class UserController extends Controller
 
         session()->flash('success', 'Password updated...');
         return redirect()->back();
+    }
+
+    public function user_delete(Request $request){
+        $check = Test::find($request->id);
+        if($check){
+            $check->delete();
+        }
     }
 }

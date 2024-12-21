@@ -34,6 +34,7 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::get('add-user', [UserController::class, 'showAddUser']);
     Route::post('add-user', [UserController::class, 'add_user']);
     Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
+    Route::post('get_role_reporting', [UserController::class, 'get_role_reporting'])->name('get_role_reporting');
 
     Route::get('user', [UserController::class, 'user']);
     Route::get('user_list', [UserController::class, 'user_list']);
@@ -68,4 +69,7 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('region/city_update', [RegionController::class,'city_update']);
 
     Route::post('region/region_active_inactive', [RegionController::class,'region_active_inactive']);
+
+
+    Route::post('user_delete', [UserController::class, 'user_delete']);
 });

@@ -64,11 +64,14 @@
                     dataType:"JSON",
                     success: function (resp) {
                         if(resp.status == 'success'){
-                            if(tbl == 'role'){
+                            if(tbl == 'user'){
+                                user_data_table_list();
+                            }
+                            else if(tbl == 'role'){
                                 role_data_table_list();
                             }
-                            else if(tbl == 'user'){
-                                user_data_table_list();
+                            else if(tbl == 'department'){
+                                department_data_table_list();
                             }
                             swal_success(resp.message,1800);
                         }else{
@@ -101,11 +104,14 @@
                     dataType:"JSON",
                     success: function (resp) {
                         if(resp.status == 'success'){
-                            if(tbl == 'role'){
+                            if(tbl == 'user'){
+                                user_data_table_list();
+                            }
+                            else if(tbl == 'role'){
                                 role_data_table_list();
                             }
-                            else if(tbl == 'user'){
-                                user_data_table_list();
+                            else if(tbl == 'department'){
+                                department_data_table_list();
                             }
                             swal_success(resp.message,1800);
                         }else{

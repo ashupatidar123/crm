@@ -55,13 +55,20 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{url('master/role')}}" class="nav-link">
+                            <a href="{{route('role.index')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Roles</p>
                             </a>
                         </li>
                     </ul>
-
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('department.index')}}" class="nav-link">
+                                <i class="far fa fa-users nav-icon"></i>
+                                <p>Departments</p>
+                            </a>
+                        </li>
+                    </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{url('master/user')}}" class="nav-link">
@@ -70,7 +77,6 @@
                             </a>
                         </li>
                     </ul>
-
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{url('master/region/country')}}" class="nav-link">
