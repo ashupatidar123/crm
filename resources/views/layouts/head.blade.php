@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="{{ url('public/assets/dist/css/adminlte.min.css') }}">
     <!-- sweetalert2 -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.14.5/sweetalert2.css">
+    <!-- datepicker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
     <script src="{{ url('public/assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ url('public/assets/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -54,10 +56,10 @@
 <body class="sidebar-mini layout-fixed layout-navbar-fixed control-sidebar-slide-open text-sm">
     <div class="wrapper">
         <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ url('public/images/img/loader.gif') }}" alt="AdminLTELogo" height="40" width="70">
+        <div class="preloader flex-column1 justify-content-center align-items-center" style="background-color:#FFFFFF;">
+            <img class="animation__shake" src="{{ url('public/images/img/loader.gif') }}" alt="loader">
         </div>
-        <!-- Preloader end-->
+        <!-- Preloader end height="100" width="180"-->
         
         @include('layouts.topbar')
         @include('layouts.sidebar')

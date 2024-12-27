@@ -10,6 +10,8 @@
         var search_email = $('#search_email').val();
         var search_department_name = $('#search_department_name').val();
         var search_designation_name = $('#search_designation_name').val();
+        var search_start_date = $('#search_start_date').val();
+        var search_end_date = $('#search_end_date').val();
         
         $('#tableList').DataTable({
             processing: true,
@@ -17,7 +19,7 @@
             ajax: {
                 url: '{{url("master/user_list")}}',
                 type: 'GET',
-                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name},
+                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date},
             },
             columns: [
                 { data: 'sno' },

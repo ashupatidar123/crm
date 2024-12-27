@@ -60,11 +60,29 @@
                                                         <input type="text" name="search_designation_name" id="search_designation_name" class="form-control" placeholder="Search designation name">
                                                     </div>
                                                 </div>
+                                                
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="input-group date">
+                                                            <input type="text" name="search_start_date" id="search_start_date" class="form-control" placeholder="Search start date" readonly>
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="input-group date">
+                                                            <input type="text" name="search_end_date" id="search_end_date" class="form-control" placeholder="Search end date" readonly>
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <button type="button" class="btn btn-primary" onclick="return user_search();">Search</button>
-                                                        <button type="button" class="referesh_form btn btn-danger" onclick="return search_referesh_form();">Refresh</button>
+                                                        <button type="button" class="btn btn-danger" onclick="return search_reset_form();">Reset</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -195,6 +213,7 @@
 </div>
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
 <script type="text/javascript">
     $(document).ready(function() {
         user_data_table_list();
@@ -202,10 +221,23 @@
     function user_search(){
         user_data_table_list();
     }
-    function search_referesh_form(){
+    function search_reset_form(){
         $('#userSearch').trigger("reset");
         user_data_table_list();
     }
+
+    $('#search_start_date').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: 0,
+    });
+    $('#search_end_date').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: 0,
+    });
 </script>
 @include('script.user_js')
 @include('script.comman_js')

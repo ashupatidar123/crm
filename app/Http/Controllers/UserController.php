@@ -34,16 +34,25 @@ class UserController extends Controller
     public function user_list_filter_count($search,$postData){
         $search_department_name = @$postData['search_department_name'];
         $search_designation_name = @$postData['search_designation_name'];
+        $search_start_date = !empty($postData['search_start_date'])?$postData['search_start_date']:'';
+        $search_end_date = !empty($postData['search_end_date'])?$postData['search_end_date']:'';
 
-        $filter_count = User::where('id','>',0);
+        $filter_count = User::with('single_department','single_designation')->where('id','>',0);
         if(!empty($search)) {
             $filter_count = User::with('single_department','single_designation')->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('login_id', 'LIKE', '%'.$search.'%');
         }
         if(!empty($postData['search_name'])) {
-            $filter_count = User::with('single_department','single_designation')->where('first_name', 'LIKE', '%'.$postData['search_name'].'%');
+            $filter_count->where('first_name', 'LIKE', '%'.$postData['search_name'].'%');
         }
         if(!empty($postData['search_email'])) {
-            $filter_count = User::with('single_department','single_designation')->where('email', 'LIKE', '%'.$postData['search_email'].'%');
+            $filter_count->where('email', 'LIKE', '%'.$postData['search_email'].'%');
+        }
+        if(!empty($search_start_date) && !empty($search_end_date)){
+            $search_start_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_date'])));
+            $search_end_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_date']. ' +1 day')));
+
+            $filter_count->where('created_at', '>=', date($search_start_date));
+            $filter_count->where('created_at', '<=', date($search_end_date)); 
         }
         
         if(!empty($search_department_name)) {
@@ -86,6 +95,9 @@ class UserController extends Controller
         $search_email = !empty($request->input('search_email'))?$request->input('search_email'):'';
         $search_department_name = !empty($request->input('search_department_name'))?$request->input('search_department_name'):'';
         $search_designation_name = !empty($request->input('search_designation_name'))?$request->input('search_designation_name'):'';
+
+        $search_start_date = !empty($request->input('search_start_date'))?$request->input('search_start_date'):'';
+        $search_end_date = !empty($request->input('search_end_date'))?$request->input('search_end_date'):'';
         
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
@@ -104,6 +116,13 @@ class UserController extends Controller
         }
         if(!empty($search_email)){
             $query->where('email', 'LIKE', '%'.$search_email.'%'); 
+        }
+        if(!empty($search_start_date) && !empty($search_end_date)){
+            $search_start_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_date'))));
+            $search_end_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_date'). ' +1 day')));
+
+            $query->where('created_at', '>=', date($search_start_date));
+            $query->where('created_at', '<=', date($search_end_date)); 
         }
         if(!empty($search_department_name)){
             $query->whereHas('single_department', function ($query) use ($search_department_name) {
