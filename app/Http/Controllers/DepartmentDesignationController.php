@@ -37,7 +37,7 @@ class DepartmentDesignationController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','designation_name','rank','description','created_at','is_active'];
+        $columns = ['','','designation_name','','rank','description','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
@@ -65,14 +65,12 @@ class DepartmentDesignationController extends Controller{
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'id'=> $record->id,
+                    'action'=>$edit.' '.$status.' '.$delete,
                     'designation_name'=> $record->designation_name,
                     'department_name'=> $record->single_department->department_name.' ('.$record->single_department->department_type.')',
                     'rank'=> $record->rank,
                     'description'=> $record->description,
-                    'created_at'=> date('d/M/Y',strtotime($record->created_at)),
-                    'status'=>$status,
-                    'action'=>$edit.' '.$delete
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at))
                 ];
             }
         }

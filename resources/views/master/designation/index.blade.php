@@ -38,14 +38,12 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>ID</th>
+                                        <th>Action</th>
                                         <th>Designation Name</th>
                                         <th>Department Name</th>
                                         <th>Rank</th>
                                         <th>Description</th>
                                         <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

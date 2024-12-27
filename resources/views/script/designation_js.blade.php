@@ -16,20 +16,18 @@
             },
             columns: [
                 { data: 'sno' },
-                { data: 'id' },
+                { data: 'action' },
                 { data: 'designation_name' },
                 { data: 'department_name' },
                 { data: 'rank' },
                 { data: 'description' },
-                { data: 'created_at', type: 'date' },
-                { data: 'status' },
-                { data: 'action' }
+                { data: 'created_at', type: 'date' }
             ],
-            "order": [[3, 'ASC']],
+            "order": [[6, 'DESC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "columnDefs": [{"targets": [0,3,8],"orderable": false}]
+            "columnDefs": [{"targets": [0,1,3],"orderable": false}]
         });
     }  
 
