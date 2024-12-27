@@ -32,34 +32,74 @@
                         <div class="card-header card_header_color">
                             <h3 class="card-title">All Users</h3>
                         </div>
+                        <div class="modal-body">
+                            <form method="POST" id="userSearch">
+                                @csrf    
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card card-primary">
+                                            <div class="show_message"></div>
+                                            <div class="card-body row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <input type="text" name="search_name" id="search_name" class="form-control" placeholder="Search name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <input type="text" name="search_email" id="search_email" class="form-control" placeholder="Search email">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <input type="text" name="search_department_name" id="search_department_name" class="form-control" placeholder="Search department name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <input type="text" name="search_designation_name" id="search_designation_name" class="form-control" placeholder="Search designation name">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <button type="button" class="btn btn-primary" onclick="return user_search();">Search</button>
+                                                        <button type="button" class="referesh_form btn btn-danger" onclick="return search_referesh_form();">Refresh</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- /.card-header -->
                         <div class="card-body responsive">
                             <table id="tableList" class="table responsive table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>ID</th>
+                                        <th>Action</th>
                                         <th>Name</th>
                                         <th>Login ID</th>
                                         <th>Email</th>
-                                        <th>Date Birth</th>
                                         <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Department Name</th>
+                                        <th>Designation name</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                                 <tfoot>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>ID</th>
+                                        <th>Action</th>
                                         <th>Name</th>
                                         <th>Login ID</th>
                                         <th>Email</th>
-                                        <th>Date Birth</th>
                                         <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Department Name</th>
+                                        <th>Designation name</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -78,84 +118,76 @@
 
     <!-- Modal -->
     <section class="content">
-        <div class="modal fade" id="countryModal" role="dialog">
-            <div class="modal-dialog">
+        <div class="modal fade" id="userViewModal" role="dialog">
+            <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">User</h4>
+                        <h4 class="modal-title">View user</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" id="countryFormId">
-                            @csrf    
-                            <div class="row">
-                                <input type="hidden" name="p_id" id="p_id">
-                                <div class="col-md-12">
-                                    <div class="card card-primary">
-                                        <div class="card-header card_header_color"><h3 class="card-title">Update User</h3>
-                                        </div>
-                                        <div class="show_message"></div>
-                                        <div class="card-body row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="name" id="name" class="form-control"  placeholder="Enter name">
-                                                    <p class="text-danger" id="nameError"></p>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Numeric Code<span class="text-danger">*</span></label>
-                                                    <input type="text" name="numeric_code" id="numeric_code" class="form-control" placeholder="Enter numeric code">
-                                                    <p class="text-danger" id="numeric_codeError"></p>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Phone Code<span class="text-danger">*</span></label>
-                                                    <input type="text" name="phonecode" id="phonecode" class="form-control" placeholder="Enter phone code">
-                                                    <p class="text-danger" id="numeric_codeError"></p>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Currency<span class="text-danger">*</span></label>
-                                                    <input type="text" name="currency" id="currency" class="form-control" placeholder="Enter currency">
-                                                    <p class="text-danger" id="vError"></p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>ISO 3<span class="text-danger">*</span></label>
-                                                    <input type="text" name="iso3" id="iso3" class="form-control"  placeholder="Enter iso3">
-                                                    <p class="text-danger" id="iso3Error"></p>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>ISO 2<span class="text-danger">*</span></label>
-                                                    <input type="text" name="iso2" id="iso2" class="form-control" placeholder="Enter iso2">
-                                                    <p class="text-danger" id="iso2Error"></p>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Capital<span class="text-danger">*</span></label>
-                                                    <input type="text" name="capital" id="capital" class="form-control" placeholder="Enter capital">
-                                                    <p class="text-danger" id="capitalError"></p>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Currency Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="currency_name" id="currency_name" class="form-control" placeholder="Enter currency name">
-                                                    <p class="text-danger" id="currency_nameError"></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <button id="update_country" type="submit" class="btn btn-primary">Submit</button>
-                                                    <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div class="row">
+                            <input type="hidden" name="p_id" id="p_id">
+                            <div class="col-md-12">
+                                <div class="card card-primary">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>First name</th>
+                                                    <td class="view_tbl_first_name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Middle name</th>
+                                                    <td class="view_tbl_middle_name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last name</th>
+                                                    <td class="view_tbl_last_name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Phone</th>
+                                                    <td class="view_tbl_phone"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Date Of Birth</th>
+                                                    <td class="view_tbl_date_birth"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Updated date</th>
+                                                    <td class="view_tbl_update_at"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>First name</th>
+                                                    <td class="view_tbl_first_name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Middle name</th>
+                                                    <td class="view_tbl_middle_name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last name</th>
+                                                    <td class="view_tbl_last_name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Phone</th>
+                                                    <td class="view_tbl_phone"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Date Of Birth</th>
+                                                    <td class="view_tbl_date_birth"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Updated date</th>
+                                                    <td class="view_tbl_update_at"></td>
+                                                </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -167,6 +199,13 @@
     $(document).ready(function() {
         user_data_table_list();
     });
+    function user_search(){
+        user_data_table_list();
+    }
+    function search_referesh_form(){
+        $('#userSearch').trigger("reset");
+        user_data_table_list();
+    }
 </script>
 @include('script.user_js')
 @include('script.comman_js')

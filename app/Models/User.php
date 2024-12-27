@@ -45,4 +45,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    function single_role(){
+        return $this->hasOne(Role::class,'id','role_id')->select('id','role_name');
+    }
+
+    function single_department1(){
+        return $this->belongsTo(Department::class,'department_id','id')->select('id','department_name','department_type');
+    }
+
+    function single_department(){
+        return $this->hasOne(Department::class,'id','department_id')->select('id','department_name','department_type');
+    }
+
+    function single_designation(){
+        return $this->hasOne(DepartmentDesignation::class,'id','department_designation_id')->select('id','designation_name');
+    }
 }

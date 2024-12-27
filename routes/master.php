@@ -6,6 +6,7 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DepartmentDesignationController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -29,12 +30,15 @@ Route::prefix('master')->middleware('auth')->group(function () {
     /* common routes */
     Route::post('ajax_active_inactive', [CommonController::class, 'ajax_active_inactive']);
     Route::post('ajax_delete', [CommonController::class, 'ajax_delete']);
+    Route::post('ajax_view', [CommonController::class, 'ajax_view'])->name('ajax_view');
 
     /* user routes */
     Route::get('add-user', [UserController::class, 'showAddUser']);
     Route::post('add-user', [UserController::class, 'add_user']);
     Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
     Route::post('get_role_reporting', [UserController::class, 'get_role_reporting'])->name('get_role_reporting');
+    Route::post('get_department_record', [UserController::class, 'get_department_record'])->name('get_department_record');
+    Route::post('get_designation_record', [UserController::class, 'get_designation_record'])->name('get_designation_record');
 
     Route::get('user', [UserController::class, 'user']);
     Route::get('user_list', [UserController::class, 'user_list']);
@@ -51,6 +55,11 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::resource('department', DepartmentController::class);
     Route::get('department_list', [DepartmentController::class, 'department_list'])->name('department.list');
     Route::post('department_edit', [DepartmentController::class, 'department_edit'])->name('department.edit');
+
+    /* department routes */
+    Route::resource('designation', DepartmentDesignationController::class);
+    Route::get('designation_list', [DepartmentDesignationController::class, 'designation_list'])->name('designation.list');
+    Route::post('designation_edit', [DepartmentDesignationController::class, 'designation_edit'])->name('designation.edit');
 
     /* region routes */
     Route::get('region/country', [RegionController::class,'country']);

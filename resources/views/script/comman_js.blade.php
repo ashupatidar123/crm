@@ -73,6 +73,11 @@
                             else if(tbl == 'department'){
                                 department_data_table_list();
                             }
+                            else if(tbl == 'designation'){
+                                designation_data_table_list();
+                            }else{
+                                location.reload();
+                            }
                             swal_success(resp.message,1800);
                         }else{
                             swal_error(resp.message,1800); 
@@ -113,6 +118,11 @@
                             else if(tbl == 'department'){
                                 department_data_table_list();
                             }
+                            else if(tbl == 'designation'){
+                                designation_data_table_list();
+                            }else{
+                                location.reload();
+                            }
                             swal_success(resp.message,1800);
                         }else{
                             swal_error(resp.message,1800); 
@@ -121,6 +131,31 @@
                 });
             }
         });        
+    }
+
+    function ajax_view(p_id='',tbl=''){
+        
+        $.ajax({
+            type: "POST",
+            url: "{{route('ajax_view')}}",
+            data: {p_id,tbl},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            dataType:'JSON',
+            success: function (resp) {
+                if(resp.data != ''){
+                    var rep = resp.data;
+                    if(tbl == 'user'){
+                        show_user_view(rep);
+                        $("#userViewModal").modal();
+                    }
+                }else{
+                    swal_error('Something went wrong');
+                    return false;
+                }
+            }
+        });   
     }
 
 </script>

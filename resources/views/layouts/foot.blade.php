@@ -10,10 +10,6 @@
 <script src="{{ url('public/assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ url('public/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ url('public/assets/dist/js/adminlte.js') }}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{ url('public/assets/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ url('public/assets/dist/js/pages/dashboard.js') }}"></script>
 <!-- Select2 -->
@@ -32,7 +28,10 @@
 <script src="{{ url('public/assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ url('public/assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.14.5/sweetalert2.min.js"></script>
-
+<!-- AdminLTE App -->
+<script src="{{ url('public/assets/dist/js/adminlte.js') }}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{{ url('public/assets/dist/js/demo.js') }}"></script>
 <footer class="main-footer text-sm">
     <strong>2024 <a href="{{url('/dashboard')}}">© iShip_Fr8</a>.</strong>
     All rights reserved.

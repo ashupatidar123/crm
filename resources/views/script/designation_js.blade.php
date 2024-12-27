@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    function department_data_table_list(){
+    function designation_data_table_list(){
         $('#tableList').DataTable().clear().destroy();
         var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
         var end_limit = $('#end_limit').val();
@@ -10,15 +10,16 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{route("department.list")}}',
+                url: '{{route("designation.list")}}',
                 type: 'GET',
                 data:{start_limit,end_limit},
             },
             columns: [
                 { data: 'sno' },
                 { data: 'id' },
+                { data: 'designation_name' },
                 { data: 'department_name' },
-                { data: 'department_type' },
+                { data: 'rank' },
                 { data: 'description' },
                 { data: 'created_at', type: 'date' },
                 { data: 'status' },
@@ -28,21 +29,21 @@
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "columnDefs": [{"targets": [0,7],"orderable": false}]
+            "columnDefs": [{"targets": [0,3,8],"orderable": false}]
         });
     }  
 
-    function add_edit_department(p_id='',type=''){
+    function add_edit_designation(p_id='',type=''){
         $('#addSubmitButton').html('Submit');
         $('#addSubmitButton').attr('disabled',false);
         if(type == 'add'){
-            $('#p_id, #department_name, #description').val('');
+            $('#p_id, #designation_name, #rank, #description').val('');
             $("#addModal").modal();
             return false;
         }
         $.ajax({
             type: "POST",
-            url: "{{ route('department.edit') }}",
+            url: "{{ route('designation.edit') }}",
             data: {p_id,type},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
@@ -53,11 +54,14 @@
                 if(resp.data != ''){
                     var rep = resp.data;
                     $('#p_id').val(rep.id);
-                    $('#department_name').val(rep.department_name);
+                    $('#designation_name').val(rep.designation_name);
+                    $('#department_id').val(rep.department_id).trigger('change');
                     $('#department_type').val(rep.department_type);
+                    $('#rank').val(rep.rank);
                     $('#description').val(rep.description);
                     $('#is_active').val(rep.is_active);
                     $("#addModal").modal();
+                    get_department_record(rep.department_id,'department_id');
                 }else{
                     swal_error('Something went wrong');
                     return false;
@@ -68,16 +72,20 @@
 
     $("#addSubmitButton").on("click",function (event) {
         event.preventDefault();
-        $('#department_nameError, #department_typeError, #descriptionError').html('');
+        $('#designation_nameError, #department_idError, #rankError, #descriptionError').html('');
         var check = 0;
 
-        if($('#department_name').val() == ''){
+        if($('#designation_name').val() == ''){
             var check = 1;
-            $('#department_nameError').html('This field is required');
+            $('#designation_nameError').html('This field is required');
         }
-        if($('#department_type').val() == ''){
+        if($('#department_id').val() == ''){
             var check = 1;
-            $('#department_typeError').html('This field is required');
+            $('#department_idError').html('This field is required');
+        }
+        if($('#rank').val() == ''){
+            var check = 1;
+            $('#rankError').html('This field is required');
         }
         if($('#is_active').val() == ''){
             var check = 1;
@@ -94,7 +102,7 @@
         var formData = new FormData($("#addFormId")[0]);
         $.ajax({
             type: "POST",
-            url: "{{ route('department.store') }}",
+            url: "{{ route('designation.store') }}",
             data: formData,
             processData: false,
             contentType: false,
@@ -105,7 +113,7 @@
                 $('#addSubmitButton').html('Submit');
                 $('#addSubmitButton').attr('disabled',false);
                 if(resp.status == 'success'){
-                    department_data_table_list();
+                    designation_data_table_list();
                     $('#addModal').modal('hide');
                     swal_success(resp.message);
                 }else{
@@ -114,4 +122,22 @@
             }
         });
     });
+
+    function get_department_record(p_id='',html_id=''){
+        var selectedOption = $('#department_type').find('option:selected');
+        var department_type = selectedOption.val();
+        
+        var type = 'ajax_list';
+        $.ajax({
+            type: "POST",
+            url: "{{route('get_department_record')}}",
+            data: {p_id,type,department_type},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#'+html_id).html(resp);
+            }
+        });
+    }
 </script>

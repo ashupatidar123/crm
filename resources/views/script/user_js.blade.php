@@ -5,6 +5,11 @@
         var end_limit   = $('#end_limit').val();
         var end_limit = (end_limit > 0)?end_limit:10;
         var pageLength = (end_limit > 0)?end_limit:10;
+
+        var search_name = $('#search_name').val();
+        var search_email = $('#search_email').val();
+        var search_department_name = $('#search_department_name').val();
+        var search_designation_name = $('#search_designation_name').val();
         
         $('#tableList').DataTable({
             processing: true,
@@ -12,26 +17,25 @@
             ajax: {
                 url: '{{url("master/user_list")}}',
                 type: 'GET',
-                data:{start_limit,end_limit},
+                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name},
             },
             columns: [
                 { data: 'sno' },
-                { data: 'id' },
+                { data: 'action' },
                 { data: 'first_name' },
                 { data: 'login_id' },
                 { data: 'email' },
-                { data: 'date_birth' },
                 { data: 'created_at', type: 'date' },
-                { data: 'status' },
-                { data: 'action' }
+                { data: 'department_name' },
+                { data: 'designation_name' }
             ],
-            "order": [[1, 'DESC']],
+            "order": [[5, 'DESC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
             "dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,8],"orderable": false}]
+            "columnDefs": [{"targets": [0,1,6,7],"orderable": false}]
         });
     }
 
@@ -85,10 +89,46 @@
         });
     } 
 
+    function get_department_record(p_id='',html_id=''){
+        var selectedOption = $('#department_type').find('option:selected');
+        var department_type = selectedOption.val();
+        
+        var type = 'ajax_list';
+        $.ajax({
+            type: "POST",
+            url: "{{route('get_department_record')}}",
+            data: {p_id,type,department_type},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#'+html_id).html(resp);
+            }
+        });
+    }
+
+    function get_designation_record(p_id='',html_id=''){
+        var selectedOption = $('#department_id').find('option:selected');
+        var department_id = selectedOption.val();
+        
+        var type = 'ajax_list';
+        $.ajax({
+            type: "POST",
+            url: "{{route('get_designation_record')}}",
+            data: {p_id,type,department_id},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#'+html_id).html(resp);
+            }
+        });
+    }
+
     /* add user */
     $("#submitRegister").on("click",function (e) {
         event.preventDefault();
-        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #reporting_role_idError, #department_idError, #login_idError, #passwordError, #confirm_passwordError, #countryError, #phone1Error, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #department_typeError, #department_idError, #department_designation_idError, #login_idError, #passwordError, #confirm_passwordError, #countryError, #phone1Error, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
         
         var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         var mobilePattern = /^[6789]\d{9}$/;
@@ -150,17 +190,17 @@
                 $('#confirm_passwordError').html('Confirm password is wrong');
             }
         }
-        if($('#role').val() == ''){
+        if($('#department_type').val() == ''){
             var check = 1;
-            $('#roleError').html('Role is required');
-        }
-        if($('#reporting_role_id').val() == ''){
-            var check = 1;
-            $('#reporting_role_idError').html('Reporting role is required');
+            $('#department_typeError').html('Department type is required');
         }
         if($('#department_id').val() == ''){
             var check = 1;
             $('#department_idError').html('Department is required');
+        }
+        if($('#department_designation_id').val() == ''){
+            var check = 1;
+            $('#department_designation_idError').html('Designation is required');
         }
         if($('#country_id').val() == ''){
             var check = 1;
@@ -221,7 +261,7 @@
     /* update user */
     $("#userSubmitButton").on("click",function (e) {
         event.preventDefault();
-        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #roleError, #reporting_role_idError, #department_idError, #phone1Error, #countryError, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #department_typeError, #department_idError, #department_designation_idError, #phone1Error, #countryError, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
         
         var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         var mobilePattern = /^[6789]\d{9}$/;
@@ -257,17 +297,17 @@
             var check = 1;
             $('#date_birthError').html('Date of birth is required');
         }
-        if($('#role').val() == ''){
+        if($('#department_type').val() == ''){
             var check = 1;
-            $('#roleError').html('Role is required');
-        }
-        if($('#reporting_role_id').val() == ''){
-            var check = 1;
-            $('#reporting_role_idError').html('Reporting role is required');
+            $('#department_typeError').html('Department type is required');
         }
         if($('#department_id').val() == ''){
             var check = 1;
             $('#department_idError').html('Department is required');
+        }
+        if($('#department_designation_id').val() == ''){
+            var check = 1;
+            $('#department_designation_idError').html('Designation is required');
         }
         if($('#country_id').val() == ''){
             var check = 1;
@@ -317,6 +357,122 @@
                     swal_success(resp.s_msg);
                     window.setTimeout(function(){
                         window.location.href = "{{url('master/user')}}";
+                    },3000);
+                }else{
+                    swal_error(resp.s_msg);
+                }
+            }
+        });
+    });
+
+    function show_user_view(rep){
+        $('.view_tbl_first_name').html(rep.name_title+' '+rep.first_name);
+        $('.view_tbl_middle_name').html(rep.middle_name);
+        $('.view_tbl_last_name').html(rep.last_name);
+        $('.view_tbl_phone').html(rep.phone);
+        $('.view_tbl_date_birth').html(rep.date_birth);
+        $('.view_tbl_update_at').html(rep.update_at);
+    }
+
+    /* update user */
+    $("#profileSubmitButton").on("click",function (e) {
+        event.preventDefault();
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #phone1Error, #countryError, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        var mobilePattern = /^[6789]\d{9}$/;
+
+        var check = 0;
+        if($('#first_name').val() == ''){
+            var check = 1;
+            $('#first_nameError').html('First name is required');
+        }
+        if($('#last_name').val() == ''){
+            var check = 1;
+            $('#last_nameError').html('Last name is required');
+        }
+        if($('#email').val() == ''){
+            var check = 1;
+            $('#emailError').html('Email is required');
+        }else{
+            if(!emailPattern.test($('#email').val())) {
+                var check = 1; 
+                $('#emailError').html('Please enter a valid email address');
+            }
+        }
+        if($('#phone1').val() == ''){
+            var check = 1;
+            $('#phone1Error').html('Phone is required');
+        }else{
+            if(!mobilePattern.test($('#phone1').val())) {
+                var check = 1; 
+                $('#phone1Error').html('Please enter a valid phone number');
+            }
+        }
+        if($('#date_birth').val() == ''){
+            var check = 1;
+            $('#date_birthError').html('Date of birth is required');
+        }
+        if($('#department_type').val() == ''){
+            var check = 1;
+            $('#department_typeError').html('Department type is required');
+        }
+        if($('#department_id').val() == ''){
+            var check = 1;
+            $('#department_idError').html('Department is required');
+        }
+        if($('#department_designation_id').val() == ''){
+            var check = 1;
+            $('#department_designation_idError').html('Designation is required');
+        }
+        if($('#country_id').val() == ''){
+            var check = 1;
+            $('#countryError').html('Country is required');
+        }
+        if($('#state_id').val() == ''){
+            var check = 1;
+            $('#stateError').html('State is required');
+        }
+        if($('#city_id').val() == ''){
+            var check = 1;
+            $('#cityError').html('City is required');
+        }
+        if($('#zip_code').val() == ''){
+            var check = 1;
+            $('#zip_codeError').html('ZIP code is required');
+        }
+        if($('#address1').val() == ''){
+            var check = 1;
+            $('#address1Error').html('Address line 1 is required');
+        }
+        if($('#address2').val() == ''){
+            var check = 1;
+            $('#address2Error').html('Address line 2 is required');
+        }
+        if(check == 1){
+            swal_error('Some fields are required');
+            return false;
+        }
+        $('.show_message').html('');
+        $('#profileSubmitButton').html('Loading...');
+        var formData = new FormData($("#profileFormId")[0]);
+        
+        $.ajax({
+            type: "POST",
+            url: "{{url('profile')}}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function(resp) {
+                $('#profileSubmitButton').html('Submit');
+                $('.show_message').html(resp.message);
+                if(resp.status == 'success'){
+                    swal_success(resp.s_msg);
+                    window.setTimeout(function(){
+                        window.location.href = "{{url('profile')}}";
                     },3000);
                 }else{
                     swal_error(resp.s_msg);

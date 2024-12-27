@@ -44,7 +44,19 @@
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="name_title">Title<span class="text-danger">*</span></label>
+                                            <select type="text" name="name_title" id="name_title" class="form-control"required>
+                                                @if(!empty($data->name_title))
+                                                    <option value="{{$data->name_title}}" selected hidden>{{$data->name_title}}</option>
+                                                @endif
+                                                <?php echo user_title(); ?>
+                                            </select>
+                                            <p class="text-danger" id="name_titleError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="first_name">First Name<span class="text-danger">*</span></label>
                                             <input type="text" name="first_name" id="first_name" class="form-control"  placeholder="Enter first name" required value="{{$data->first_name}}">
@@ -113,51 +125,36 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <strong class="ml-3">Role Permission</strong>
+                                <strong class="ml-3">Department Permission</strong>
                                 <div class="card-body row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>User Role<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="role" id="role" onchange="return get_role_reporting('','reporting_role_id');">
-                                                <option value="" hidden="">Select role</option>
-                                                @if(!empty($role))
-                                                    @foreach($role as $recod)
-                                                        <?php
-                                                            $role_id_selected = ($data->role_id == $recod->id)?'selected':'';
-                                                        ?>
-
-                                                        <option value="{{$recod->id}}" {{$role_id_selected}} data-rank="{{$recod->rank}}">{{ucwords($recod->role_name)}}</option>
-                                                    @endforeach
-                                                @endif        
+                                            <label>Department Type<span class="text-danger">*</span></label>
+                                            <select class="form-control" name="department_type" id="department_type" onchange="return get_department_record('','department_id');">
+                                                <option value="">Select type</option>
+                                                <option value="office" {{($data->department_type == 'office')?'selected':''}}>Office</option>      
+                                                <option value="vessel" {{($data->department_type == 'vessel')?'selected':''}}>Vessel</option> 
                                             </select>
-                                            <p class="text-danger" id="roleError"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Reporting<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="reporting_role_id" id="reporting_role_id">
-                                                <option value="" hidden="">Select reporting</option>
-                                            </select>
-                                            <p class="text-danger" id="reporting_role_idError"></p>
+                                            <p class="text-danger" id="department_typeError"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Department<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="department_id" id="department_id">
+                                            <select class="form-control select2" name="department_id" id="department_id" onchange="return get_designation_record('','department_designation_id');">
                                                 <option value="" hidden="">Select department</option>
-                                                @if(!empty($department))
-                                                    @foreach($department as $recod)
-                                                        <?php
-                                                            $department_id_selected = ($data->department_id == $recod->id)?'selected':'';
-                                                        ?>
-
-                                                        <option value="{{$recod->id}}" {{$department_id_selected}} data-name="{{$recod->department_name}}">{{ucwords($recod->department_name)}}</option>
-                                                    @endforeach
-                                                @endif        
                                             </select>
                                             <p class="text-danger" id="department_idError"></p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Designation<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="department_designation_id" id="department_designation_id">
+                                                <option value="" hidden="">Select designation</option>       
+                                            </select>
+                                            <p class="text-danger" id="department_designation_idError"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -241,6 +238,9 @@
             get_ajax_city('{{$address->state_id}}','city_id','{{$address->city_id}}');
 
             get_role_reporting('{{$data->reporting_role_id}}','reporting_role_id');
+
+            get_department_record('{{$data->department_id}}','department_id');
+            get_designation_record('{{$data->department_designation_id}}','department_designation_id')
             $('.select2').select2();   
         });
     </script>

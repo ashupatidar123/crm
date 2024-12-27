@@ -15,7 +15,7 @@ class DepartmentController extends Controller{
 
     public function department_list_filter_count($search){
         if(!empty($search)) {
-            $filter_count = Department::where('department_name', 'LIKE', '%'.$search.'%')->orWhere('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
+            $filter_count = Department::where('department_name', 'LIKE', '%'.$search.'%')->orWhere('department_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
         }else{
             $filter_count = Department::count();
         }
@@ -34,13 +34,13 @@ class DepartmentController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','department_name','description','created_at','is_active'];
+        $columns = ['','id','department_name','department_type','description','created_at','is_active'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = Department::select('id','department_name','description','created_at','is_active');
+        $query = Department::select('id','department_name','department_type','description','created_at','is_active');
         if(!empty($search)) {
-            $query->where('department_name', 'LIKE', '%'.$search.'%')->orWhere('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
+            $query->where('department_name', 'LIKE', '%'.$search.'%')->orWhere('department_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
         }
         $query->orderBy($orderColumnIndex, $orderDirection);
         $users = $query->offset($start_limit)->limit($end_limit)->get(); 
@@ -64,6 +64,7 @@ class DepartmentController extends Controller{
                     'sno'=> $sno++,
                     'id'=> $record->id,
                     'department_name'=> $record->department_name,
+                    'department_type'=> $record->department_type,
                     'description'=> $record->description,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'status'=>$status,
@@ -90,12 +91,13 @@ class DepartmentController extends Controller{
         
         $data = [
             'department_name' => $request->department_name,
+            'department_type' => $request->department_type,
             'description' => $request->description,
             'is_active' => ($request->is_active==1)?1:2,
             'created_by'=>Auth::user()->id
         ];
-
-        $message = 'Error';
+        
+        $message = 'Opps! Something went wrong...';
         if($p_id > 0){
             $lastId = Department::where('id',$p_id)->update($data);
             $message = 'Department updated successfully...';
@@ -118,6 +120,7 @@ class DepartmentController extends Controller{
     public function update(Request $request, string $id){
         $update_data = [
             'department_name' => $request->department_name,
+            'department_type' => $request->department_type,
             'description' => $request->description,
             'is_active' => ($request->is_active==1)?1:2,
             'created_by'=>Auth::user()->id

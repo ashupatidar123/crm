@@ -71,6 +71,14 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{{route('designation.index')}}" class="nav-link">
+                                <i class="far fa fa-users nav-icon"></i>
+                                <p>Designations</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
                             <a href="{{url('master/user')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Users</p>

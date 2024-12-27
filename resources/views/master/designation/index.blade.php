@@ -1,6 +1,6 @@
 @extends('layouts.head')
 
-@section('title') Departments @endsection
+@section('title') Designations @endsection
 
 @section('content')
 <div class="content-wrapper">
@@ -9,13 +9,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <button type="button" class="btn btn-sm btn-default" onclick="return add_edit_department('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="return add_edit_designation('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
                     <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{url('/dashboard')}}">Home</a></li>
-                        <li class="breadcrumb-item active">Department</li>
+                        <li class="breadcrumb-item active">Designation</li>
                     </ol>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                     <!-- /.card -->
                     <div class="card card-primary">
                         <div class="card-header card_header_color">
-                            <h3 class="card-title">All Departments</h3>
+                            <h3 class="card-title">All Designations</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body responsive">
@@ -39,8 +39,9 @@
                                     <tr>
                                         <th>Sno</th>
                                         <th>ID</th>
+                                        <th>Designation Name</th>
                                         <th>Department Name</th>
-                                        <th>Department Type</th>
+                                        <th>Rank</th>
                                         <th>Description</th>
                                         <th>Date</th>
                                         <th>Status</th>
@@ -68,7 +69,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Department</h4>
+                        <h4 class="modal-title">Designation</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -78,28 +79,44 @@
                                 <input type="hidden" name="p_id" id="p_id">
                                 <div class="col-md-12">
                                     <div class="card card-primary">
-                                        <div class="card-header card_header_color"><h3 class="card-title">Add/Edit Department</h3>
+                                        <div class="card-header card_header_color"><h3 class="card-title">Add/Edit Designation</h3>
                                         </div>
                                         <div class="show_message"></div>
                                         <div class="card-body row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label>Department Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="department_name" id="department_name" class="form-control" placeholder="Enter department name">
-                                                    <p class="text-danger" id="department_nameError"></p>
+                                                    <label>Designation Name<span class="text-danger">*</span></label>
+                                                    <input type="text" name="designation_name" id="designation_name" class="form-control" placeholder="Enter designation name">
+                                                    <p class="text-danger" id="designation_nameError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Department Type<span class="text-danger">*</span></label>
-                                                    <select class="form-control" name="department_type" id="department_type" required>
-                                                        <option value="office">Office</option>
-                                                        <option value="vessel">Vessel</option>
+                                                    <select class="form-control" name="department_type" id="department_type" onchange="return get_department_record('','department_id');">
+                                                        <option value="">Select type</option>
+                                                        <option value="office">Office</option>      
+                                                        <option value="vessel">Vessel</option> 
                                                     </select>
                                                     <p class="text-danger" id="department_typeError"></p>
                                                 </div>
                                             </div>
-                                            
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Department Name<span class="text-danger">*</span></label>
+                                                    <select class="form-control select2" name="department_id" id="department_id" required>
+                                                        <option value="">Select department</option>  
+                                                    </select>
+                                                    <p class="text-danger" id="department_idError"></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Designation Rank<span class="text-danger">*</span></label>
+                                                    <input type="number" name="rank" id="rank" class="form-control" placeholder="Enter rank">
+                                                    <p class="text-danger" id="rankError"></p>
+                                                </div>
+                                            </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Is Active<span class="text-danger">*</span></label>
@@ -140,11 +157,11 @@
 <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
 <script>
     $(document).ready(function() {
-        department_data_table_list();
+        designation_data_table_list();
         $('.select2').select2();
     });
 </script>
 @include('script.comman_js')
-@include('script.department_js')
+@include('script.designation_js')
 
 @endsection

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Department;
+use App\Models\DepartmentDesignation;
 use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\State;
@@ -52,6 +53,14 @@ class CommonController extends Controller{
                 return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
             }
         }
+        else if($tbl == 'designation'){
+            DepartmentDesignation::where('id',$request->p_id)->update(['is_active'=>$type]);
+            if($type == 1){
+                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+            }else{
+                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
+            }
+        }
         else{
             return response()->json(['status' =>'error','message' => 'Something went wrong'],201);  
         } 
@@ -76,12 +85,34 @@ class CommonController extends Controller{
         else if($tbl == 'department'){
             $record_dlt = Department::find($request->p_id);
         }
+        else if($tbl == 'designation'){
+            $record_dlt = DepartmentDesignation::find($request->p_id);
+        }
 
         if($record_dlt) {
             $record_dlt->delete();
             return response()->json(['status' =>'success','message' => 'Deleted successfully'],200); 
         }else{
             return response()->json(['status' =>'error','message' => 'Deletion failed'],201);
+        }
+    }
+
+    public function ajax_view(Request $request){
+        $tbl = !empty($request->tbl)?$request->tbl:'';
+        $p_id = !empty($request->p_id)?$request->p_id:'';
+        if(empty($tbl) || empty($p_id)){
+            return response()->json(['status' =>'error','message' => 'Something went wrong'],201);
+        }
+        $data = '';
+        if($tbl == 'user'){
+            $data = User::where('id',$request->p_id)->first();
+            $data['date_birth'] = date('d/m/Y',strtotime($data->date_birth));
+            $data['update_at'] = !empty($data->update_at)?date('d/m/Y',strtotime($data->update_at)):'Not updated';
+            echo json_encode(['data'=>$data]);
+        }
+        
+        if(empty($data)){
+            echo json_encode(['data'=>'']);
         }
     }
 }
