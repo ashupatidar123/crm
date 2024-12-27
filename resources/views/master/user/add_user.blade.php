@@ -42,11 +42,19 @@
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
-                                    <div class="col-md-12">    
+                                    <?php
+                                        $img_url = url('public/images/img/no_image.png');
+                                    ?>
+                                    <div class="col-md-6">    
                                         <div class="form-group">
                                             <label>User Image</label>
                                             <input type="file" name="user_image" id="user_image" class="form-control" accept="image/*">
                                             <p class="text-danger" id="user_imageError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <img class="rounded-circle" src="{{$img_url}}" width="189" height="155" id="show_user_image">
                                         </div>
                                     </div>
 

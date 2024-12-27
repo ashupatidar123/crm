@@ -44,20 +44,24 @@
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
-                                    <div class="col-md-12">    
+                                    <div class="col-md-6">    
                                         <div class="form-group">
                                             <?php
                                             if(!empty($data->user_image)){
                                                 $img_url = asset('storage/app/public/uploads/image/users').'/'.$data->user_image;
                                             }else{
-                                                $img_url = url('public/images/img/avatar5.png');
+                                                $img_url = url('public/images/img/no_image.png');
                                             }
                                             ?>
 
                                             <label>User Image</label>
                                             <input type="file" name="user_image" id="user_image" class="form-control">
                                             <p class="text-danger" id="user_imageError"></p>
-                                            <img src="{{$img_url}}" width="47" height="47">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <img class="rounded-circle" src="{{$img_url}}" width="189" height="155" id="show_user_image">
                                         </div>
                                     </div>
                                     

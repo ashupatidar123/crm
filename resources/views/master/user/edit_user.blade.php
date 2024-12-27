@@ -49,7 +49,7 @@
                                             if(!empty($data->user_image)){
                                                 $img_url = asset('storage/app/public/uploads/image/users').'/'.$data->user_image;
                                             }else{
-                                                $img_url = url('public/images/img/avatar5.png');
+                                                $img_url = url('public/images/img/no_image.png');
                                             }
                                         ?>
                                         <div class="form-group">
@@ -60,8 +60,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <p></p>  
-                                            <img class="rounded-circle" src="{{$img_url}}" width="57" height="57">
+                                            <img class="rounded-circle" src="{{$img_url}}" width="189" height="155" id="show_user_image">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
