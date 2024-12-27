@@ -42,6 +42,14 @@
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
+                                    <div class="col-md-12">    
+                                        <div class="form-group">
+                                            <label>User Image</label>
+                                            <input type="file" name="user_image" id="user_image" class="form-control" accept="image/*">
+                                            <p class="text-danger" id="user_imageError"></p>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label for="name_title">Title<span class="text-danger">*</span></label>
@@ -108,13 +116,6 @@
                                                 <option value="2">In-Active</option>
                                             </select>
                                             <p class="text-danger" id="is_activeError"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">    
-                                        <div class="form-group">
-                                            <label>User Image</label>
-                                            <input type="file" name="user_image" id="user_image" class="form-control" accept="image/*">
-                                            <p class="text-danger" id="user_imageError"></p>
                                         </div>
                                     </div>
                                 </div>

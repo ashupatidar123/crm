@@ -44,6 +44,26 @@
                                 </div>
                                 <strong class="ml-3 mt-4">Contact Information</strong>
                                 <div class="card-body row">
+                                    <div class="col-md-6">    
+                                        <?php
+                                            if(!empty($data->user_image)){
+                                                $img_url = asset('storage/app/public/uploads/image/users').'/'.$data->user_image;
+                                            }else{
+                                                $img_url = url('public/images/img/avatar5.png');
+                                            }
+                                        ?>
+                                        <div class="form-group">
+                                            <label>User Image</label>
+                                            <input type="file" name="user_image" id="user_image" class="form-control">
+                                            <p class="text-danger" id="user_imageError"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <p></p>  
+                                            <img class="rounded-circle" src="{{$img_url}}" width="57" height="57">
+                                        </div>
+                                    </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label for="name_title">Title<span class="text-danger">*</span></label>
@@ -113,14 +133,6 @@
                                                 <option value="2">In-Active</option>
                                             </select>
                                             <p class="text-danger" id="is_activeError"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">    
-                                        <div class="form-group">
-                                            <label>User Image</label>
-                                            <input type="file" name="user_image" id="user_image" class="form-control">
-                                            <p class="text-danger" id="user_imageError"></p>
-                                            <img src="{{asset('storage/app/public/uploads/image/users')}}/{{$data->user_image}}" width="47" height="47">
                                         </div>
                                     </div>
                                 </div>
