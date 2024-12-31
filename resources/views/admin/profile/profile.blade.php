@@ -237,7 +237,6 @@
             get_ajax_country('{{@$address->country_id}}','country_id');
             get_ajax_state('{{@$address->country_id}}','state_id','{{@$address->state_id}}');
             get_ajax_city('{{@$address->state_id}}','city_id','{{@$address->city_id}}');
-            $('.select2').select2();   
         });
     </script>
     @include('script.comman_js')

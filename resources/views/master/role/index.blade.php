@@ -137,7 +137,6 @@
 <script>
     $(document).ready(function() {
         role_data_table_list();
-        $('.select2').select2();
     });
 </script>
 @include('script.comman_js')

@@ -54,16 +54,11 @@ class UserController extends Controller
             $filter_count->where('created_at', '>=', date($search_start_date));
             $filter_count->where('created_at', '<=', date($search_end_date)); 
         }
-        
-        if(!empty($search_department_name)) {
-            $filter_count->whereHas('single_department', function ($query) use ($search_department_name) {
-                $query->where('department_name', 'LIKE', '%'.$search_department_name.'%');
-            });
+        if(!empty($search_department_name)){
+            $filter_count->where('department_id',$search_department_name);
         }
-        if(!empty($search_designation_name)) {
-            $filter_count->whereHas('single_designation', function ($query) use ($search_designation_name) {
-                $query->where('designation_name', 'LIKE', '%'.$search_designation_name.'%');
-            });
+        if(!empty($search_designation_name)){
+            $filter_count->where('department_designation_id',$search_designation_name);
         }
         return $filter_count->count();
     }
@@ -125,14 +120,10 @@ class UserController extends Controller
             $query->where('created_at', '<=', date($search_end_date)); 
         }
         if(!empty($search_department_name)){
-            $query->whereHas('single_department', function ($query) use ($search_department_name) {
-                $query->where('department_name', 'LIKE', '%'.$search_department_name.'%');
-            });
+            $query->where('department_id',$search_department_name);
         }
         if(!empty($search_designation_name)){
-            $query->whereHas('single_designation', function ($query) use ($search_designation_name) {
-                $query->where('designation_name', 'LIKE', '%'.$search_designation_name.'%');
-            });
+            $query->where('department_designation_id',$search_designation_name);
         }
         $query->orderBy($orderColumnIndex, $orderDirection);
         $users = $query->offset($start_limit)->limit($end_limit)->get(); 
@@ -259,7 +250,7 @@ class UserController extends Controller
     }
 
     public function update_user(Request $request){
-        if(empty($request->first_name) || empty($request->department_type) || empty($request->department_id) || empty($request->department_designation_id) || empty($request->user_id) || empty($request->address_id) || empty($request->email)){
+        if(empty($request->first_name) || empty($request->department_type) || empty($request->department_id) || empty($request->department_designation_id) || empty($request->user_id) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
 
@@ -289,7 +280,7 @@ class UserController extends Controller
         
         $id = User::where('id',$request->user_id)->update($update_data);
         if($id > 0){
-            $address = UserAddress::where('id',$request->address_id)->update([
+            $update_address = [
                 'country_id' => !empty($request->country_id)?$request->country_id:'',
                 'state_id' => !empty($request->state_id)?$request->state_id:'',
                 'city_id' => !empty($request->city_id)?$request->city_id:'',
@@ -301,7 +292,14 @@ class UserController extends Controller
                 'address3' => $request->address3,
                 'is_active' => ($request->is_active==1)?1:2,
                 'created_by'=>Auth::user()->id
-            ]);
+            ];
+
+            if(@$request->address_id > 0){
+                UserAddress::where('id',$request->address_id)->update($update_address);
+            }else{
+                $update_address['user_id'] = $request->user_id;
+                UserAddress::insertGetId($update_address);
+            }
 
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User updated successfully...</p>','s_msg'=>'User updated successfully...'],200);
         }else{
@@ -338,7 +336,12 @@ class UserController extends Controller
         $department_type = !empty($request->department_type)?trim($request->department_type):'';
         
         if($show_type == 'ajax_list'){
-            $data = Department::select('id','department_name','department_type')->where('department_type',$department_type)->where('is_active',1)->orderBy('department_name','ASC')->limit(500)->get();
+            if(empty($department_type)){
+                $data = Department::select('id','department_name','department_type')->where('department_type','!=','')->where('is_active',1)->orderBy('department_name','ASC')->limit(500)->get();
+            }else{
+                $data = Department::select('id','department_name','department_type')->where('department_type',$department_type)->where('is_active',1)->orderBy('department_name','ASC')->limit(500)->get();
+            }
+            
             $html = '<option value="" hidden="">Select department</option>';
             if(!empty($data)){
                 foreach($data as $record){

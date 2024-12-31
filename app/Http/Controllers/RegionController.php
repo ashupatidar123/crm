@@ -121,7 +121,7 @@ class RegionController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','name','iso3','numeric_code','capital','currency','created_at','is_active'];
+        $columns = ['','is_active','name','iso3','numeric_code','capital','currency','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
         
@@ -149,7 +149,6 @@ class RegionController extends Controller{
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'id'=> $record->id,
                     'name'=> $record->name,
                     'iso3'=> $record->iso3,
                     'numeric_code'=> $record->numeric_code,
@@ -157,7 +156,7 @@ class RegionController extends Controller{
                     'currency'=> $record->currency,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'status'=>$status,
-                    'action'=>$edit.' '.$delete
+                    'action'=>$edit.' '.$delete.' '.$status
                 ];
             }
         }
@@ -242,7 +241,7 @@ class RegionController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','name','iso2','country_code','country_id','created_at','is_active'];
+        $columns = ['','is_active','name','iso2','country_code','country_id','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
         
@@ -250,6 +249,7 @@ class RegionController extends Controller{
         if(!empty($search)) {
             $query->where('name', 'LIKE', '%'.$search.'%')->orWhere('iso2', 'LIKE', '%'.$search.'%');
         }
+
         $query->orderBy($orderColumnIndex, $orderDirection);
         $listData = $query->skip($start_limit)->take($end_limit)->get(); 
         
@@ -270,14 +270,13 @@ class RegionController extends Controller{
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'id'=> $record->id,
                     'name'=> $record->name,
                     'country_name'=> $record->single_country->name,
                     'iso2'=> $record->iso2,
                     'country_code'=> $record->country_code,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'status'=>$status,
-                    'action'=>$edit.' '.$delete
+                    'action'=>$edit.' '.$delete.' '.$status
                 ];
             }
         }
@@ -350,7 +349,7 @@ class RegionController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','name','country_id','state_id','state_code','created_at','is_active'];
+        $columns = ['','is_active','name','country_id','state_id','state_code','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'name';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'ASC';
         
@@ -378,14 +377,12 @@ class RegionController extends Controller{
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'id'=> $record->id,
                     'name'=> $record->name,
                     'country_name'=> $record->single_country->name,
                     'state_name'=> $record->single_state->name,
                     'state_code'=> $record->state_code,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
-                    'status'=>$status,
-                    'action'=>$edit.' '.$delete
+                    'action'=>$edit.' '.$delete.' '.$status
                 ];
             }
         }

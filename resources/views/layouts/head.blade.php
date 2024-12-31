@@ -51,13 +51,16 @@
         .card_header_color{
             background-color:#837d7d !important;
         }
+        .preloader-bg-color{
+            background-color:#000000;
+        }
     </style>
 </head>
 <body class="sidebar-mini layout-fixed layout-navbar-fixed control-sidebar-slide-open text-sm">
     <div class="wrapper">
         <!-- Preloader -->
-        <div class="preloader flex-column1 justify-content-center align-items-center" style="background-color:#FFFFFF;">
-            <img class="animation__shake" src="{{ url('public/images/img/loader.gif') }}" alt="loader">
+        <div class="preloader flex-column justify-content-center align-items-center preloader-bg-color">
+            <img class="animation__shake1" src="{{ url('public/images/img/loader/loader.gif') }}" alt="loader" height="175" width="180">
         </div>
         <!-- Preloader end height="100" width="180"-->
         

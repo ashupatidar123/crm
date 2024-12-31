@@ -27,7 +27,7 @@
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "columnDefs": [{"targets": [0,1,3],"orderable": false}]
+            "columnDefs": [{"targets": [0,3],"orderable": false}]
         });
     }  
 

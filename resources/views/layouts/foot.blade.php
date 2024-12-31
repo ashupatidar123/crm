@@ -32,6 +32,11 @@
 <script src="{{ url('public/assets/dist/js/adminlte.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ url('public/assets/dist/js/demo.js') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.select2').select2();
+    });
+</script>
 <footer class="main-footer text-sm">
     <strong>2024 <a href="{{url('/dashboard')}}">© iShip_Fr8</a>.</strong>
     All rights reserved.

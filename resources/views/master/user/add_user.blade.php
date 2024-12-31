@@ -263,7 +263,6 @@
     <script>
         $(document).ready(function(){
             get_ajax_country('','country_id');
-            $('.select2').select2();
         });
     </script>
     @include('script.comman_js')

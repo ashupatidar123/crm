@@ -156,7 +156,6 @@
 <script>
     $(document).ready(function() {
         designation_data_table_list();
-        $('.select2').select2();
     });
 </script>
 @include('script.comman_js')

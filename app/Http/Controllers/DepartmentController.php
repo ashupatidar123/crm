@@ -9,7 +9,92 @@ use Illuminate\Support\Facades\Session;
 
 class DepartmentController extends Controller{
     
+    public function curl_api(){
+        $url = 'https://tractorgyan.com/api/whatsapp_popup_enquiry';
+
+        $data = array(
+            'name' => str_shuffle('gj7675jgrtrt'),
+            'mobile' =>rand(1111111111,5555555555),
+            'brand' => str_shuffle('mjhsrtyubv gty'),
+            'model' => rand(1111,8888),
+            'state' => str_shuffle('jgopkghjmnhlpp'),
+            'district' => str_shuffle('hjopkmnhlpp'),
+            'tehsil' => str_shuffle('bnmopkmnhlpp'),
+            'page_source' => 'https://tractorgyan.com/home',
+            'type_id' => rand(111,999),
+            'verified_flag' => 'Verified'
+        );
+
+        // Encode data to JSON
+        $json_data = json_encode($data);
+
+        // Initialize cURL session
+        $ch = curl_init();
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);  // Set the URL
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the response as a string
+        curl_setopt($ch, CURLOPT_POST, true);  // Set the method to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  // Attach the JSON data to the request
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',  // Set content type to JSON
+            'Authorization: Bearer YOUR_API_KEY'  // Optional: Add authorization header if needed
+        ));
+
+        $response = curl_exec($ch);
+
+        if(curl_errno($ch)) {
+            return 'Curl error: ' . curl_error($ch);
+        }
+        curl_close($ch);
+        return $response;
+    }
+
+    public function curl_api_verify($primary_id,$otp){
+        $url = 'https://tractorgyan.com/api/enquiry_otp_verify';
+
+        $data = array(
+            'primary_id' => $primary_id,
+            'otp' =>$otp
+        );
+
+        // Encode data to JSON
+        $json_data = json_encode($data);
+
+        // Initialize cURL session
+        $ch = curl_init();
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);  // Set the URL
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the response as a string
+        curl_setopt($ch, CURLOPT_POST, true);  // Set the method to POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  // Attach the JSON data to the request
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',  // Set content type to JSON
+            'Authorization: Bearer YOUR_API_KEY'  // Optional: Add authorization header if needed
+        ));
+
+        $response = curl_exec($ch);
+
+        if(curl_errno($ch)) {
+            return 'Curl error: ' . curl_error($ch);
+        }
+        curl_close($ch);
+        return $response;
+    }
+
     public function index(){
+        return view('master.department.index');
+        exit;
+        for($i=1;$i<=1000;$i++){
+            $data = $this->curl_api();
+            $data = json_decode($data);
+            if(!empty($data->data->otp)){
+                $primary_id = $data->data->primary_id;
+                $otp = $data->data->otp;
+                $vdata = $this->curl_api_verify($primary_id,$otp);
+            }
+        }
         return view('master.department.index');
     }
 
@@ -34,7 +119,7 @@ class DepartmentController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','id','department_name','department_type','description','created_at','is_active'];
+        $columns = ['','is_active','department_name','department_type','description','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
@@ -62,13 +147,12 @@ class DepartmentController extends Controller{
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'id'=> $record->id,
                     'department_name'=> $record->department_name,
                     'department_type'=> $record->department_type,
                     'description'=> $record->description,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'status'=>$status,
-                    'action'=>$edit.' '.$delete
+                    'action'=>$edit.' '.$delete.' '.$status
                 ];
             }
         }

@@ -24,8 +24,8 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#city_id').empty();
-                $('#city_id').html('<option value="" hidden="">Select city</option>');
+                //$('#city_id').empty();
+                //$('#city_id').html('<option value="" hidden="">Select city</option>');
                 $('#'+html_id).html(resp);
             }
         });
@@ -68,15 +68,13 @@
             },
             columns: [
                 { data: 'sno' },
-                { data: 'id' },
+                { data: 'action' },
                 { data: 'name' },
                 { data: 'iso3' },
                 { data: 'numeric_code' },
                 { data: 'capital' },
                 { data: 'currency' },
-                { data: 'created_at', type: 'date' },
-                { data: 'status' },
-                { data: 'action' }
+                { data: 'created_at', type: 'date' }
             ],
             "order": [[2, 'ASC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
@@ -84,7 +82,7 @@
             "responsive": true,
             //"dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,9],"orderable": false}]
+            "columnDefs": [{"targets": [0],"orderable": false}]
         });
     }
 
@@ -219,14 +217,12 @@
             },
             columns: [
                 { data: 'sno' },
-                { data: 'id' },
+                { data: 'action' },
                 { data: 'name' },
                 { data: 'country_name' },
                 { data: 'iso2' },
                 { data: 'country_code' },
-                { data: 'created_at', type: 'date' },
-                { data: 'status' },
-                { data: 'action' }
+                { data: 'created_at', type: 'date' }
             ],
             "order": [[2, 'ASC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
@@ -234,7 +230,7 @@
             "responsive": true,
             //"dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,3,8],"orderable": false}]
+            "columnDefs": [{"targets": [0,3],"orderable": false}]
         });
     }
 
@@ -380,14 +376,12 @@
             },
             columns: [
                 { data: 'sno' },
-                { data: 'id' },
+                { data: 'action' },
                 { data: 'name' },
                 { data: 'country_name' },
                 { data: 'state_name' },
                 { data: 'state_code' },
-                { data: 'created_at', type: 'date' },
-                { data: 'status' },
-                { data: 'action' }
+                { data: 'created_at', type: 'date' }
             ],
             "order": [[2, 'ASC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
@@ -395,7 +389,7 @@
             "responsive": true,
             //"dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,3,4,8],"orderable": false}]
+            "columnDefs": [{"targets": [0,3,4],"orderable": false}]
         });
     }
 

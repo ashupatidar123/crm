@@ -53,14 +53,14 @@
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <!-- <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{route('role.index')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Roles</p>
                             </a>
                         </li>
-                    </ul>
+                    </ul> -->
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{route('department.index')}}" class="nav-link">

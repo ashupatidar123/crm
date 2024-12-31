@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <!-- <h1>DataTables</h1> -->
+                    <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -37,30 +37,15 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>ID</th>
+                                        <th>Action</th>
                                         <th>Name</th>
                                         <th>Country Name</th>
                                         <th>State Name</th>
                                         <th>State Code</th>
                                         <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Sno</th>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Country Name</th>
-                                        <th>State Name</th>
-                                        <th>State Code</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                         <!-- /.card-body -->
@@ -150,7 +135,6 @@
 <script>
     $(document).ready(function() {
         city_data_table_list();
-        $('.select2').select2();
     });
 </script>
 @include('script.comman_js')

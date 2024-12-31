@@ -37,7 +37,7 @@ class DepartmentDesignationController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','','designation_name','','rank','description','created_at'];
+        $columns = ['','is_active','designation_name','','rank','description','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         

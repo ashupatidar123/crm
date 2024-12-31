@@ -38,13 +38,11 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>ID</th>
+                                        <th>Action</th>
                                         <th>Department Name</th>
                                         <th>Department Type</th>
                                         <th>Description</th>
                                         <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -141,7 +139,6 @@
 <script>
     $(document).ready(function() {
         department_data_table_list();
-        $('.select2').select2();
     });
 </script>
 @include('script.comman_js')

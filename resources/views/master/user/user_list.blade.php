@@ -50,14 +50,19 @@
                                                         <input type="text" name="search_email" id="search_email" class="form-control" placeholder="Search email">
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <input type="text" name="search_department_name" id="search_department_name" class="form-control" placeholder="Search department name">
+                                                        <select class="form-control select2" name="search_department_name" id="search_department_name" onchange="return get_designation_record('','search_designation_name','search_department_name');">
+                                                            <option value="" hidden="">Select department</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <input type="text" name="search_designation_name" id="search_designation_name" class="form-control" placeholder="Search designation name">
+                                                        <select class="form-control select2" name="search_designation_name" id="search_designation_name">
+                                                            <option value="" hidden="">Select designation</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 
@@ -175,30 +180,6 @@
                                                     <th>Updated date</th>
                                                     <td class="view_tbl_update_at"></td>
                                                 </tr>
-                                                <tr>
-                                                    <th>First name</th>
-                                                    <td class="view_tbl_first_name"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Middle name</th>
-                                                    <td class="view_tbl_middle_name"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Last name</th>
-                                                    <td class="view_tbl_last_name"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Phone</th>
-                                                    <td class="view_tbl_phone"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Date Of Birth</th>
-                                                    <td class="view_tbl_date_birth"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Updated date</th>
-                                                    <td class="view_tbl_update_at"></td>
-                                                </tr>
                                             </thead>
                                         </table>
                                     </div>
@@ -217,26 +198,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         user_data_table_list();
-    });
-    function user_search(){
-        user_data_table_list();
-    }
-    function search_reset_form(){
-        $('#userSearch').trigger("reset");
-        user_data_table_list();
-    }
-
-    $('#search_start_date').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeMonth: true,
-        changeYear: true,
-        maxDate: 0,
-    });
-    $('#search_end_date').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeMonth: true,
-        changeYear: true,
-        maxDate: 0,
+        get_department_record('','search_department_name');
     });
 </script>
 @include('script.user_js')

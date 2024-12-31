@@ -109,9 +109,11 @@
         });
     }
 
-    function get_designation_record(p_id='',html_id=''){
-        var selectedOption = $('#department_id').find('option:selected');
-        var department_id = selectedOption.val();
+    function get_designation_record(p_id='',html_id='',get_id_val='department_id',department_id=''){
+        if(department_id < 1){
+            var selectedOption = $('#'+get_id_val).find('option:selected');
+            var department_id = selectedOption.val();
+        }
         
         var type = 'ajax_list';
         $.ajax({
@@ -493,5 +495,26 @@
             };
             reader.readAsDataURL(file);
         }
+    });
+
+    function user_search(){
+        user_data_table_list();
+    }
+    function search_reset_form(){
+        $('#userSearch').trigger("reset");
+        user_data_table_list();
+    }
+
+    $('#search_start_date').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: 0,
+    });
+    $('#search_end_date').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        maxDate: 0,
     });
 </script>

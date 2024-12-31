@@ -35,7 +35,7 @@
                 <form method="POST" id="formId" enctype="multipart/form-data">
                     @csrf   
                     <input type="hidden" name="user_id" value="{{$data->id}}">
-                    <input type="hidden" name="address_id" value="{{$address->id}}"> 
+                    <input type="hidden" name="address_id" value="{{@$address->id}}"> 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card card-primary">
@@ -113,7 +113,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="phone2">Phone 2</label>
-                                            <input type="text" name="phone2" id="phone2" class="form-control"  placeholder="Enter phone 2 number" value="{{$address->phone2}}">
+                                            <input type="text" name="phone2" id="phone2" class="form-control"  placeholder="Enter phone 2 number" value="{{@$address->phone2}}">
                                             <p class="text-danger" id="phone2Error"></p>
                                         </div>
                                     </div>
@@ -200,28 +200,28 @@
                                         
                                         <div class="form-group">
                                             <label>ZIP Code / Postal code<span class="text-danger">*</span></label>
-                                            <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code" value="{{$address->zip_code}}">
+                                            <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code" value="{{@$address->zip_code}}">
                                             <p class="text-danger" id="zip_codeError"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 1<span class="text-danger">*</span></label>
-                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name" value="{{$address->address1}}">
+                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name" value="{{@$address->address1}}">
                                             <p class="text-danger" id="address1Error"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 2<span class="text-danger">*</span></label>
-                                            <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor" value="{{$address->address2}}">
+                                            <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor" value="{{@$address->address2}}">
                                             <p class="text-danger" id="address2Error"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 3</label>
-                                            <input type="text" name="address3" id="address3" class="form-control"  placeholder="Enter further address details or landmarks" value="{{$address->address3}}">
+                                            <input type="text" name="address3" id="address3" class="form-control"  placeholder="Enter further address details or landmarks" value="{{@$address->address3}}">
                                             <p class="text-danger" id="address3Error"></p>
                                         </div>
                                     </div>
@@ -244,15 +244,14 @@
     </div>
     <script>
         $(document).ready(function(){
-            get_ajax_country('{{$address->country_id}}','country_id');
-            get_ajax_state('{{$address->country_id}}','state_id','{{$address->state_id}}');
-            get_ajax_city('{{$address->state_id}}','city_id','{{$address->city_id}}');
+            get_ajax_country('{{@$address->country_id}}','country_id');
+            get_ajax_state('{{@$address->country_id}}','state_id','{{@$address->state_id}}');
+            get_ajax_city('{{@$address->state_id}}','city_id','{{@$address->city_id}}');
 
             get_role_reporting('{{$data->reporting_role_id}}','reporting_role_id');
 
             get_department_record('{{$data->department_id}}','department_id');
-            get_designation_record('{{$data->department_designation_id}}','department_designation_id')
-            $('.select2').select2();   
+            get_designation_record('{{$data->department_designation_id}}','department_designation_id','department_id','{{$data->department_id}}')
         });
     </script>
     @include('script.comman_js')
