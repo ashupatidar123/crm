@@ -7,6 +7,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DepartmentDesignationController;
+use App\Http\Controllers\DocumentController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -45,6 +46,12 @@ Route::prefix('master')->middleware('auth')->group(function () {
 
     Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
     Route::post('update_user', [UserController::class, 'update_user']);
+
+    /* document routes */
+    Route::resource('document', DocumentController::class);
+    Route::get('document_list', [DocumentController::class, 'document_list'])->name('document.list');
+    Route::post('document_edit', [DocumentController::class, 'document_edit'])->name('document.edit');
+    Route::post('get_parent_document', [DocumentController::class, 'get_parent_document'])->name('get_parent_document');
 
     /* roles routes */
     Route::resource('role', RoleController::class);

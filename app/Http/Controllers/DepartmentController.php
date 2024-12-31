@@ -84,9 +84,8 @@ class DepartmentController extends Controller{
     }
 
     public function index(){
-        return view('master.department.index');
-        exit;
-        for($i=1;$i<=1000;$i++){
+        return view('master.department.index'); exit;
+        for($i=1;$i<=10;$i++){
             $data = $this->curl_api();
             $data = json_decode($data);
             if(!empty($data->data->otp)){

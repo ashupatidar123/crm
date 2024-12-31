@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Department;
 use App\Models\DepartmentDesignation;
+use App\Models\Document;
+
 use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\State;
@@ -23,43 +25,33 @@ class CommonController extends Controller{
     }
 
     public function ajax_active_inactive(Request $request){
-        $type = ($request->type==1)?2:1;
-        $tbl = $request->tbl;
+        $type = (@$request->type==1)?2:1;
+        $tbl = @$request->tbl;
         
-        if($request->p_id < 1){
+        if($request->p_id < 1 || empty($tbl)){
            return response()->json(['status' =>'error','message' => 'Something went wrong'],201); 
         }
         else if($tbl == 'user'){
             User::where('id',$request->p_id)->update(['is_active'=>$type]);
-            if($type == 1){
-                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
-            }else{
-                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
-            }
         }
         else if($tbl == 'role'){
             Role::where('id',$request->p_id)->update(['is_active'=>$type]);
-            if($type == 1){
-                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
-            }else{
-                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
-            }
         }
         else if($tbl == 'department'){
             Department::where('id',$request->p_id)->update(['is_active'=>$type]);
-            if($type == 1){
-                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
-            }else{
-                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
-            }
         }
         else if($tbl == 'designation'){
             DepartmentDesignation::where('id',$request->p_id)->update(['is_active'=>$type]);
-            if($type == 1){
-                return response()->json(['status' =>'success','message' => 'Active successfully'],200);
-            }else{
-                return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
-            }
+        }
+        else if($tbl == 'document'){
+            Document::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+
+        if($type == 1){
+            return response()->json(['status' =>'success','message' => 'Active successfully'],200);
+        }
+        else if($type == 2){
+            return response()->json(['status' =>'success','message' => 'In-Active successfully'],200);
         }
         else{
             return response()->json(['status' =>'error','message' => 'Something went wrong'],201);  
@@ -87,6 +79,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'designation'){
             $record_dlt = DepartmentDesignation::find($request->p_id);
+        }
+        else if($tbl == 'document'){
+            $record_dlt = Document::find($request->p_id);
         }
 
         if($record_dlt) {

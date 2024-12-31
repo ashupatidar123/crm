@@ -75,7 +75,11 @@
                             }
                             else if(tbl == 'designation'){
                                 designation_data_table_list();
-                            }else{
+                            }
+                            else if(tbl == 'document'){
+                                document_data_table_list();
+                            }
+                            else{
                                 location.reload();
                             }
                             swal_success(resp.message,1800);
@@ -120,7 +124,11 @@
                             }
                             else if(tbl == 'designation'){
                                 designation_data_table_list();
-                            }else{
+                            }
+                            else if(tbl == 'document'){
+                                document_data_table_list();
+                            }
+                            else{
                                 location.reload();
                             }
                             swal_success(resp.message,1800);

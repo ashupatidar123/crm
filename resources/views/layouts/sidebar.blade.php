@@ -87,6 +87,14 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{{url('master/document')}}" class="nav-link">
+                                <i class="far fa fa-users nav-icon"></i>
+                                <p>Documents</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
                             <a href="{{url('master/region/country')}}" class="nav-link">
                                 <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>Country</p>
