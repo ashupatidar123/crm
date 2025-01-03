@@ -497,6 +497,102 @@
         }
     });
 
+    /* user details page document section tab*/
+
+    $("#documentSubmitButton").on("click",function (e) {
+        event.preventDefault();
+        $('#document_nameError, #document_idError, #user_documentError').html('');
+
+        var check = 0;
+        if($('#document_name').val() == ''){
+            var check = 1;
+            $('#document_nameError').html('This field is required');
+        }
+        if($('#document_id').val() == ''){
+            var check = 1;
+            $('#document_idError').html('This field is required');
+        }
+        if($('#user_document').val() == ''){
+            var check = 1;
+            $('#user_documentError').html('This field is required');
+        }
+        
+        if(check == 1){
+            swal_error('Some fields are required');
+            return false;
+        }
+        $('.show_message').html('');
+        $('#documentSubmitButton').html('Loading...');
+        var formData = new FormData($("#documentFormId")[0]);
+        $('#documentSubmitButton').attr('disabled',true);
+        $.ajax({
+            type: "POST",
+            url: "{{url('master/add_user_document')}}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function(resp) {
+                $('#documentSubmitButton').html('Submit');
+                $('#documentSubmitButton').attr('disabled',false);
+                $('.show_message').html(resp.message);
+                if(resp.status == 'success'){
+                    swal_success(resp.s_msg);
+                    location.reload();
+                }else{
+                    swal_error(resp.s_msg);
+                }
+            }
+        });
+    });
+
+
+    function user_document_data_table_list(){    
+        $('#tableList').DataTable().clear().destroy();
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit   = $('#end_limit').val();
+        var end_limit = (end_limit > 0)?end_limit:10;
+        var pageLength = (end_limit > 0)?end_limit:10;
+
+        var search_name = $('#search_name').val();
+        var search_email = $('#search_email').val();
+        var search_department_name = $('#search_department_name').val();
+        var search_designation_name = $('#search_designation_name').val();
+        var search_start_date = $('#search_start_date').val();
+        var search_end_date = $('#search_end_date').val();
+        
+        $('#tableList').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{url("master/user_document_list_tab")}}',
+                type: 'GET',
+                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date},
+            },
+            columns: [
+                { data: 'sno' },
+                { data: 'action' },
+                { data: 'document_name' },
+                { data: 'category_name' },
+                { data: 'document_type' },
+                { data: 'issue_date' },
+                { data: 'expiry_date' },
+                { data: 'user_document' },
+                { data: 'created_at', type: 'date' }
+                
+            ],
+            "order": [[8, 'DESC']],
+            "lengthMenu": [10,25,75,50,100,500,550,1000],
+            "pageLength": pageLength,
+            "responsive": true,
+            "dom": 'Bfrtip',
+            "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
+            "columnDefs": [{"targets": [0,1,6,7],"orderable": false}]
+        });
+    }
+
     function user_search(){
         user_data_table_list();
     }
@@ -505,13 +601,13 @@
         user_data_table_list();
     }
 
-    $('#search_start_date').datepicker({
+    $('#search_start_date, #search_end_date').datepicker({
         dateFormat: 'dd/mm/yy',
         changeMonth: true,
         changeYear: true,
         maxDate: 0,
     });
-    $('#search_end_date').datepicker({
+    $('#issue_date, #expiry_date').datepicker({
         dateFormat: 'dd/mm/yy',
         changeMonth: true,
         changeYear: true,

@@ -17,7 +17,7 @@
             columns: [
                 { data: 'sno' },
                 { data: 'action' },
-                { data: 'document_name' },
+                { data: 'category_name' },
                 { data: 'document_type' },
                 { data: 'parent_document' },
                 { data: 'description' },
@@ -35,8 +35,8 @@
         $('#addSubmitButton').html('Submit');
         $('#addSubmitButton').attr('disabled',false);
         if(type == 'add'){
-            $('#p_id, #document_name, #document_type, #document_id, #description').val('');
-            $('#document_id').val('').trigger('change');
+            $('#p_id, #category_name, #document_type, #description').val('');
+            //$('#parent_category_id').val('').trigger('change');
             $("#addModal").modal();
             return false;
         }
@@ -53,12 +53,12 @@
                 if(resp.data != ''){
                     var rep = resp.data;
                     $('#p_id').val(rep.id);
-                    $('#document_name').val(rep.document_name);
+                    $('#category_name').val(rep.category_name);
                     $('#document_type').val(rep.document_type);
                     $('#description').val(rep.description);
                     $('#is_active').val(rep.is_active);
                     $("#addModal").modal();
-                    get_parent_document(rep.document_id);
+                    get_parent_document(rep.parent_category_id);
                 }else{
                     swal_error('Something went wrong');
                     return false;
@@ -69,12 +69,12 @@
 
     $("#addSubmitButton").on("click",function (event) {
         event.preventDefault();
-        $('#document_nameError, #document_typeError, #descriptionError').html('');
+        $('#category_nameError, #document_typeError, #descriptionError').html('');
         var check = 0;
 
-        if($('#document_name').val() == ''){
+        if($('#category_name').val() == ''){
             var check = 1;
-            $('#document_nameError').html('This field is required');
+            $('#category_nameError').html('This field is required');
         }
         if($('#document_type').val() == ''){
             var check = 1;
@@ -129,7 +129,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#document_id').html(resp);
+                $('#parent_category_id').html(resp);
             }
         });
     }

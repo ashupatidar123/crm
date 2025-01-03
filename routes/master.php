@@ -47,6 +47,11 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
     Route::post('update_user', [UserController::class, 'update_user']);
 
+    Route::get('user-details/{id}', [UserController::class, 'showUserDetails']);
+    Route::post('user_tab_detail', [UserController::class, 'user_tab_detail'])->name('user_tab_detail');
+    Route::get('user_document_list_tab', [UserController::class, 'user_document_list_tab']);
+    Route::post('add_user_document', [UserController::class, 'add_user_document']);
+
     /* document routes */
     Route::resource('document', DocumentController::class);
     Route::get('document_list', [DocumentController::class, 'document_list'])->name('document.list');

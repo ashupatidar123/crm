@@ -13,15 +13,15 @@ class DepartmentController extends Controller{
         $url = 'https://tractorgyan.com/api/whatsapp_popup_enquiry';
 
         $data = array(
-            'name' => str_shuffle('gj7675jgrtrt'),
-            'mobile' =>rand(1111111111,5555555555),
+            'name' => str_shuffle('surbhi jain'),
+            'mobile' =>rand(1111111111,4444444444),
             'brand' => str_shuffle('mjhsrtyubv gty'),
             'model' => rand(1111,8888),
-            'state' => str_shuffle('jgopkghjmnhlpp'),
-            'district' => str_shuffle('hjopkmnhlpp'),
-            'tehsil' => str_shuffle('bnmopkmnhlpp'),
+            'state' => str_shuffle('jmnhlpp'),
+            'district' => str_shuffle('allowed'),
+            'tehsil' => str_shuffle('delhipup'),
             'page_source' => 'https://tractorgyan.com/home',
-            'type_id' => rand(111,999),
+            'type_id' => rand(11,77),
             'verified_flag' => 'Verified'
         );
 
@@ -84,9 +84,10 @@ class DepartmentController extends Controller{
     }
 
     public function index(){
-        return view('master.department.index'); exit;
-        for($i=1;$i<=10;$i++){
+        //return view('master.department.index'); exit;
+        for($i=1;$i<=5;$i++){
             $data = $this->curl_api();
+            //printr($data,'p');
             $data = json_decode($data);
             if(!empty($data->data->otp)){
                 $primary_id = $data->data->primary_id;

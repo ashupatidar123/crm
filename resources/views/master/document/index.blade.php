@@ -39,9 +39,9 @@
                                     <tr>
                                         <th>Sno</th>
                                         <th>Action</th>
-                                        <th>Document Name</th>
+                                        <th>Category Name</th>
                                         <th>Document Type</th>
-                                        <th>Parent Document</th>
+                                        <th>Parent Category</th>
                                         <th>Description</th>
                                         <th>Date</th>
                                     </tr>
@@ -83,9 +83,9 @@
                                         <div class="card-body row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Document Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="document_name" id="document_name" class="form-control" placeholder="Enter document name">
-                                                    <p class="text-danger" id="document_nameError"></p>
+                                                    <label>Category Name<span class="text-danger">*</span></label>
+                                                    <input type="text" name="category_name" id="category_name" class="form-control" placeholder="Enter category name">
+                                                    <p class="text-danger" id="category_nameError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -93,6 +93,7 @@
                                                     <label>Document Type<span class="text-danger">*</span></label>
                                                     <select class="form-control" name="document_type" id="document_type" required onchange="return get_parent_document();">
                                                         <option value="">Select document type</option>
+                                                        <option value="user">User</option>
                                                         <option value="office">Office</option>
                                                         <option value="vessel">Vessel</option>
                                                     </select>
@@ -103,10 +104,10 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Parent Document (Optional)</label>
-                                                    <select class="form-control select2" name="document_id" id="document_id">
+                                                    <select class="form-control select2" name="parent_category_id" id="parent_category_id">
                                                         <option value="0">Select document name</option>
                                                     </select>
-                                                    <p class="text-danger" id="document_idError"></p>
+                                                    <p class="text-danger" id="parent_category_idError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -131,7 +132,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <button id="addSubmitButton" type="submit" class="btn btn-primary">Submit</button>
-                                                    <button type="button" class="btn btn-danger referesh_form" onclick="return referesh_form();">Refresh</button>
+                                                    <button type="button" class="close1 btn btn-danger" data-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
                                         </div>

@@ -15,7 +15,7 @@ class DocumentController extends Controller{
 
     public function document_list_filter_count($search){
         if(!empty($search)) {
-            $filter_count = Document::where('document_name', 'LIKE', '%'.$search.'%')->orWhere('document_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
+            $filter_count = Document::where('category_name', 'LIKE', '%'.$search.'%')->orWhere('document_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
         }else{
             $filter_count = Document::count();
         }
@@ -34,13 +34,13 @@ class DocumentController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','is_active','document_name','document_type','','description','created_at'];
+        $columns = ['','is_active','category_name','document_type','','description','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = Document::with('single_doc')->select('id','document_name','document_type','document_id','description','created_at','is_active');
+        $query = Document::with('single_doc')->select('id','category_name','document_type','parent_category_id','description','created_at','is_active');
         if(!empty($search)) {
-            $query->where('document_name', 'LIKE', '%'.$search.'%')->orWhere('document_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
+            $query->where('category_name', 'LIKE', '%'.$search.'%')->orWhere('document_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
         }
         $query->orderBy($orderColumnIndex, $orderDirection);
         $users = $query->offset($start_limit)->limit($end_limit)->get(); 
@@ -60,10 +60,10 @@ class DocumentController extends Controller{
                     $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'document\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
-                $parent_document = !empty(@$record->single_doc->document_name)?$record->single_doc->document_name:'No Parent';
+                $parent_document = !empty(@$record->single_doc->category_name)?$record->single_doc->category_name:'No Parent';
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'document_name'=> $record->document_name,
+                    'category_name'=> $record->category_name,
                     'document_type'=> $record->document_type,
                     'parent_document'=> $parent_document,
                     'description'=> $record->description,
@@ -85,15 +85,15 @@ class DocumentController extends Controller{
     public function store(Request $request){
         $p_id = ($request->p_id > 0)?$request->p_id:'';
         
-        $check = Document::where('document_name',$request->document_name)->where('id','!=',$p_id)->count();
+        $check = Document::where('category_name',$request->category_name)->where('id','!=',$p_id)->count();
         if($check > 0){
             return response()->json(['status' =>'error','message' => 'Document already exist...'],200);
         }
         
         $data = [
-            'document_name' => $request->document_name,
+            'category_name' => $request->category_name,
             'document_type' => $request->document_type,
-            'document_id' => !empty($request->document_id)?$request->document_id:0,
+            'parent_category_id' => !empty($request->parent_category_id)?$request->parent_category_id:0,
             'description' => $request->description,
             'is_active' => ($request->is_active==1)?1:2,
             'created_by'=>Auth::user()->id
@@ -121,7 +121,7 @@ class DocumentController extends Controller{
 
     public function update(Request $request, string $id){
         $update_data = [
-            'document_name' => $request->document_name,
+            'category_name' => $request->category_name,
             'document_type' => $request->document_type,
             'description' => $request->description,
             'is_active' => ($request->is_active==1)?1:2,
@@ -144,18 +144,19 @@ class DocumentController extends Controller{
         $document_type = !empty($request->document_type)?trim($request->document_type):'';
         
         if($show_type == 'ajax_list'){
-            $data = Document::select('id','document_name')->where('document_type',$document_type)->where('is_active',1)->orderBy('document_id','ASC')->limit(500)->get();
-            $html = '<option value="" hidden="">Select parent document</option>';
-            if(!empty($data)){
+            $data = Document::select('id','parent_category_id','category_name')->where('document_type',$document_type)->where('is_active',1)->orderBy('parent_category_id','ASC')->limit(500)->get();
+            $html = '<option value="" hidden="">Select parent category</option>';
+            if(count($data->toArray())){
                 foreach($data as $record){
+                    $parent_category_id = ($record->parent_category_id==0)?'Parent':'Child';
                     $selected = '';
                     if($id == $record->id){
                         $selected = 'selected';
                     }
-                    $html .= '<option value="'.$record->id.'" '.$selected.'>'.ucwords($record->document_name).'</option>';
+                    $html .= '<option value="'.$record->id.'" '.$selected.'>'.ucwords($record->category_name).' ('.$parent_category_id.')</option>';
                 }
             }else{
-                $html .= '<option value="" hidden>Not found</option>';
+                $html = '<option value="" hidden>Not found</option>';
             }
             echo $html;
         }
