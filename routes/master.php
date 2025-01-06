@@ -51,6 +51,7 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('user_tab_detail', [UserController::class, 'user_tab_detail'])->name('user_tab_detail');
     Route::get('user_document_list_tab', [UserController::class, 'user_document_list_tab']);
     Route::post('add_user_document', [UserController::class, 'add_user_document']);
+    Route::post('user_document_edit', [UserController::class, 'user_document_edit']);
 
     /* document routes */
     Route::resource('document', DocumentController::class);
@@ -68,7 +69,7 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::get('department_list', [DepartmentController::class, 'department_list'])->name('department.list');
     Route::post('department_edit', [DepartmentController::class, 'department_edit'])->name('department.edit');
 
-    /* department routes */
+    /* designation routes */
     Route::resource('designation', DepartmentDesignationController::class);
     Route::get('designation_list', [DepartmentDesignationController::class, 'designation_list'])->name('designation.list');
     Route::post('designation_edit', [DepartmentDesignationController::class, 'designation_edit'])->name('designation.edit');

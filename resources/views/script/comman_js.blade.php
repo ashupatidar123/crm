@@ -79,6 +79,9 @@
                             else if(tbl == 'document'){
                                 document_data_table_list();
                             }
+                            else if(tbl == 'user_document'){
+                                user_document_data_table_list();
+                            }
                             else{
                                 location.reload();
                             }
@@ -127,6 +130,9 @@
                             }
                             else if(tbl == 'document'){
                                 document_data_table_list();
+                            }
+                            else if(tbl == 'user_document'){
+                                user_document_data_table_list();
                             }
                             else{
                                 location.reload();

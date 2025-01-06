@@ -90,6 +90,7 @@
 
         function user_change_tab(page_type=''){
             var id = "{{$data->id}}";
+            $('.hideSection').hide();
             $('.setTabLoaderDiv').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             $.ajax({
                 method: 'POST',
@@ -106,6 +107,7 @@
                     else if(page_type == 'document'){
                         $('#setDocumentDiv').html(response);
                     }
+                    $('.hideSection').show();
                 }
             });
         }

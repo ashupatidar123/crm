@@ -33,7 +33,7 @@
                                 <div class="form-group">
                                     <label>Issue Date (Optional)</label>
                                     <div class="input-group date">
-                                        <input type="text" name="issue_date" id="issue_date" class="form-control" readonly>
+                                        <input type="text" name="issue_date2" id="issue_date2" class="form-control" readonly>
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                     <p class="text-danger" id="issue_dateError"></p>

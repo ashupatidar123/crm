@@ -499,56 +499,6 @@
 
     /* user details page document section tab*/
 
-    $("#documentSubmitButton").on("click",function (e) {
-        event.preventDefault();
-        $('#document_nameError, #document_idError, #user_documentError').html('');
-
-        var check = 0;
-        if($('#document_name').val() == ''){
-            var check = 1;
-            $('#document_nameError').html('This field is required');
-        }
-        if($('#document_id').val() == ''){
-            var check = 1;
-            $('#document_idError').html('This field is required');
-        }
-        if($('#user_document').val() == ''){
-            var check = 1;
-            $('#user_documentError').html('This field is required');
-        }
-        
-        if(check == 1){
-            swal_error('Some fields are required');
-            return false;
-        }
-        $('.show_message').html('');
-        $('#documentSubmitButton').html('Loading...');
-        var formData = new FormData($("#documentFormId")[0]);
-        $('#documentSubmitButton').attr('disabled',true);
-        $.ajax({
-            type: "POST",
-            url: "{{url('master/add_user_document')}}",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': csrf_token
-            },
-            success: function(resp) {
-                $('#documentSubmitButton').html('Submit');
-                $('#documentSubmitButton').attr('disabled',false);
-                $('.show_message').html(resp.message);
-                if(resp.status == 'success'){
-                    swal_success(resp.s_msg);
-                    location.reload();
-                }else{
-                    swal_error(resp.s_msg);
-                }
-            }
-        });
-    });
-
-
     function user_document_data_table_list(){    
         $('#tableList').DataTable().clear().destroy();
         var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
@@ -584,7 +534,7 @@
                 
             ],
             "order": [[8, 'DESC']],
-            "lengthMenu": [10,25,75,50,100,500,550,1000],
+            "lengthMenu": [5,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
             "dom": 'Bfrtip',
@@ -592,6 +542,147 @@
             "columnDefs": [{"targets": [0,1,6,7],"orderable": false}]
         });
     }
+
+    function add_edit_user_document(p_id='',type=''){
+        $('#addSubmitButton').html('Submit');
+        $('#addSubmitButton').attr('disabled',false);
+        $('#userDocumentFileList').html('');
+        if(type == 'add'){
+            $('#p_id, #document_name, #issue_date, #expiry_date, #description').val('');
+            $('#document_id').val('').trigger('change');
+            $('#user_document_show').html('');
+            $("#addEditUserDocumentModal").modal();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{{ url('master/user_document_edit') }}",
+            data: {p_id,type},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            dataType:'JSON',
+            success: function (resp) {
+                
+                if(resp.data != ''){
+                    var rep = resp.data;
+                    $('#p_id').val(rep.id);
+                    $("#addEditUserDocumentModal").modal();
+                    $('#document_name').val(rep.document_name);
+                    $('#document_id').val(rep.document_id).trigger('change');
+                    $('#issue_date').val(rep.issue_date);
+                    $('#expiry_date').val(rep.expiry_date);
+                    $('#document_type').val(rep.document_type);
+                    $('#document_description').val(rep.description);
+                    $('#user_document_show').html(rep.user_document);
+                    $('#is_active').val(rep.is_active);
+                }else{
+                    swal_error('Something went wrong');
+                    return false;
+                }
+            }
+        });  
+    }
+
+    /*user document Drag-and-drop functionality*/
+    var userDocumentFileUpload = [];
+    $(document).ready(function() {
+        $("#user_document").on("change", function(event) {
+            userDocumentFileUpload = event.target.files;
+            $('#user_documentError').html('');
+            handleFileUpload(event.target.files);
+        });
+
+        $("#dragDropArea").on("dragover", function(event) {
+            event.preventDefault();
+            $(this).css("background-color", "#f0f8ff");
+        });
+
+        $("#dragDropArea").on("dragleave", function(event) {
+            $(this).css("background-color", "white");
+        });
+
+        $("#dragDropArea").on("drop", function(event) {
+            event.preventDefault();
+            $(this).css("background-color", "white");
+            userDocumentFileUpload = event.originalEvent.dataTransfer.files;
+            handleFileUpload(event.originalEvent.dataTransfer.files);
+        });
+
+        function handleFileUpload(files) {
+            $('#user_documentError').html('');
+            if (files.length > 0) {
+                var fileListHTML = "<ul>";
+                for (var i = 0; i < files.length; i++) {
+                    fileListHTML += "<li>" + files[i].name + " (" + files[i].size + " bytes)</li>";
+                }
+                
+                fileListHTML += "</ul>";
+                $("#userDocumentFileList").html(fileListHTML);
+            } else {
+                $("#userDocumentFileList").html("<p>No files selected</p>");
+            }
+        }
+    });
+    /*Drag-and-drop functionality*/
+
+    $("#addEditUserDocumentSubmit").on("click",function (e) {
+        event.preventDefault();
+        $('#document_nameError, #document_idError, #user_documentError').html('');
+
+        var check = 0;
+        if($('#document_name').val() == ''){
+            var check = 1;
+            $('#document_nameError').html('This field is required');
+        }
+        if($('#document_id').val() == ''){
+            var check = 1;
+            $('#document_idError').html('This field is required');
+        }
+        if(($('#p_id').val() < 1) && (userDocumentFileUpload.length < 1)){
+            var check = 1;
+            $('#user_documentError').html('Document is required');
+        }
+        
+        if(check == 1){
+            swal_error('Some fields are required');
+            return false;
+        }
+        $('.show_message').html('');
+        $('#addEditUserDocumentSubmit').html('Loading...');
+        $('#addEditUserDocumentSubmit').attr('disabled',true);
+
+        var formData = new FormData($("#addEditUserDocumentFormId")[0]);
+        
+        if(userDocumentFileUpload.length > 0){
+            for(var i = 0; i < userDocumentFileUpload.length; i++) {
+                formData.append('user_document', userDocumentFileUpload[i]);
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: "{{url('master/add_user_document')}}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function(resp) {
+                $('#addEditUserDocumentSubmit').html('Submit');
+                $('#addEditUserDocumentSubmit').attr('disabled',false);
+                //$('.show_message').html(resp.message);
+                if(resp.status == 'success'){
+                    swal_success(resp.s_msg);
+                    $("#addEditUserDocumentModal").modal('hide');
+                    user_document_data_table_list();
+                    //location.reload();
+                }else{
+                    swal_error(resp.s_msg);
+                }
+            }
+        });
+    });
 
     function user_search(){
         user_data_table_list();
@@ -607,8 +698,8 @@
         changeYear: true,
         maxDate: 0,
     });
-    $('#issue_date, #expiry_date').datepicker({
-        dateFormat: 'dd/mm/yy',
+    $('#issue_date1, #expiry_date1').datepicker({
+        dateFormat: 'mm/dd/yyyy',
         changeMonth: true,
         changeYear: true,
         maxDate: 0,

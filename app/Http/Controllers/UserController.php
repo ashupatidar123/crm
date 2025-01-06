@@ -510,42 +510,26 @@ class UserController extends Controller
         }
         else if($page_type == 'document'){
             $data_document = Document::where(['document_type'=>$department_type,'is_active'=>1])->get();
-            //printr($data_document);
-            //return view('master.user.tab.add_document',compact('data','address','data_document'));
-            return view('master.user.tab.user_document_list');
-
-            //return view('master.user.tab.user_document_list',compact('data','address','data_document'));
+            return view('master.user.tab.user_document_list',compact('data','address','data_document'));
         }
     }
 
     public function user_document_list_tab_filter_count($search,$postData){
-        $search_department_name = @$postData['search_department_name'];
-        $search_designation_name = @$postData['search_designation_name'];
-        $search_start_date = !empty($postData['search_start_date'])?$postData['search_start_date']:'';
-        $search_end_date = !empty($postData['search_end_date'])?$postData['search_end_date']:'';
+        
+        $issue_date = !empty($postData['issue_date'])?$postData['issue_date']:'';
+        $expiry_date = !empty($postData['expiry_date'])?$postData['expiry_date']:'';
 
         $filter_count = UserDocument::with('single_document')->where('id','>',0);
         if(!empty($search)) {
-            $filter_count = UserDocument::with('single_document')->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('login_id', 'LIKE', '%'.$search.'%');
+            $filter_count = UserDocument::with('single_document')->where('document_name', 'LIKE', '%'.$search.'%')->orWhere('document_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('user_document', 'LIKE', '%'.$search.'%');
         }
-        if(!empty($postData['search_name'])) {
-            $filter_count->where('first_name', 'LIKE', '%'.$postData['search_name'].'%');
+        if(!empty($issue_date)){
+            $issue_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['issue_date'])));
+            $filter_count->where('issue_date', '>=', date($issue_date));
         }
-        if(!empty($postData['search_email'])) {
-            $filter_count->where('email', 'LIKE', '%'.$postData['search_email'].'%');
-        }
-        if(!empty($search_start_date) && !empty($search_end_date)){
-            $search_start_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_date'])));
-            $search_end_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_date']. ' +1 day')));
-
-            $filter_count->where('created_at', '>=', date($search_start_date));
-            $filter_count->where('created_at', '<=', date($search_end_date)); 
-        }
-        if(!empty($search_department_name)){
-            $filter_count->where('department_id',$search_department_name);
-        }
-        if(!empty($search_designation_name)){
-            $filter_count->where('department_designation_id',$search_designation_name);
+        if(!empty($expiry_date)){
+            $expiry_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['expiry_date'])));
+            $filter_count->where('expiry_date', '>=', date($expiry_date));
         }
         return $filter_count->count();
     }
@@ -560,13 +544,8 @@ class UserController extends Controller
             $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
         }
 
-        $search_name = !empty($request->input('search_name'))?$request->input('search_name'):'';
-        $search_email = !empty($request->input('search_email'))?$request->input('search_email'):'';
-        $search_department_name = !empty($request->input('search_department_name'))?$request->input('search_department_name'):'';
-        $search_designation_name = !empty($request->input('search_designation_name'))?$request->input('search_designation_name'):'';
-
-        $search_start_date = !empty($request->input('search_start_date'))?$request->input('search_start_date'):'';
-        $search_end_date = !empty($request->input('search_end_date'))?$request->input('search_end_date'):'';
+        $issue_date = !empty($request->input('issue_date'))?$request->input('issue_date'):'';
+        $expiry_date = !empty($request->input('expiry_date'))?$request->input('expiry_date'):'';
         
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
@@ -578,15 +557,15 @@ class UserController extends Controller
         $query = UserDocument::with('single_document')->select('id','document_id','document_name','document_type','issue_date','expiry_date','user_document','created_at','is_active');
         
         if(!empty($search)) {
-            $query->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('login_id', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
+            $query->where('document_name', 'LIKE', '%'.$search.'%')->orWhere('document_type', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('user_document', 'LIKE', '%'.$search.'%');
         }
-        
-        if(!empty($search_start_date) && !empty($search_end_date)){
-            $search_start_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_date'))));
-            $search_end_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_date'). ' +1 day')));
-
-            $query->where('created_at', '>=', date($search_start_date));
-            $query->where('created_at', '<=', date($search_end_date)); 
+        if(!empty($issue_date)){
+            $issue_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('issue_date'))));
+            $query->where('issue_date',date($issue_date));
+        }
+        if(!empty($expiry_date)){
+            $expiry_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('expiry_date'))));
+            $query->where('expiry_date',date($expiry_date));
         }
         
         $query->orderBy($orderColumnIndex, $orderDirection);
@@ -595,23 +574,32 @@ class UserController extends Controller
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($users)){
-            $recordsTotal = User::count();
+            $recordsTotal = UserDocument::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<a href="'.url('master/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
-                $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user\');" title="View"><i class="fa fa-eye"></i></button>';
+                $edit1 = '<a href="'.url('master/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
+                
+                $edit = '<button class="btn btn-default btn-sm" onclick="return add_edit_user_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
 
-                $delete = '<button class="btn btn-default btn-sm" onclick="return ajax_delete('.$record->id.',\'user\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user_document\');" title="View"><i class="fa fa-eye"></i></button>';
+
+                $delete = '<button class="btn btn-default btn-sm" onclick="return ajax_delete('.$record->id.',\'user_document\');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',1,\'user\');" title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',1,\'user_document\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'user\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'user_document\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $issue_date = !empty($record->issue_date)?date('d/M/Y',strtotime($record->issue_date)):'';
                 $expiry_date = !empty($record->expiry_date)?date('d/M/Y',strtotime($record->expiry_date)):'';
-                $user_document = !empty($record->user_document)?$record->user_document:'';
+                
+                if(!empty($record->user_document)){
+                    $doc_url = asset('storage/app/public/uploads/document/users').'/'.$record->user_document;
+                    $doc_url = '<a target="_blank" class="btn btn-default" href="'.$doc_url.'">Click</a>';
+                }else{
+                    $doc_url = 'No Doc';
+                }
 
                 $category_name = @$record->single_document->category_name;
 
@@ -623,7 +611,7 @@ class UserController extends Controller
                     'document_type'=> @$record->document_type,
                     'issue_date'=> $issue_date,
                     'expiry_date'=> $expiry_date,
-                    'user_document'=> @$user_document,
+                    'user_document'=> @$doc_url,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at))
                 ];
             }
@@ -638,33 +626,52 @@ class UserController extends Controller
     }
 
     public function add_user_document(Request $request){
-        //printr($request->all(),'p');
-        if(empty($request->document_name) || empty($request->document_id) || empty($request->user_document) || empty($request->user_id)){
+        //printr($request->file('user_document'),'pp');
+        if(empty($request->document_name) || empty($request->document_id) || empty($request->user_id)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
-
-        $user_document = '';
-        if(!empty($request->file('user_document'))){
-            $user_document = $this->uploadFile($request, 'user_document', 'uploads/document/users');
+        $p_id = !empty(@$request->p_id)?@$request->p_id:'';
+        if(empty($request->user_document) && $p_id < 1){
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Document is required...</p>','s_msg'=>'Document is required...'],200);
         }
-
+        
         $postData = [
-            'user_id'=>$request->user_id,
+            'user_id'=>@$request->user_id,
             'document_id' => $request->document_id,
             'document_type' => $request->document_type,
             'document_name' => $request->document_name,
-            'issue_date' => !empty($request->issue_date)?date('Y-m-d',strtotime($request->issue_date)):'',
-            'expiry_date' => !empty($request->expiry_date)?date('Y-m-d',strtotime($request->expiry_date)):'',
-            'user_document' => $user_document,
+            'issue_date' => !empty($request->issue_date)?date('Y-m-d',strtotime($request->issue_date)):null,
+            'expiry_date' => !empty($request->expiry_date)?date('Y-m-d',strtotime($request->expiry_date)):null,
             'is_active' => ($request->is_active==1)?1:2,
+            'description' => @$request->document_description,
             'created_by'=>Auth::user()->id
         ];
+        if(!empty($request->file('user_document'))){
+            $postData['user_document'] = $this->uploadFile($request, 'user_document', 'uploads/document/users');
+        }
 
-        $id = UserDocument::insertGetId($postData);
+        if($p_id <= 0){
+            $id = UserDocument::insertGetId($postData);
+        }else{
+            UserDocument::where('id',$request->p_id)->update($postData);
+            $id = $p_id;
+        }
         if($id > 0){
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User document uploaded...</p>','s_msg'=>'User document uploaded...'],200);
         }else{
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],200);
         }
+    }
+
+    public function user_document_edit(Request $request){
+        $data = UserDocument::where('id',$request->p_id)->first();
+        if(!empty($data->user_document)){
+            $doc_url = asset('storage/app/public/uploads/document/users').'/'.$data->user_document;
+            $doc_url = '<a target="_blank" class="btn btn-default" href="'.$doc_url.'">'.$data->user_document.'</a>';
+        }else{
+            $doc_url = '';
+        }
+        $data['user_document'] = @$doc_url;
+        echo json_encode(['data'=>$data]);
     }
 }
