@@ -2,21 +2,11 @@
 <aside class="main-sidebar elevation-4 sidebar-light-lime">
     <!-- Brand Logo -->
     <a href="{{url('/dashboard')}}" class="brand-link text-sm">
-    <img src="{{ url('public/images/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light">SEA Transport</span>
+    <img src="{{ url('public/images/img/sts-marine.png') }}" alt="STS Marien" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <span class="brand-text font-weight-light">STS Marien</span>
     </a>
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
-        <!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img src="{{ url('public/images/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
-            </div>
-            <div class="info">
-                <a href="#" class="d-block">{{ ucwords(Auth::user()->name) }}</a>
-            </div>
-        </div> -->
-
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column text-sm" data-widget="treeview" role="menu" data-accordion="false">
@@ -28,25 +18,8 @@
                         </p>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fa fa-users"></i>
-                        <p>Users
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{url('register')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Register</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li> -->
 
-                <li class="nav-item">
+                <li class="nav-item {{(Request::segment(1)=='master')?'menu-is-opening menu-open':''}}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-database"></i>
                         <p>Master Section
@@ -62,7 +35,7 @@
                         </li>
                     </ul> -->
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(2)=='department')?'nav_active':''}}">
                             <a href="{{route('department.index')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Departments</p>
@@ -70,7 +43,7 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(2)=='designation')?'nav_active':''}}">
                             <a href="{{route('designation.index')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Designations</p>
@@ -78,7 +51,7 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(2)=='user')?'nav_active':''}}">
                             <a href="{{url('master/user')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Users</p>
@@ -86,7 +59,7 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(2)=='document')?'nav_active':''}}">
                             <a href="{{url('master/document')}}" class="nav-link">
                                 <i class="far fa fa-users nav-icon"></i>
                                 <p>Documents</p>
@@ -94,7 +67,7 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(3)=='country')?'nav_active':''}}">
                             <a href="{{url('master/region/country')}}" class="nav-link">
                                 <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>Country</p>
@@ -102,7 +75,7 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(3)=='state')?'nav_active':''}}">
                             <a href="{{url('master/region/state')}}" class="nav-link">
                                 <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>State</p>
@@ -110,10 +83,27 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item {{(Request::segment(3)=='city')?'nav_active':''}}">
                             <a href="{{url('master/region/city')}}" class="nav-link">
                                 <i class="far fa fa-asterisk nav-icon"></i>
                                 <p>City</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item {{(Request::segment(1)=='vessel')?'menu-is-opening menu-open':''}}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-database"></i>
+                        <p>Vessel Section
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item {{(Request::segment(2)=='vessel')?'nav_active':''}}">
+                            <a href="{{route('vessel.index')}}" class="nav-link">
+                                <i class="far fa fa-users nav-icon"></i>
+                                <p>Vessel</p>
                             </a>
                         </li>
                     </ul>

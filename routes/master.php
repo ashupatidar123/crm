@@ -8,6 +8,7 @@ use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DepartmentDesignationController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\VesselController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -46,7 +47,7 @@ Route::prefix('master')->middleware('auth')->group(function () {
 
     Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
     Route::post('update_user', [UserController::class, 'update_user']);
-
+    Route::post('user_delete', [UserController::class, 'user_delete']);
     Route::get('user-details/{id}', [UserController::class, 'showUserDetails']);
     Route::post('user_tab_detail', [UserController::class, 'user_tab_detail'])->name('user_tab_detail');
     Route::get('user_document_list_tab', [UserController::class, 'user_document_list_tab']);
@@ -91,7 +92,11 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('region/city_update', [RegionController::class,'city_update']);
 
     Route::post('region/region_active_inactive', [RegionController::class,'region_active_inactive']);
+});
 
-
-    Route::post('user_delete', [UserController::class, 'user_delete']);
+Route::prefix('vessel')->middleware('auth')->group(function () {
+    /* vessels routes */
+    Route::resource('vessel', VesselController::class);
+    Route::get('vessel_list', [VesselController::class, 'vessel_list'])->name('vessel.list');
+    Route::post('vessel_edit', [VesselController::class, 'vessel_edit'])->name('vessel.edit');
 });
