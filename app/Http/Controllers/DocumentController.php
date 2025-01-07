@@ -51,13 +51,13 @@ class DocumentController extends Controller{
             $recordsTotal = Document::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<button class="btn btn-default btn-sm" onclick="return add_edit_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return ajax_delete('.$record->id.',\'document\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'document\');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',1,\'document\');" title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'document\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'document\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'document\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $parent_document = !empty(@$record->single_doc->category_name)?$record->single_doc->category_name:'No Parent';

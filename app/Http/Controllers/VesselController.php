@@ -7,9 +7,15 @@ use App\Models\Role;
 use App\Models\Vessel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Traits\FileUploadTrait;
 
 class VesselController extends Controller{
     
+    use FileUploadTrait;
+    public function __construct(){
+
+    }
+
     public function index(){
         return view('vessel.vessel.index');
     }
@@ -52,13 +58,13 @@ class VesselController extends Controller{
             $recordsTotal = Vessel::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<button class="btn btn-default btn-sm" onclick="return add_edit_vessel('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return ajax_delete('.$record->id.',\'vessel\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_vessel('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'vessel\');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',1,\'vessel\');" title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'vessel\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'vessel\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'vessel\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -84,7 +90,7 @@ class VesselController extends Controller{
 
     public function store(Request $request){
         $p_id = ($request->p_id > 0)?$request->p_id:'';
-        printr($request->all());
+        printr($request->all(),'p');
         $data = [
             'vessel_name' => $request->vessel_name,
             'technical_manager' => $request->technical_manager,
@@ -108,11 +114,12 @@ class VesselController extends Controller{
             'yard' => $request->yard,
             'sid' => $request->sid,
             'is_active' => ($request->is_active==1)?1:2,
+            'description' => $request->description,
             'created_by'=>Auth::user()->id
         ];
 
-        if(!empty($request->file('vessel_image'))){
-            $data['vessel_image'] = $this->uploadFile($request, 'vessel_image', 'uploads/image/vessel');
+        if(!empty($request->vessel_image)){
+            $data['vessel_image'] = $request->vessel_image;
         } 
         
         $message = 'Opps! Something went wrong...';
@@ -133,7 +140,23 @@ class VesselController extends Controller{
 
     public function vessel_edit(Request $request){
         $data = Vessel::where('id',$request->p_id)->first();
+    
+        if(!empty($data->vessel_image)){
+            $img_url = asset('storage/app/public/uploads/image/vessel').'/'.$data->vessel_image;
+        }else{
+            $img_url = url('public/images/img/no_image.png');
+        }
+        $data['vessel_image'] = '<img src="'.$img_url.'" width="90px" height="70px">';
+
         echo json_encode(['data'=>$data]);
+    }
+
+    public function vessel_file_upload(Request $request){
+        $vessel_image = '';
+        if(!empty($request->file('vessel_image'))){
+            $vessel_image = $this->uploadFile($request, 'vessel_image', 'uploads/image/vessel');
+        }
+        echo $vessel_image;
     }
 }
 

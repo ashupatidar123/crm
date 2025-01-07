@@ -98,5 +98,6 @@ Route::prefix('vessel')->middleware('auth')->group(function () {
     /* vessels routes */
     Route::resource('vessel', VesselController::class);
     Route::get('vessel_list', [VesselController::class, 'vessel_list'])->name('vessel.list');
-    Route::post('vessel_edit', [VesselController::class, 'vessel_edit'])->name('vessel.edit');
+    Route::post('vessel_edit', [VesselController::class, 'vessel_edit']);
+    Route::post('vessel_file_upload', [VesselController::class, 'vessel_file_upload']);
 });

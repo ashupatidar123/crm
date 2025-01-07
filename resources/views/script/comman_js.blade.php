@@ -54,6 +54,9 @@
             confirmButtonText: "Yes, ok it!"
         }).then((result) => {
             if(result.isConfirmed) {
+                $('.activeInactiveLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+                $('.activeInactiveLoader_'+p_id).attr('disabled',true);
+
                 $.ajax({
                     type: "POST",
                     url: "{{url('master/ajax_active_inactive')}}",
@@ -82,6 +85,9 @@
                             else if(tbl == 'user_document'){
                                 user_document_data_table_list();
                             }
+                            else if(tbl == 'vessel'){
+                                vessel_data_table_list();
+                            }
                             else{
                                 location.reload();
                             }
@@ -106,6 +112,9 @@
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if(result.isConfirmed) {
+                $('.deleteLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+                $('.deleteLoader_'+p_id).attr('disabled',true);
+
                 $.ajax({
                     type: "POST",
                     url: "{{url('master/ajax_delete')}}",
@@ -133,6 +142,9 @@
                             }
                             else if(tbl == 'user_document'){
                                 user_document_data_table_list();
+                            }
+                            else if(tbl == 'vessel'){
+                                vessel_data_table_list();
                             }
                             else{
                                 location.reload();

@@ -12,6 +12,7 @@ use App\Models\Department;
 use App\Models\DepartmentDesignation;
 use App\Models\Document;
 use App\Models\UserDocument;
+use App\Models\Vessel;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -49,6 +50,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'user_document'){
             UserDocument::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'vessel'){
+            Vessel::where('id',$request->p_id)->update(['is_active'=>$type]);
         }
 
         if($type == 1){
@@ -89,6 +93,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'user_document'){
             $record_dlt = UserDocument::find($request->p_id);
+        }
+        else if($tbl == 'vessel'){
+            $record_dlt = Vessel::find($request->p_id);
         }
 
         if($record_dlt) {

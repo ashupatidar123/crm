@@ -32,6 +32,9 @@
 <script src="{{ url('public/assets/dist/js/adminlte.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ url('public/assets/dist/js/demo.js') }}"></script>
+<!-- dropzone image -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function(){
         $('.select2').select2();

@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <button type="button" class="btn btn-sm btn-default" onclick="return add_edit_department('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="return add_edit_vessel('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
                     <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
                 </div>
                 <div class="col-sm-6">
@@ -40,7 +40,7 @@
                                         <th>Sno</th>
                                         <th class="set_action_width3">Action</th>
                                         <th>Vessel Name</th>
-                                        <th>Technical Manager Type</th>
+                                        <th>Technical Manager</th>
                                         <th>Registered Owner</th>
                                         <th>Vessel Email</th>
                                         <th>Date</th>
@@ -71,7 +71,7 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" id="addFormId">
+                        <form method="POST" id="addFormId" class="dropzone" enctype="multipart/form-data">
                             @csrf    
                             <div class="row">
                                 <input type="hidden" name="p_id" id="p_id">
@@ -148,7 +148,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Delivery Date</label>
-                                                    <input type="date" name="delivery_date" id="delivery_date" class="form-control" placeholder="Enter delivery_date">
+                                                    <input type="text" name="delivery_date" id="delivery_date" class="form-control" placeholder="dd/mm/yyyy" readonly>
                                                     <p class="remove_text text-danger" id="delivery_dateError"></p>
                                                 </div>
                                             </div>
@@ -207,11 +207,11 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>DE Number</label>
-                                                    <input type="text" name="de_number" id="nrt" class="form-control" placeholder="Enter de_number">
+                                                    <input type="text" name="de_number" id="de_number" class="form-control" placeholder="Enter de_number">
                                                     <p class="remove_text text-danger" id="de_numberError"></p>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>SG Number</label>
                                                     <input type="text" name="sg_number" id="sg_number" class="form-control" placeholder="Enter sg_number">
@@ -219,30 +219,21 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Yard</label>
                                                     <input type="text" name="yard" id="yard" class="form-control" placeholder="Enter yard">
                                                     <p class="remove_text text-danger" id="yardError"></p>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>SID<span class="text-danger">*</span></label>
                                                     <input type="text" name="sid" id="sid" class="form-control" placeholder="Enter sid">
                                                     <p class="remove_text text-danger" id="sidError"></p>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Vessel Image<span class="text-danger">*</span></label>
-                                                    <input type="file" name="vessel_image" id="vessel_image" class="form-control">
-                                                    <p class="remove_text text-danger" id="vessel_imageError"></p>
-                                                </div>
-                                            </div>
-                                            
-
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Is Active<span class="text-danger">*</span></label>
                                                     <select class="form-control" name="is_active" id="is_active" required>
@@ -254,9 +245,19 @@
                                             </div>
 
                                             <div class="col-md-12">
+                                                <label>Vessel Image<span class="text-danger">*</span></label>
+                                                <div id="myDropzone" class="dropzone"></div>
+                                                <p id="set_vessel_image"></p>
+                                                <p class="remove_text text-danger" id="vessel_imageError"></p>
+                                            </div>
+                                            <script type="text/javascript">
+                                            
+                                            </script>
+
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label>Description</label>
-                                                    <textarea name="description" id="description" class="form-control" placeholder="Enter description" required></textarea>
+                                                    <textarea name="description" id="description" class="form-control" placeholder="Enter description"></textarea>
                                                     <p class="remove_text text-danger" id="descriptionError"></p>
                                                 </div>
                                             </div>

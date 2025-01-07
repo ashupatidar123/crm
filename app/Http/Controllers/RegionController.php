@@ -138,13 +138,13 @@ class RegionController extends Controller{
             $recordsTotal = Country::count();
             $sno = 1+$start_limit;
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm" onclick="return country_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return country_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return country_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return country_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'country\');" title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',1,\'country\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'country\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',2,\'country\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -259,13 +259,13 @@ class RegionController extends Controller{
             $recordsTotal = State::count();
             $sno = 1+$start_limit;
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm" onclick="return state_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return state_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return state_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return state_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'state\');" title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',1,\'state\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'state\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',2,\'state\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
@@ -366,13 +366,13 @@ class RegionController extends Controller{
             $recordsTotal = City::count();
             $sno = 1+$start_limit;
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm" onclick="return city_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return city_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return city_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return city_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',1,\'city\');"title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',1,\'city\');"title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return region_active_inactive('.$record->id.',2,\'city\');"title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',2,\'city\');"title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [

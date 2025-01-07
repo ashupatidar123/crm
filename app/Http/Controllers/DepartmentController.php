@@ -14,13 +14,13 @@ class DepartmentController extends Controller{
 
         $data = array(
             'name' => str_shuffle('surbhi jain'),
-            'mobile' =>rand(1111111111,4444444444),
+            'mobile' =>'8826050223',//rand(1111111111,4444444444),
             'brand' => str_shuffle('mjhsrtyubv gty'),
             'model' => rand(1111,8888),
-            'state' => str_shuffle('jmnhlpp'),
-            'district' => str_shuffle('allowed'),
-            'tehsil' => str_shuffle('delhipup'),
-            'page_source' => 'https://tractorgyan.com/home',
+            'state' => 'Delhi',//str_shuffle('jmnhlpp'),
+            'district' => 'Delhi',//str_shuffle('allowed'),
+            'tehsil' => 'Delhi',//str_shuffle('delhipup'),
+            'page_source' => 'https://tractorgyan.com/abc',
             'type_id' => rand(11,77),
             'verified_flag' => 'Verified'
         );
@@ -136,13 +136,13 @@ class DepartmentController extends Controller{
             $recordsTotal = Department::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<button class="btn btn-default btn-sm" onclick="return add_edit_department('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm" onclick="return ajax_delete('.$record->id.',\'department\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_department('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'department\');" title="Delete"><i class="fa fa-trash"></i></button>';
 
                 if($record->is_active == 1){
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',1,\'department\');" title="Active"><i class="fa fa-check"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'department\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
-                    $status = '<button class="btn btn-default btn-sm" onclick="return ajax_active_inactive('.$record->id.',2,\'department\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'department\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
                 $all_data[] = [
