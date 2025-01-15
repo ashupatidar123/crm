@@ -11,17 +11,19 @@ class DepartmentController extends Controller{
     
     public function curl_api(){
         $url = 'https://tractorgyan.com/api/whatsapp_popup_enquiry';
-
+        
+        $url = 'https://staging.tractorgyan.com/api/whatsapp_popup_enquiry';
+        
         $data = array(
             'name' => str_shuffle('surbhi jain'),
-            'mobile' =>'8826050223',//rand(1111111111,4444444444),
-            'brand' => str_shuffle('mjhsrtyubv gty'),
-            'model' => rand(1111,8888),
-            'state' => 'Delhi',//str_shuffle('jmnhlpp'),
-            'district' => 'Delhi',//str_shuffle('allowed'),
-            'tehsil' => 'Delhi',//str_shuffle('delhipup'),
-            'page_source' => 'https://tractorgyan.com/abc',
-            'type_id' => rand(11,77),
+            'mobile' =>rand(7777777777,9999999999),//rand(1111111111,4444444444)
+            'brand' => str_shuffle('mahindra me'),
+            'model' => rand(111,999),
+            'state' => str_shuffle('Delhi'),
+            'district' => str_shuffle('Delhi allowed'),
+            'tehsil' => str_shuffle('delhipup'),
+            'page_source' => 'https://tractorgyan.com',
+            'type_id' => rand(11,88),
             'verified_flag' => 'Verified'
         );
 
@@ -83,11 +85,29 @@ class DepartmentController extends Controller{
         return $response;
     }
 
+    public function url_run(){
+        //$url = 'https://staging.tractorgyan.com/';
+        //$url = 'https://staging.tractorgyan.com/api/home_popular_tractor';
+        $url = 'https://staging.tractorgyan.com';
+        $ch = curl_init();
+        //printr($url,'p');
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  // Return response as a string
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // Set timeout (seconds)
+        
+        // Execute the cURL session and capture the response
+        $response = curl_exec($ch);
+        return true;
+        printr($response,'p');
+    }
+
     public function index(){
-        //return view('master.department.index'); exit;
+        
+        return view('master.department.index'); exit;
         for($i=1;$i<=5;$i++){
             $data = $this->curl_api();
-            //printr($data,'p');
+            printr($data,'p');
             $data = json_decode($data);
             if(!empty($data->data->otp)){
                 $primary_id = $data->data->primary_id;
