@@ -38,7 +38,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th class="set_action_width3">Action</th>
+                                        <th class="set_action_width4">Action</th>
                                         <th>Vessel Name</th>
                                         <th>Technical Manager</th>
                                         <th>Registered Owner</th>
@@ -91,14 +91,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Technical Manager<span class="text-danger">*</span></label>
-                                                    <input type="text" name="technical_manager" id="technical_manager" class="form-control" placeholder="Enter technical_manager">
+                                                    <input type="text" name="technical_manager" id="technical_manager" class="form-control" placeholder="Enter technical manager">
                                                     <p class="remove_text text-danger" id="technical_managerError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Registered Owner<span class="text-danger">*</span></label>
-                                                    <input type="text" name="registered_owner" id="registered_owner" class="form-control" placeholder="Enter registered_owner">
+                                                    <input type="text" name="registered_owner" id="registered_owner" class="form-control" placeholder="Enter registered owner">
                                                     <p class="remove_text text-danger" id="registered_ownerError"></p>
                                                 </div>
                                             </div>
@@ -119,14 +119,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Vessel Email<span class="text-danger">*</span></label>
-                                                    <input type="text" name="vessel_email" id="vessel_email" class="form-control" placeholder="Enter vessel_email">
+                                                    <input type="text" name="vessel_email" id="vessel_email" class="form-control" placeholder="Enter vessel email">
                                                     <p class="remove_text text-danger" id="vessel_emailError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>IMO No</label>
-                                                    <input type="text" name="imo_no" id="imo_no" class="form-control" placeholder="Enter imo_no">
+                                                    <input type="text" name="imo_no" id="imo_no" class="form-control" placeholder="Enter imo no">
                                                     <p class="remove_text text-danger" id="imo_noError"></p>
                                                 </div>
                                             </div>
@@ -134,17 +134,23 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Category<span class="text-danger">*</span></label>
-                                                    <input type="text" name="category" id="category" class="form-control" placeholder="Enter category">
-                                                    <p class="remove_text text-danger" id="categoryError"></p>
+                                                    <select class="form-control select2" name="category_id" id="category_id" onchange="return get_all_parent_vessel_category('',this.value);"> 
+                                                    <option value="">Select</option>
+                                                    </select>
+                                                    <p class="text-danger remove_text" id="category_idError"></p>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Type<span class="text-danger">*</span></label>
-                                                    <input type="text" name="type" id="type" class="form-control" placeholder="Enter type">
-                                                    <p class="remove_text text-danger" id="typeError"></p>
+                                                    <label>Type (Parent Category)<span class="text-danger">*</span></label>
+                                                    <select class="form-control select2" name="parent_category_id" id="parent_category_id">  
+                                                    <option value="">Select</option>
+                                                    </select>
+                                                    <p class="text-danger remove_text" id="parent_category_idError"></p>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Delivery Date</label>
@@ -156,14 +162,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Dead Weight</label>
-                                                    <input type="text" name="dead_weight" id="dead_weight" class="form-control" placeholder="Enter dead_weight">
+                                                    <input type="text" name="dead_weight" id="dead_weight" class="form-control" placeholder="Enter dead weight">
                                                     <p class="remove_text text-danger" id="dead_weightError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Main Engine</label>
-                                                    <input type="text" name="main_engine" id="main_engine" class="form-control" placeholder="Enter main_engine">
+                                                    <input type="text" name="main_engine" id="main_engine" class="form-control" placeholder="Enter main engine">
                                                     <p class="remove_text text-danger" id="main_engineError"></p>
                                                 </div>
                                             </div>
@@ -200,21 +206,21 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>CY Number</label>
-                                                    <input type="text" name="cy_number" id="cy_number" class="form-control" placeholder="Enter cy_number">
+                                                    <input type="text" name="cy_number" id="cy_number" class="form-control" placeholder="Enter cy number">
                                                     <p class="remove_text text-danger" id="cy_numberError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>DE Number</label>
-                                                    <input type="text" name="de_number" id="de_number" class="form-control" placeholder="Enter de_number">
+                                                    <input type="text" name="de_number" id="de_number" class="form-control" placeholder="Enter de number">
                                                     <p class="remove_text text-danger" id="de_numberError"></p>
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>SG Number</label>
-                                                    <input type="text" name="sg_number" id="sg_number" class="form-control" placeholder="Enter sg_number">
+                                                    <input type="text" name="sg_number" id="sg_number" class="form-control" placeholder="Enter sg number">
                                                     <p class="remove_text text-danger" id="sg_numberError"></p>
                                                 </div>
                                             </div>
@@ -250,9 +256,6 @@
                                                 <p id="set_vessel_image"></p>
                                                 <p class="remove_text text-danger" id="vessel_imageError"></p>
                                             </div>
-                                            <script type="text/javascript">
-                                            
-                                            </script>
 
                                             <div class="col-md-12">
                                                 <div class="form-group">

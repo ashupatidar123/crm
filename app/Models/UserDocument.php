@@ -13,4 +13,8 @@ class UserDocument extends Model{
     function single_document(){
         return $this->hasOne(Document::class,'id','document_id')->select('id','category_name');
     }
+
+    function single_user(){
+        return $this->hasOne(User::class,'id','user_id')->select('id','first_name');
+    }
 }

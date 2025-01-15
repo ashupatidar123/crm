@@ -38,7 +38,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>Action</th>
+                                        <th class="set_action_width3">Action</th>
                                         <th>Designation Name</th>
                                         <th>Department Name</th>
                                         <th>Rank</th>
@@ -137,7 +137,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <button id="addSubmitButton" type="submit" class="btn btn-primary">Submit</button>
-                                                    <button type="button" class="btn btn-danger referesh_form" onclick="return referesh_form();">Refresh</button>
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                                                 </div>
                                             </div>
                                         </div>

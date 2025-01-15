@@ -248,7 +248,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function(resp) {
-                $('#submitRegister').html('Submit');
+                $('#submitRegister').html('<i class="fa fa-send"></i> Submit');
                 $('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
@@ -355,7 +355,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function(resp) {
-                $('#userSubmitButton').html('Submit');
+                $('#userSubmitButton').html('<i class="fa fa-send"></i> Submit');
                 $('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
@@ -471,7 +471,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function(resp) {
-                $('#profileSubmitButton').html('Submit');
+                $('#profileSubmitButton').html('<i class="fa fa-send"></i> Submit');
                 $('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
@@ -500,16 +500,20 @@
     /* user details page document section tab*/
 
     function user_document_data_table_list(){    
+        var user_id = $('#user_id').val();
+        
         $('#tableList').DataTable().clear().destroy();
         var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
         var end_limit   = $('#end_limit').val();
         var end_limit = (end_limit > 0)?end_limit:10;
         var pageLength = (end_limit > 0)?end_limit:10;
 
-        var search_name = $('#search_name').val();
-        var search_email = $('#search_email').val();
-        var search_department_name = $('#search_department_name').val();
-        var search_designation_name = $('#search_designation_name').val();
+        var search_document_name = $('#search_document_name').val();
+        var search_user_name = $('#search_user_name').val();
+        var search_document_category = $('#search_document_category').val();
+
+        var search_issue_date = $('#search_issue_date').val();
+        var search_expiry_date = $('#search_expiry_date').val();
         var search_start_date = $('#search_start_date').val();
         var search_end_date = $('#search_end_date').val();
         
@@ -519,11 +523,14 @@
             ajax: {
                 url: '{{url("master/user_document_list_tab")}}',
                 type: 'GET',
-                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date},
+                data:{user_id,start_limit,end_limit,
+                search_document_name,search_user_name,search_document_category,
+                search_issue_date,search_expiry_date,search_start_date},
             },
             columns: [
                 { data: 'sno' },
                 { data: 'action' },
+                { data: 'document_user_name' },
                 { data: 'document_name' },
                 { data: 'category_name' },
                 { data: 'document_type' },
@@ -533,24 +540,24 @@
                 { data: 'created_at', type: 'date' }
                 
             ],
-            "order": [[8, 'DESC']],
+            "order": [[9, 'DESC']],
             "lengthMenu": [5,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
             "dom": 'Bfrtip',
             "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
-            "columnDefs": [{"targets": [0,1,6,7],"orderable": false}]
+            "columnDefs": [{"targets": [0,2,4],"orderable": false}]
         });
     }
 
     function add_edit_user_document(p_id='',type=''){
-        $('#addSubmitButton').html('Submit');
-        $('#addSubmitButton').attr('disabled',false);
+        $('#addEditUserDocumentSubmit').html('<i class="fa fa-send"></i> Submit');
+        $('#addEditUserDocumentSubmit').attr('disabled',false);
         $('#userDocumentFileList').html('');
         if(type == 'add'){
-            $('#p_id, #document_name, #issue_date, #expiry_date, #description').val('');
+            $('#p_id, #document_name, #issue_date, #expiry_date').val('');
             $('#document_id').val('').trigger('change');
-            $('#user_document_show').html('');
+            $('#set_user_document, document_description').html('');
             $("#addEditUserDocumentModal").modal();
             return false;
         }
@@ -574,7 +581,7 @@
                     $('#expiry_date').val(rep.expiry_date);
                     $('#document_type').val(rep.document_type);
                     $('#document_description').val(rep.description);
-                    $('#user_document_show').html(rep.user_document);
+                    $('#set_user_document').html(rep.user_document);
                     $('#is_active').val(rep.is_active);
                 }else{
                     swal_error('Something went wrong');
@@ -584,81 +591,13 @@
         });  
     }
 
-    /*user document Drag-and-drop functionality*/
-    var userDocumentFileUpload = [];
-    $(document).ready(function() {
-        $("#user_document").on("change", function(event) {
-            userDocumentFileUpload = event.target.files;
-            $('#user_documentError').html('');
-            handleFileUpload(event.target.files);
-        });
-
-        $("#dragDropArea").on("dragover", function(event) {
-            event.preventDefault();
-            $(this).css("background-color", "#f0f8ff");
-        });
-
-        $("#dragDropArea").on("dragleave", function(event) {
-            $(this).css("background-color", "white");
-        });
-
-        $("#dragDropArea").on("drop", function(event) {
-            event.preventDefault();
-            $(this).css("background-color", "white");
-            userDocumentFileUpload = event.originalEvent.dataTransfer.files;
-            handleFileUpload(event.originalEvent.dataTransfer.files);
-        });
-
-        function handleFileUpload(files) {
-            $('#user_documentError').html('');
-            if (files.length > 0) {
-                var fileListHTML = "<ul>";
-                for (var i = 0; i < files.length; i++) {
-                    fileListHTML += "<li>" + files[i].name + " (" + files[i].size + " bytes)</li>";
-                }
-                
-                fileListHTML += "</ul>";
-                $("#userDocumentFileList").html(fileListHTML);
-            } else {
-                $("#userDocumentFileList").html("<p>No files selected</p>");
-            }
-        }
-    });
     /*Drag-and-drop functionality*/
-
-    $("#addEditUserDocumentSubmit").on("click",function (e) {
-        event.preventDefault();
-        $('#document_nameError, #document_idError, #user_documentError').html('');
-
-        var check = 0;
-        if($('#document_name').val() == ''){
-            var check = 1;
-            $('#document_nameError').html('This field is required');
-        }
-        if($('#document_id').val() == ''){
-            var check = 1;
-            $('#document_idError').html('This field is required');
-        }
-        if(($('#p_id').val() < 1) && (userDocumentFileUpload.length < 1)){
-            var check = 1;
-            $('#user_documentError').html('Document is required');
-        }
-        
-        if(check == 1){
-            swal_error('Some fields are required');
-            return false;
-        }
-        $('.show_message').html('');
-        $('#addEditUserDocumentSubmit').html('Loading...');
+    function save_user_document_data(save_file_name=''){
+        $('#addEditUserDocumentSubmit').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
         $('#addEditUserDocumentSubmit').attr('disabled',true);
 
         var formData = new FormData($("#addEditUserDocumentFormId")[0]);
-        
-        if(userDocumentFileUpload.length > 0){
-            for(var i = 0; i < userDocumentFileUpload.length; i++) {
-                formData.append('user_document', userDocumentFileUpload[i]);
-            }
-        }
+        formData.append('user_document',save_file_name);
         $.ajax({
             type: "POST",
             url: "{{url('master/add_user_document')}}",
@@ -669,27 +608,38 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function(resp) {
-                $('#addEditUserDocumentSubmit').html('Submit');
+                $('#addEditUserDocumentSubmit').html('<i class="fa fa-send"></i> Submit');
                 $('#addEditUserDocumentSubmit').attr('disabled',false);
-                //$('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
                     $("#addEditUserDocumentModal").modal('hide');
-                    user_document_data_table_list();
+                    user_change_tab('document');
+                    //user_document_data_table_list();
                     //location.reload();
                 }else{
                     swal_error(resp.s_msg);
                 }
             }
         });
-    });
+    }
+
 
     function user_search(){
         user_data_table_list();
     }
     function search_reset_form(){
+        $('#search_start_date, #search_end_date').val('');
         $('#userSearch').trigger("reset");
         user_data_table_list();
+    }
+
+    function user_document_search(){
+        user_document_data_table_list();
+    }
+    function user_document_search_reset_form(){
+        $('#search_issue_date, #search_expiry_date, #search_start_date, #search_end_date').val('');
+        $('#userDocumentSearch').trigger("reset");
+        user_document_data_table_list();
     }
 
     $('#search_start_date, #search_end_date').datepicker({
@@ -698,10 +648,9 @@
         changeYear: true,
         maxDate: 0,
     });
-    $('#issue_date1, #expiry_date1').datepicker({
-        dateFormat: 'mm/dd/yyyy',
+    $('#issue_date, #expiry_date, #search_issue_date, #search_expiry_date').datepicker({
+        dateFormat: 'dd/mm/yy',
         changeMonth: true,
         changeYear: true,
-        maxDate: 0,
     });
 </script>

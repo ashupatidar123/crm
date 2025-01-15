@@ -31,7 +31,7 @@
     }  
 
     function add_edit_department(p_id='',type=''){
-        $('#addSubmitButton').html('Submit');
+        $('#addSubmitButton').html('<i class="fa fa-send"></i> Submit');
         $('#addSubmitButton').attr('disabled',false);
         if(type == 'add'){
             $('#p_id, #department_name, #description').val('');
@@ -100,7 +100,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#addSubmitButton').html('Submit');
+                $('#addSubmitButton').html('<i class="fa fa-send"></i> Submit');
                 $('#addSubmitButton').attr('disabled',false);
                 if(resp.status == 'success'){
                     department_data_table_list();

@@ -155,8 +155,7 @@ class RegionController extends Controller{
                     'capital'=> $record->capital,
                     'currency'=> $record->currency,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
-                    'status'=>$status,
-                    'action'=>$edit.' '.$delete.' '.$status
+                    'action'=>$edit.' '.$status.' '.$delete
                 ];
             }
         }
@@ -275,8 +274,7 @@ class RegionController extends Controller{
                     'iso2'=> $record->iso2,
                     'country_code'=> $record->country_code,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
-                    'status'=>$status,
-                    'action'=>$edit.' '.$delete.' '.$status
+                    'action'=>$edit.' '.$status.' '.$delete
                 ];
             }
         }
@@ -382,7 +380,7 @@ class RegionController extends Controller{
                     'state_name'=> $record->single_state->name,
                     'state_code'=> $record->state_code,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
-                    'action'=>$edit.' '.$delete.' '.$status
+                    'action'=>$edit.' '.$status.' '.$delete
                 ];
             }
         }

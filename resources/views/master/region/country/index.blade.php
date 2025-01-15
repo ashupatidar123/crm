@@ -37,7 +37,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>Action</th>
+                                        <th class="set_action_width3">Action</th>
                                         <th>Name</th>
                                         <th>ISO 3</th>
                                         <th>Numeric Code</th>
@@ -128,8 +128,8 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <button id="update_country" type="submit" class="btn btn-primary">Submit</button>
-                                                    <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
+                                                    <button id="update_country" type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Submit</button>
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                                                 </div>
                                             </div>
                                         </div>

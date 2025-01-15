@@ -115,8 +115,8 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <button id="update_city" type="submit" class="btn btn-primary">Submit</button>
-                                                    <button type="button" class="btn btn-danger" onclick="return referesh_form();">Refresh</button>
+                                                    <button id="update_city" type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Submit</button>
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                                                 </div>
                                             </div>
                                         </div>

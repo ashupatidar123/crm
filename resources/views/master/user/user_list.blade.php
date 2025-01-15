@@ -103,7 +103,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>Action</th>
+                                        <th class="set_action_width4">Action</th>
                                         <th>Name</th>
                                         <th>Login ID</th>
                                         <th>Email</th>
@@ -113,18 +113,6 @@
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Sno</th>
-                                        <th>Action</th>
-                                        <th>Name</th>
-                                        <th>Login ID</th>
-                                        <th>Email</th>
-                                        <th>Date</th>
-                                        <th>Department Name</th>
-                                        <th>Designation name</th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                         <!-- /.card-body -->

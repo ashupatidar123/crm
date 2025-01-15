@@ -32,7 +32,7 @@
     }  
 
     function add_edit_designation(p_id='',type=''){
-        $('#addSubmitButton').html('Submit');
+        $('#addSubmitButton').html('<i class="fa fa-send"></i> Submit');
         $('#addSubmitButton').attr('disabled',false);
         if(type == 'add'){
             $('#p_id, #designation_name, #rank, #description').val('');
@@ -108,7 +108,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#addSubmitButton').html('Submit');
+                $('#addSubmitButton').html('<i class="fa fa-send"></i> Submit');
                 $('#addSubmitButton').attr('disabled',false);
                 if(resp.status == 'success'){
                     designation_data_table_list();

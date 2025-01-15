@@ -16,4 +16,22 @@
         color: #64C5B1;
         background: #E5E5E5;
     }
+    input[readonly] {
+        background-color: #FFFFFF !important;
+    }
+
+    /*dropzone file upload*/
+    #myDropzone {
+        border: 2px dashed #007bff !important;
+        padding: 10px;
+        cursor: pointer;
+    }
+    .dropzone .dz-message {
+        text-align: center;
+        margin: 54px 0 !important;
+    }
+    .dropzone{
+        border: 0px solid rgba(0, 0, 0, 0.3);
+    }
+
 </style>

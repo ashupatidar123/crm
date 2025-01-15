@@ -30,4 +30,22 @@ if(!function_exists('user_title')) {
     }
 }
 
+if(!function_exists('check_file_type')) {
+    function check_file_type($file=''){
+        $fileInfo = pathinfo($file);
+        $extension = strtolower($fileInfo['extension']);
+        if($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg' || $extension == 'gif'){
+            return 'image';
+        }
+        else if($extension == 'pdf'){
+            return 'pdf';
+        }
+        else if($extension == 'csv' || $extension == 'xlsx' || $extension == 'xls' || $extension == 'doc'){
+            return 'doc';
+        }else{
+            return 'other';
+        }
+    }
+}
+
 ?>

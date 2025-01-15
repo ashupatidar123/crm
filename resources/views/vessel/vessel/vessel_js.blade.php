@@ -32,12 +32,12 @@
     }  
 
     function add_edit_vessel(p_id='',type=''){
-        $('#addEditSubmitButton').html('Submit');
+        $('#addEditSubmitButton').html('<i class="fa fa-send"></i> Submit');
         $('#addEditSubmitButton').attr('disabled',false);
         $('.remove_text').html('');
         if(type == 'add'){
             $('#addFormId')[0].reset();
-            $('#p_id, #vessel_name, #technical_manager').val('');
+            get_all_vessel_category('');
             $("#addEditModal").modal();
             return false;
         }
@@ -64,8 +64,6 @@
                     $('#master').val(rep.master);
                     $('#vessel_email').val(rep.vessel_email);
                     $('#imo_no').val(rep.imo_no);
-                    $('#category').val(rep.category);
-                    $('#type').val(rep.type);
                     $('#delivery_date').val(rep.delivery_date);
                     $('#dead_weight').val(rep.dead_weight);
                     $('#main_engine').val(rep.main_engine);
@@ -82,7 +80,8 @@
                     $('#set_vessel_image').html(rep.vessel_image);
                     $('#description').val(rep.description);
                     $("#addEditModal").modal();
-                    $('#addEditLoader_'+p_id).html('<i class="fa fa-edit"></i>');
+                    get_all_vessel_category(rep.category_id);
+                    get_all_parent_vessel_category(rep.parent_category_id,rep.category_id);
                 }else{
                     swal_error('Something went wrong');
                     return false;
@@ -97,7 +96,7 @@
     $(document).ready(function() {
         Dropzone.autoDiscover = false;
         var myDropzone = new Dropzone("#myDropzone", {
-            url: "{{url('vessel/vessel_file_upload')}}",
+            url: "{{route('dropzone_file_upload')}}",
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
@@ -146,48 +145,51 @@
                 var check = 1;
                 $('#vessel_emailError').html('This field is required');
             }
-            if($('#category').val() == ''){
+            if($('#category_id').val() == ''){
                 var check = 1;
-                $('#categoryError').html('This field is required');
+                $('#category_idError').html('This field is required');
             }
-            if($('#type').val() == ''){
+            if($('#parent_category_id').val() == ''){
                 var check = 1;
-                $('#typeError').html('This field is required');
+                $('#parent_category_idError').html('This field is required');
             }
             if($('#flag').val() == ''){
                 var check = 1;
                 $('#flagError').html('This field is required');
             }
-            if($('#sid').val() == ''){
-                var check = 1;
-                $('#sidError').html('This field is required');
-            }
+            
             if($('#is_active').val() == ''){
                 var check = 1;
                 $('#is_activeError').html('This field is required');
             }
             if(check == 1){
-                //return false;
+                swal_error("Field's are required");
+                return false;
             }
 
-            $('.show_message').html('');
-            $('#addEditSubmitButton').html('<i class="fa fa-spinner fa-spin"></i> Loading');
-            $('#addEditSubmitButton').attr('disabled',true);
-            
             if(myDropzone.files != ''){
                 if(myDropzone.files.length > 0) {
                     myDropzone.processQueue(); 
                 }
             }
-            else{
-                alert();
-                save_vessel_data('');
+            else if($('#p_id').val() < 1){
+                swal_error("Image is required");
+                return false;
             }
+            else{
+                save_vessel_data('');
+                return false;
+            }
+            
             return false;
         });
     });
 
     function save_vessel_data(save_image_name=''){
+        $('.show_message').html('');
+        $('#addEditSubmitButton').html('<i class="fa fa-spinner fa-spin"></i> Loading');
+        $('#addEditSubmitButton').attr('disabled',true);
+
         var formData = new FormData($("#addFormId")[0]);
         formData.append('vessel_image',save_image_name);
         
@@ -201,7 +203,7 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function (resp) {
-                $('#addEditSubmitButton').html('Submit');
+                $('#addEditSubmitButton').html('<i class="fa fa-send"></i> Submit');
                 $('#addEditSubmitButton').attr('disabled',false);
                 if(resp.status == 'success'){
                     vessel_data_table_list();
@@ -210,6 +212,42 @@
                 }else{
                     swal_error(resp.message);
                 }
+            }
+        });
+    }
+
+    function get_all_vessel_category(p_id=''){
+        var type = 'ajax_list';
+        $.ajax({
+            type: "POST",
+            url: "{{route('get_all_vessel_category')}}",
+            data: {p_id,type},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#category_id').html(resp);
+            }
+        });
+    }
+
+    function get_all_parent_vessel_category(p_id='',c_id=''){
+        var selectedOption = $('#document_type').find('option:selected');
+        var document_type = selectedOption.val();
+        if(c_id < 1){
+            $('#parent_category_id').html('<option value="">Select</option>');
+            return false;
+        }
+        var type = 'ajax_list';
+        $.ajax({
+            type: "POST",
+            url: "{{route('get_all_vessel_category')}}",
+            data: {p_id,type,c_id},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#parent_category_id').html(resp);
             }
         });
     }

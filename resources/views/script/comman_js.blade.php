@@ -88,11 +88,25 @@
                             else if(tbl == 'vessel'){
                                 vessel_data_table_list();
                             }
+                            else if(tbl == 'vessel_category'){
+                                vessel_category_data_table_list();
+                            }
+                            else if(tbl == 'vessel_document'){
+                                vessel_document_data_table_list();
+                            }
                             else{
+                                swal_error(resp.message,1800);
                                 location.reload();
+                                return false;
                             }
                             swal_success(resp.message,1800);
                         }else{
+                            if(type == 1){
+                                $('.activeInactiveLoader_'+p_id).html('<i class="fa fa-check"></i>');   
+                            }else{
+                               $('.activeInactiveLoader_'+p_id).html('<i class="fa fa-close"></i>'); 
+                            }
+                            $('.activeInactiveLoader_'+p_id).attr('disabled',false);
                             swal_error(resp.message,1800); 
                         }
                     }
@@ -146,11 +160,19 @@
                             else if(tbl == 'vessel'){
                                 vessel_data_table_list();
                             }
+                            else if(tbl == 'vessel_category'){
+                                vessel_category_data_table_list();
+                            }
+                            else if(tbl == 'vessel_document'){
+                                vessel_document_data_table_list();
+                            }
                             else{
                                 location.reload();
                             }
                             swal_success(resp.message,1800);
                         }else{
+                            $('.deleteLoader_'+p_id).html('<i class="fa fa-trash"></i>');
+                            $('.deleteLoader_'+p_id).attr('disabled',false);
                             swal_error(resp.message,1800); 
                         }
                     }

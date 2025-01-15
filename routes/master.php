@@ -9,6 +9,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DepartmentDesignationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VesselController;
+use App\Http\Controllers\VesselCategoryController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,6 +28,7 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::any('get_ajax_country', [RegionController::class,'get_ajax_country']);
 Route::any('get_ajax_state', [RegionController::class,'get_ajax_state']);
 Route::any('get_ajax_city', [RegionController::class,'get_ajax_city']);
+Route::post('dropzone_file_upload', [CommonController::class, 'dropzone_file_upload'])->name('dropzone_file_upload');
 
 Route::prefix('master')->middleware('auth')->group(function () {
     /* common routes */
@@ -42,13 +44,13 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('get_department_record', [UserController::class, 'get_department_record'])->name('get_department_record');
     Route::post('get_designation_record', [UserController::class, 'get_designation_record'])->name('get_designation_record');
 
-    Route::get('user', [UserController::class, 'user']);
+    Route::get('user', [UserController::class, 'user'])->name('user');
     Route::get('user_list', [UserController::class, 'user_list']);
 
     Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
     Route::post('update_user', [UserController::class, 'update_user']);
     Route::post('user_delete', [UserController::class, 'user_delete']);
-    Route::get('user-details/{id}', [UserController::class, 'showUserDetails']);
+    Route::get('user-details/{id}', [UserController::class, 'showUserDetails'])->name('user-details');
     Route::post('user_tab_detail', [UserController::class, 'user_tab_detail'])->name('user_tab_detail');
     Route::get('user_document_list_tab', [UserController::class, 'user_document_list_tab']);
     Route::post('add_user_document', [UserController::class, 'add_user_document']);
@@ -98,6 +100,19 @@ Route::prefix('vessel')->middleware('auth')->group(function () {
     /* vessels routes */
     Route::resource('vessel', VesselController::class);
     Route::get('vessel_list', [VesselController::class, 'vessel_list'])->name('vessel.list');
+    Route::get('vessel-details/{id}', [VesselController::class, 'showVesselDetails'])->name('vessel-details');
     Route::post('vessel_edit', [VesselController::class, 'vessel_edit']);
     Route::post('vessel_file_upload', [VesselController::class, 'vessel_file_upload']);
+    Route::post('get_all_vessel_category', [VesselController::class, 'get_all_vessel_category'])->name('get_all_vessel_category');
+
+    Route::post('vessel_tab_detail', [VesselController::class, 'vessel_tab_detail']);
+    Route::get('vessel_document_list_tab', [VesselController::class, 'vessel_document_list_tab']);
+    Route::post('add_vessel_document', [VesselController::class, 'add_vessel_document']);
+    Route::post('vessel_document_edit', [VesselController::class, 'vessel_document_edit']);
+
+    /* vessel category routes */
+    Route::resource('vessel-category', VesselCategoryController::class);
+    Route::get('vessel_category_list', [VesselCategoryController::class, 'vessel_category_list'])->name('vessel_category_list');
+    Route::post('vessel_category_edit', [VesselCategoryController::class, 'vessel_category_edit'])->name('vessel_category_edit');
+    Route::post('get_parent_vessel_category', [VesselCategoryController::class, 'get_parent_vessel_category'])->name('get_parent_vessel_category');
 });

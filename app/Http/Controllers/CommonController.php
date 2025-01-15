@@ -13,6 +13,8 @@ use App\Models\DepartmentDesignation;
 use App\Models\Document;
 use App\Models\UserDocument;
 use App\Models\Vessel;
+use App\Models\VesselCategory;
+use App\Models\VesselDocument;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -53,6 +55,15 @@ class CommonController extends Controller{
         }
         else if($tbl == 'vessel'){
             Vessel::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'vessel_category'){
+            VesselCategory::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'vessel_document'){
+            VesselDocument::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else{
+           return response()->json(['status' =>'error','message' => 'Something went wrong'],200); 
         }
 
         if($type == 1){
@@ -97,6 +108,15 @@ class CommonController extends Controller{
         else if($tbl == 'vessel'){
             $record_dlt = Vessel::find($request->p_id);
         }
+        else if($tbl == 'vessel_category'){
+            $record_dlt = VesselCategory::find($request->p_id);
+        }
+        else if($tbl == 'vessel_document'){
+            $record_dlt = VesselDocument::find($request->p_id);
+        }
+        else{
+            return response()->json(['status' =>'error','message' => 'Deletion failed'],201);
+        }
 
         if($record_dlt) {
             $record_dlt->delete();
@@ -123,5 +143,22 @@ class CommonController extends Controller{
         if(empty($data)){
             echo json_encode(['data'=>'']);
         }
+    }
+
+    public function dropzone_file_upload(Request $request){
+        $file_name = '';
+        if(!empty($request->file('user_document'))){
+            $file_name = $this->uploadFile($request, 'user_document', 'uploads/document/users');
+        }
+        else if(!empty($request->file('user_image'))){
+            $file_name = $this->uploadFile($request, 'user_image', 'uploads/image/users');
+        }
+        else if(!empty($request->file('vessel_image'))){
+            $file_name = $this->uploadFile($request, 'vessel_image', 'uploads/image/vessels');
+        }
+        else if(!empty($request->file('vessel_document'))){
+            $file_name = $this->uploadFile($request, 'vessel_document', 'uploads/document/vessels');
+        }
+        echo $file_name;
     }
 }

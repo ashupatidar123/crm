@@ -87,6 +87,9 @@
     }
 
     function country_edit(p_id=''){
+        $('.addEditLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+        $('.addEditLoader_'+p_id).attr('disabled',true);
+
         var type = 'ajax_single';
         $.ajax({
             type: "POST",
@@ -113,6 +116,8 @@
                     swal_error('Something went wrong');
                     return false;
                 }
+                $('.addEditLoader_'+p_id).html('<i class="fa fa-edit"></i>');
+                $('.addEditLoader_'+p_id).attr('disabled',false);
             }
         });   
     }
@@ -128,6 +133,9 @@
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if(result.isConfirmed) {
+                $('.deleteLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+                $('.deleteLoader_'+p_id).attr('disabled',true);
+
                 $.ajax({
                     type: "POST",
                     url: "{{url('master/region/country_delete')}}",
@@ -143,6 +151,8 @@
                         }else{
                             swal_error(resp.message,1800); 
                         }
+                        $('.deleteLoader_'+p_id).html('<i class="fa fa-trash"></i>');
+                        $('.deleteLoader_'+p_id).attr('disabled',false);
                     }
                 });
             }
@@ -183,7 +193,7 @@
             url: "{{url('master/region/country_update')}}",
             data: form.serialize(),
             success: function (resp) {
-                $('#update_country').html('Submit');
+                $('#update_country').html('<i class="fa fa-send"></i> Submit');
                 $('#update_country').attr('disabled',false);
                 if(resp.status == 'success'){
                     country_data_table_list();
@@ -235,6 +245,9 @@
     }
 
     function state_edit(p_id=''){
+        $('.addEditLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+        $('.addEditLoader_'+p_id).attr('disabled',true);
+
         var type = 'ajax_single';
         $.ajax({
             type: "POST",
@@ -272,6 +285,8 @@
                     swal_error('Something went wrong');
                     return false;
                 }
+                $('.addEditLoader_'+p_id).html('<i class="fa fa-edit"></i>');
+                $('.addEditLoader_'+p_id).attr('disabled',false);
             }
         });  
     }
@@ -310,7 +325,7 @@
             url: "{{url('master/region/state_update')}}",
             data: form.serialize(),
             success: function (resp) {
-                $('#update_state').html('Submit');
+                $('#update_state').html('<i class="fa fa-send"></i> Submit');
                 $('#update_state').attr('disabled',false);
                 if(resp.status == 'success'){
                     state_data_table_list();
@@ -334,6 +349,9 @@
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if(result.isConfirmed) {
+                $('.deleteLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+                $('.deleteLoader_'+p_id).attr('disabled',true);
+                
                 $.ajax({
                     type: "POST",
                     url: "{{url('master/region/state_delete')}}",
@@ -349,8 +367,10 @@
                         }else{
                             swal_error(resp.message,1800); 
                         }
+                        $('.deleteLoader_'+p_id).html('<i class="fa fa-trash"></i>');
+                        $('.deleteLoader_'+p_id).attr('disabled',false);
                     }
-                });
+                }); 
             }
         });        
     }
@@ -394,6 +414,9 @@
     }
 
     function city_edit(p_id=''){
+        $('.addEditLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+        $('.addEditLoader_'+p_id).attr('disabled',true);
+
         var type = 'ajax_single';
         $.ajax({
             type: "POST",
@@ -445,6 +468,8 @@
                     swal_error('Something went wrong');
                     return false;
                 }
+                $('.addEditLoader_'+p_id).html('<i class="fa fa-edit"></i>');
+                $('.addEditLoader_'+p_id).attr('disabled',false);
             }
         });   
     }
@@ -482,7 +507,7 @@
             url: "{{url('master/region/city_update')}}",
             data: form.serialize(),
             success: function (resp) {
-                $('#update_city').html('Submit');
+                $('#update_city').html('<i class="fa fa-send"></i> Submit');
                 if(resp.status == 'success'){
                     city_data_table_list();
                     $('#cityModal').modal('hide');
@@ -505,6 +530,9 @@
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if(result.isConfirmed) {
+                $('.deleteLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+                $('.deleteLoader_'+p_id).attr('disabled',true);
+
                 $.ajax({
                     type: "POST",
                     url: "{{url('master/region/city_delete')}}",
@@ -520,6 +548,8 @@
                         }else{
                             swal_error(resp.message,1800); 
                         }
+                        $('.deleteLoader_'+p_id).html('<i class="fa fa-trash"></i>');
+                        $('.deleteLoader_'+p_id).attr('disabled',false);
                     }
                 });
             }
@@ -542,6 +572,9 @@
             confirmButtonText: "Yes, ok it!"
         }).then((result) => {
             if(result.isConfirmed) {
+                $('.activeInactiveLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+                $('.activeInactiveLoader_'+p_id).attr('disabled',true);
+
                 $.ajax({
                     type: "POST",
                     url: "{{url('master/region/region_active_inactive')}}",
@@ -563,6 +596,12 @@
                             }
                             swal_success(resp.message,1800);
                         }else{
+                            if(type == 1){
+                                $('.activeInactiveLoader_'+p_id).html('<i class="fa fa-check"></i>');   
+                            }else{
+                               $('.activeInactiveLoader_'+p_id).html('<i class="fa fa-close"></i>'); 
+                            }
+                            $('.activeInactiveLoader_'+p_id).attr('disabled',false);
                             swal_error(resp.message,1800); 
                         }
                     }
