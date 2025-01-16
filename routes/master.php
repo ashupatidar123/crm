@@ -10,6 +10,7 @@ use App\Http\Controllers\DepartmentDesignationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\VesselCategoryController;
+use App\Http\Controllers\UserDocumentAccess;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -55,6 +56,9 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::get('user_document_list_tab', [UserController::class, 'user_document_list_tab']);
     Route::post('add_user_document', [UserController::class, 'add_user_document']);
     Route::post('user_document_edit', [UserController::class, 'user_document_edit']);
+    Route::get('access_rights_user_document_list_tab', [UserController::class, 'access_rights_user_document_list_tab']);
+    Route::post('user_document_access_save', [UserController::class, 'user_document_access_save']);
+
 
     /* document routes */
     Route::resource('document', DocumentController::class);

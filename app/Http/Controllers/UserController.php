@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\Department;
 use App\Models\Document;
 use App\Models\UserDocument;
+use App\Models\UserDocumentAccess;
 use App\Models\DepartmentDesignation;
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -513,6 +514,11 @@ class UserController extends Controller
             $data_user = User::where(['is_active'=>1])->orderBy('id','DESC')->limit(50)->get();
             return view('master.user.tab.user_document_list',compact('data','address','data_document','data_user'));
         }
+        else if($page_type == 'other_document'){
+            $data_document = Document::where(['document_type'=>$department_type,'is_active'=>1])->limit(50)->get();
+            $data_user = User::where(['is_active'=>1])->orderBy('id','DESC')->limit(50)->get();
+            return view('master.user.tab.user_document_list',compact('data','address','data_document','data_user'));
+        }
     }
 
     public function user_document_list_tab_filter_count($search,$postData){
@@ -633,6 +639,8 @@ class UserController extends Controller
             foreach($users as $record){
                 $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_user_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
 
+                $access = '<button class="btn btn-default btn-sm accessLoader_'.$record->id.'" onclick="return access_rights_user_document('.$record->id.',\'access_user_document\');" title="Access rights"><i class="fas fa-key"></i></button>';
+
                 $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user_document\');" title="View"><i class="fa fa-eye"></i></button>';
 
                 $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'user_document\');" title="Delete"><i class="fa fa-trash"></i></button>';
@@ -659,7 +667,7 @@ class UserController extends Controller
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'action'=>$edit.' '.$status.' '.$delete,
+                    'action'=>$edit.' '.$status.' '.$access.' '.$delete,
                     'document_name'=> @$record->document_name,
                     'document_user_name'=> @$document_user_name,
                     'category_name'=> @$category_name,
@@ -734,5 +742,112 @@ class UserController extends Controller
             $data['expiry_date'] = date('d/m/Y',strtotime($data->expiry_date));
         }
         echo json_encode(['data'=>$data]);
+    }
+
+    /* access rights code*/
+    public function access_rights_user_document_list_tab_filter_count($search,$postData){
+        
+        if(!empty($search)) {
+            $filter_count = User::where('is_active',1)->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('middle_name', 'LIKE', '%'.$search.'%')->orWhere('last_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
+        }else{
+            $filter_count = User::where('is_active',1);
+        }
+        return $filter_count->count();
+    }
+
+    public function check_access_user_document($user_id='',$document_id=''){
+        $count = UserDocumentAccess::where(['user_id'=>$user_id,'document_id'=>$document_id])->count();
+        return $count;
+    }
+
+    public function access_rights_user_document_list_tab(Request $request){
+        $postData = $request->input();
+        $document_id = !empty($request->input('p_id'))?$request->input('p_id'):0;
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
+        if($start_limit < 1){
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
+        }
+        
+        $draw  = $request->input('draw');
+        $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
+
+        $columns = ['','','','created_at'];
+        $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
+        $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
+        
+        $query = User::select('id','name_title','first_name','middle_name','last_name','email','created_at','is_active')->where('is_active',1);
+
+        if(!empty($search)) {
+            $query->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('middle_name', 'LIKE', '%'.$search.'%')->orWhere('last_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
+        }
+        
+        $query->orderBy($orderColumnIndex, $orderDirection);
+        $users = $query->offset($start_limit)->limit($end_limit)->get(); 
+        //printr($users);
+        $all_data = [];
+        $recordsTotal = $recordsFiltered = 0;
+        if(!empty($users)){
+            
+            $recordsTotal = User::count();
+
+            $sno = 1+$start_limit;
+            foreach($users as $record){
+                if($record->is_active == 1){
+                    $check_access = $this->check_access_user_document($record->id,$document_id);
+                    $check_access = ($check_access > 0)?'checked':'';
+
+                    $checkBox = '
+                        <div class="form-check text-center">
+                            <input type="checkbox" class="form-check-input access_rights_user" id="access_rights_user_'.$record->id.'" value="'.$record->id.'" onclick="return access_rights_user_document_add_ids('.$record->id.','.$document_id.',\'access_rights_user_document\');" '.$check_access.'>
+                            <span id="access_rights_user_loader_'.$record->id.'"></span>
+                        </div>';
+                }else{
+                    $checkBox = '
+                        <div class="form-check text-center">
+                            <input type="checkbox" class="form-check-input access_rights_user" disabled>
+                        </div>';
+                }
+
+                $all_data[] = [
+                    'sno'=> $sno++,
+                    'action'=>$checkBox,
+                    'user_name'=> $record->name_title.' '.$record->first_name.' '.$record->middle_name.' '.$record->last_name,
+                    'email'=> !empty($record->email)?$record->email:'No email',
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at))
+                ];
+            }
+        }
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $this->access_rights_user_document_list_tab_filter_count($search,$postData),
+            'data' => $all_data,
+        ]);
+    }
+
+    public function user_document_access_save(Request $request){
+        if(empty($request->user_id) || empty($request->document_id)){
+            return response()->json(['status' =>'failed','s_msg'=>'All fields are required...'],200);
+        }
+        $checkExist = UserDocumentAccess::where(['user_id'=>$request->user_id,'document_id'=>$request->document_id])->count();
+        if($checkExist > 0){
+            UserDocumentAccess::where(['user_id'=>$request->user_id,'document_id'=>$request->document_id])->forceDelete();
+            return response()->json(['status' =>'success','s_msg'=>'Permission revoke'],200);
+        }
+        
+        $postData = [
+            'user_id'=>@$request->user_id,
+            'document_id' => $request->document_id,
+            'created_by'=>Auth::user()->id
+        ];
+
+        $id = UserDocumentAccess::insertGetId($postData);
+        if($id > 0){
+            return response()->json(['status' =>'success','s_msg'=>'Permission applied'],200);
+        }else{
+            return response()->json(['status' =>'failed','s_msg'=>'Opps! Something went wrong...'],200);
+        }
     }
 }

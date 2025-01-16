@@ -36,8 +36,13 @@
                                         <a class="nav-link active" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="true" onclick="return user_change_tab('profile');">Profile</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="custom-tabs-one-document-tab" data-toggle="pill" href="#custom-tabs-one-document" role="tab" aria-controls="custom-tabs-one-document" aria-selected="false" onclick="return user_change_tab('document');">Document</a>
+                                        <a class="nav-link" id="custom-tabs-one-document-tab" data-toggle="pill" href="#custom-tabs-one-document" role="tab" aria-controls="custom-tabs-one-document" aria-selected="false" onclick="return user_change_tab('document');">My Document</a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="custom-tabs-one-other-document-tab" data-toggle="pill" href="#custom-tabs-one-other-document" role="tab" aria-controls="custom-tabs-one-other-document" aria-selected="false" onclick="return user_change_tab('other_document');">Other Document</a>
+                                    </li>
+
                                     <li class="nav-item">
                                         <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Messages</a>
                                     </li>
@@ -55,6 +60,10 @@
                                     <div class="tab-pane fade" id="custom-tabs-one-document" role="tabpanel" aria-labelledby="custom-tabs-one-document-tab">
                                         <div class="setTabLoaderDiv"></div>
                                         <div id="setDocumentDiv"></div>
+                                    </div>
+                                    <div class="tab-pane fade" id="custom-tabs-one-other-document" role="tabpanel" aria-labelledby="custom-tabs-one-other-document-tab">
+                                        <div class="setTabLoaderDiv"></div>
+                                        <div id="setOtherDocumentDiv"></div>
                                     </div>
                                     <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
                                         <div class="setTabLoaderDiv"></div>
@@ -108,6 +117,9 @@
                     }
                     else if(page_type == 'document'){
                         $('#setDocumentDiv').html(response);
+                    }
+                    else if(page_type == 'other_document'){
+                        $('#setOtherDocumentDiv').html(response);
                     }
                     $('.hideSection').show();
                 }

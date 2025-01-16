@@ -51,7 +51,7 @@
                         </li>
                     </ul>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item {{(Request::segment(2)=='user')?'nav_active':''}}">
+                        <li class="nav-item {{((Request::segment(2)=='user') || (Request::segment(2)=='user-details'))?'nav_active':''}}">
                             <a href="{{url('master/user')}}" class="nav-link">
                                 <i class="fa fa-mail-reply-all nav-icon"></i>
                                 <p>Users</p>
