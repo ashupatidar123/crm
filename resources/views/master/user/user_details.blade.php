@@ -116,9 +116,11 @@
                         $('#setProfileDiv').html(response);
                     }
                     else if(page_type == 'document'){
+                        $('#setOtherDocumentDiv').html('');
                         $('#setDocumentDiv').html(response);
                     }
                     else if(page_type == 'other_document'){
+                        $('#setDocumentDiv').html('');
                         $('#setOtherDocumentDiv').html(response);
                     }
                     $('.hideSection').show();

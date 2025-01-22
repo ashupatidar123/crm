@@ -504,20 +504,20 @@ class UserController extends Controller
         $id = !empty($request->id)?$request->id:0;
         $page_type = !empty($request->page_type)?$request->page_type:'profile';
         $data = User::where('id',$id)->first();
-        $address = UserAddress::where('user_id',$id)->first();
+        
         $department_type = @$data->department_type;
         if($page_type == 'profile'){
+            $address = UserAddress::where('user_id',$id)->first();
             return view('master.user.tab.edit_user',compact('data','address'));
         }
         else if($page_type == 'document'){
             $data_document = Document::where(['document_type'=>$department_type,'is_active'=>1])->limit(50)->get();
             $data_user = User::where(['is_active'=>1])->orderBy('id','DESC')->limit(50)->get();
-            return view('master.user.tab.user_document_list',compact('data','address','data_document','data_user'));
+            return view('master.user.tab.user_document_list',compact('data','data_document','data_user'));
         }
         else if($page_type == 'other_document'){
-            $data_document = Document::where(['document_type'=>$department_type,'is_active'=>1])->limit(50)->get();
-            $data_user = User::where(['is_active'=>1])->orderBy('id','DESC')->limit(50)->get();
-            return view('master.user.tab.user_document_list',compact('data','address','data_document','data_user'));
+            $data_document = Document::where(['is_active'=>1])->limit(50)->get();
+            return view('master.user.tab.other_document_list',compact('data','data_document'));
         }
     }
 
@@ -849,5 +849,171 @@ class UserController extends Controller
         }else{
             return response()->json(['status' =>'failed','s_msg'=>'Opps! Something went wrong...'],200);
         }
+    }
+
+    /* other document */
+    public function user_other_document_list_tab_filter_count($search,$postData){
+        $user_id = !empty($postData['user_id'])?$postData['user_id']:0;
+
+        $filter_count = UserDocument::with('single_document')->where('user_id',$user_id);
+
+        if(!empty($search)) {
+            $filter_count = UserDocument::with('single_document')->where('document_name', 'LIKE', '%'.$search.'%');
+        }
+        if(!empty($postData['search_start_date']) && !empty($postData['search_end_date'])){
+            $search_start_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_date'])));
+            $search_end_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_date']. ' +1 day')));
+
+            $filter_count->where('created_at', '>=', date($search_start_date));
+            $filter_count->where('created_at', '<=', date($search_end_date)); 
+        }
+        if(!empty($postData['search_document_name'])){
+            $filter_count->where('document_name','LIKE','%'.$postData['search_document_name'].'%');
+        }
+        if(!empty($postData['search_document_category'])){
+            $filter_count->where('document_id',$postData['search_document_category']);
+        }
+
+        if(!empty($postData['search_issue_date'])){
+            $search_issue_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_issue_date'])));
+            $filter_count->where('issue_date',date($search_issue_date));
+        }
+        if(!empty($postData['search_expiry_date'])){
+            $search_expiry_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_expiry_date'])));
+            $filter_count->where('expiry_date',date($search_expiry_date));
+        }
+        return $filter_count->count();
+    }
+
+    public function user_other_document_list_tab(Request $request){
+        $postData = $request->input();
+        $user_id = !empty($request->input('user_id'))?$request->input('user_id'):0;
+        
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
+        if($start_limit < 1){
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
+        }
+
+        $all_dc_id = [];
+        $document_id = UserDocumentAccess::select('id','document_id')->where('user_id',$user_id)->offset($start_limit)->limit($end_limit)->get();
+        
+        if(count($document_id) > 0){
+            foreach($document_id as $d_id){
+                $all_dc_id[] = $d_id->document_id;
+            }
+        }
+
+        if(empty($all_dc_id) || $user_id < 1){
+            return response()->json([
+                'draw' => 1,
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+            ]);
+        }
+        //printr($all_dc_id,'p');
+        
+        $draw  = $request->input('draw');
+        $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
+
+        $columns = ['','','document_name','','document_type','issue_date','expiry_date','user_document','created_at'];
+        $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
+        $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
+        
+        $query = UserDocument::with('single_document','single_user')->select('id','document_id','document_name','document_type','issue_date','expiry_date','user_document','created_at','is_active','user_id')->whereIn('id',$all_dc_id);
+
+        if(!empty($search)) {
+            $query->where('document_name', 'LIKE', '%'.$search.'%');
+        }
+        
+        /*custom search*/
+        if(!empty($postData['search_start_date']) && !empty($postData['search_end_date'])){
+            $search_start_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_date'])));
+            $search_end_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_date']. ' +1 day')));
+
+            $query->where('created_at', '>=', date($search_start_date));
+            $query->where('created_at', '<=', date($search_end_date)); 
+
+        }
+        //printr($postData['search_start_date'],'p');
+        if(!empty($postData['search_document_name'])){
+            $query->where('document_name','LIKE','%'.$postData['search_document_name'].'%');
+        }
+        
+        if(!empty($postData['search_document_category'])){
+            $query->where('document_id',$postData['search_document_category']);
+        }
+
+        if(!empty($postData['search_issue_date'])){
+            $search_issue_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_issue_date'])));
+            $query->where('issue_date',date($search_issue_date));
+        }
+        if(!empty($postData['search_expiry_date'])){
+            $search_expiry_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_expiry_date'])));
+            $query->where('expiry_date',date($search_expiry_date));
+        }
+        
+        $query->orderBy($orderColumnIndex, $orderDirection);
+        $users = $query->offset($start_limit)->limit($end_limit)->get(); 
+        //printr($users);
+        $all_data = [];
+        $recordsTotal = $recordsFiltered = 0;
+        if(!empty($users)){
+            
+            $recordsTotal = UserDocumentAccess::count();
+
+            $sno = 1+$start_limit;
+            foreach($users as $record){
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_user_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+
+                $access = '<button class="btn btn-default btn-sm accessLoader_'.$record->id.'" onclick="return access_rights_user_document('.$record->id.',\'access_user_document\');" title="Access rights"><i class="fas fa-key"></i></button>';
+
+                $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user_document\');" title="View"><i class="fa fa-eye"></i></button>';
+
+                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'user_document\');" title="Delete"><i class="fa fa-trash"></i></button>';
+
+                if($record->is_active == 1){
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'user_document\');" title="Active"><i class="fa fa-check"></i></button>';
+                }else{
+                    $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'user_document\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                }
+
+                $issue_date = !empty($record->issue_date)?date('d/M/Y',strtotime($record->issue_date)):'';
+                $expiry_date = !empty($record->expiry_date)?date('d/M/Y',strtotime($record->expiry_date)):'';
+                
+                if(!empty($record->user_document)){
+                    $file_type = check_file_type($record->user_document);
+                    
+                    $doc_url = '<button class="btn btn-default" onclick="return view_document(\''.$record->user_document.'\',\''.$file_type.'\',\'user_document\');"><i class="fa fa-eye"> '.$file_type.'</i></button>';
+                }else{
+                    $doc_url = '<button class="btn btn-default"><i class="fa fa-close"> no</i></button>';
+                }
+
+                $category_name = @$record->single_document->category_name;
+                $document_user_name = @$record->single_user->first_name;
+
+                $all_data[] = [
+                    'sno'=> $sno++,
+                    'action'=>$edit.' '.$status.' '.$access.' '.$delete,
+                    'document_name'=> @$record->document_name,
+                    'document_user_name'=> @$document_user_name,
+                    'category_name'=> @$category_name,
+                    'document_type'=> @$record->document_type,
+                    'issue_date'=> $issue_date,
+                    'expiry_date'=> $expiry_date,
+                    'user_document'=> @$doc_url,
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at))
+                ];
+            }
+        }
+        //printr($all_data,'p');
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $this->user_other_document_list_tab_filter_count($search,$postData),
+            'data' => $all_data,
+        ]);
     }
 }

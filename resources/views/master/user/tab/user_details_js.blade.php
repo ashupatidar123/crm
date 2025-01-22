@@ -26,7 +26,7 @@
                 type: 'GET',
                 data:{user_id,start_limit,end_limit,
                 search_document_name,search_user_name,search_document_category,
-                search_issue_date,search_expiry_date,search_start_date},
+                search_issue_date,search_expiry_date,search_start_date,search_end_date},
             },
             columns: [
                 { data: 'sno' },
@@ -100,8 +100,8 @@
         $('#access_tableList').DataTable().clear().destroy();
         var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
         var end_limit   = $('#end_limit').val();
-        var end_limit = (end_limit > 0)?end_limit:10;
-        var pageLength = (end_limit > 0)?end_limit:10;
+        var end_limit = (end_limit > 0)?end_limit:5;
+        var pageLength = (end_limit > 0)?end_limit:5;
         
         $('#access_tableList').DataTable({
             processing: true,
@@ -231,5 +231,64 @@
         
                     
         return false;
+    }
+
+    function other_document_data_table_list(){    
+        var user_id = $('#user_id').val();
+        
+        $('#tableList').DataTable().clear().destroy();
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit   = $('#end_limit').val();
+        var end_limit = (end_limit > 0)?end_limit:10;
+        var pageLength = (end_limit > 0)?end_limit:10;
+
+        var search_document_name = $('#search_document_name').val();
+        var search_user_name = $('#search_user_name').val();
+        var search_document_category = $('#search_document_category').val();
+
+        var search_issue_date = $('#search_issue_date').val();
+        var search_expiry_date = $('#search_expiry_date').val();
+        var search_start_date = $('#search_start_date').val();
+        var search_end_date = $('#search_end_date').val();
+        
+        $('#tableList').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{url("master/user_other_document_list_tab")}}',
+                type: 'GET',
+                data:{user_id,start_limit,end_limit,
+                search_document_name,search_user_name,search_document_category,
+                search_issue_date,search_expiry_date,search_start_date,search_end_date},
+            },
+            columns: [
+                { data: 'sno' },
+                { data: 'document_user_name' },
+                { data: 'document_name' },
+                { data: 'category_name' },
+                { data: 'document_type' },
+                { data: 'issue_date' },
+                { data: 'expiry_date' },
+                { data: 'user_document' },
+                { data: 'created_at', type: 'date' }
+                
+            ],
+            "order": [[8, 'DESC']],
+            "lengthMenu": [5,25,75,50,100,500,550,1000],
+            "pageLength": pageLength,
+            "responsive": true,
+            "dom": 'Bfrtip',
+            "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
+            "columnDefs": [{"targets": [0,1,3],"orderable": false}]
+        });
+    }
+
+    function user_other_document_search(){
+        other_document_data_table_list();
+    }
+    function user_other_document_search_reset_form(){
+        $('#search_issue_date, #search_expiry_date, #search_start_date, #search_end_date').val('');
+        $('#userOtherDocumentSearch').trigger("reset");
+        other_document_data_table_list();
     }
 </script>

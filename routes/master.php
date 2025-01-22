@@ -59,6 +59,7 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::get('access_rights_user_document_list_tab', [UserController::class, 'access_rights_user_document_list_tab']);
     Route::post('user_document_access_save', [UserController::class, 'user_document_access_save']);
 
+    Route::get('user_other_document_list_tab', [UserController::class, 'user_other_document_list_tab']);
 
     /* document routes */
     Route::resource('document', DocumentController::class);

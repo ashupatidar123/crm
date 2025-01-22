@@ -9,112 +9,7 @@ use Illuminate\Support\Facades\Session;
 
 class DepartmentController extends Controller{
     
-    public function curl_api(){
-        $url = 'https://tractorgyan.com/api/whatsapp_popup_enquiry';
-        
-        $url = 'https://staging.tractorgyan.com/api/whatsapp_popup_enquiry';
-        
-        $data = array(
-            'name' => str_shuffle('surbhi jain'),
-            'mobile' =>rand(7777777777,9999999999),//rand(1111111111,4444444444)
-            'brand' => str_shuffle('mahindra me'),
-            'model' => rand(111,999),
-            'state' => str_shuffle('Delhi'),
-            'district' => str_shuffle('Delhi allowed'),
-            'tehsil' => str_shuffle('delhipup'),
-            'page_source' => 'https://tractorgyan.com',
-            'type_id' => rand(11,88),
-            'verified_flag' => 'Verified'
-        );
-
-        // Encode data to JSON
-        $json_data = json_encode($data);
-
-        // Initialize cURL session
-        $ch = curl_init();
-
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_URL, $url);  // Set the URL
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the response as a string
-        curl_setopt($ch, CURLOPT_POST, true);  // Set the method to POST
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  // Attach the JSON data to the request
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',  // Set content type to JSON
-            'Authorization: Bearer YOUR_API_KEY'  // Optional: Add authorization header if needed
-        ));
-
-        $response = curl_exec($ch);
-
-        if(curl_errno($ch)) {
-            return 'Curl error: ' . curl_error($ch);
-        }
-        curl_close($ch);
-        return $response;
-    }
-
-    public function curl_api_verify($primary_id,$otp){
-        $url = 'https://tractorgyan.com/api/enquiry_otp_verify';
-
-        $data = array(
-            'primary_id' => $primary_id,
-            'otp' =>$otp
-        );
-
-        // Encode data to JSON
-        $json_data = json_encode($data);
-
-        // Initialize cURL session
-        $ch = curl_init();
-
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_URL, $url);  // Set the URL
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  // Return the response as a string
-        curl_setopt($ch, CURLOPT_POST, true);  // Set the method to POST
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  // Attach the JSON data to the request
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',  // Set content type to JSON
-            'Authorization: Bearer YOUR_API_KEY'  // Optional: Add authorization header if needed
-        ));
-
-        $response = curl_exec($ch);
-
-        if(curl_errno($ch)) {
-            return 'Curl error: ' . curl_error($ch);
-        }
-        curl_close($ch);
-        return $response;
-    }
-
-    public function url_run(){
-        //$url = 'https://staging.tractorgyan.com/';
-        //$url = 'https://staging.tractorgyan.com/api/home_popular_tractor';
-        $url = 'https://staging.tractorgyan.com';
-        $ch = curl_init();
-        //printr($url,'p');
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  // Return response as a string
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // Set timeout (seconds)
-        
-        // Execute the cURL session and capture the response
-        $response = curl_exec($ch);
-        return true;
-        printr($response,'p');
-    }
-
     public function index(){
-        
-        return view('master.department.index'); exit;
-        for($i=1;$i<=5;$i++){
-            $data = $this->curl_api();
-            printr($data,'p');
-            $data = json_decode($data);
-            if(!empty($data->data->otp)){
-                $primary_id = $data->data->primary_id;
-                $otp = $data->data->otp;
-                $vdata = $this->curl_api_verify($primary_id,$otp);
-            }
-        }
         return view('master.department.index');
     }
 
@@ -164,7 +59,7 @@ class DepartmentController extends Controller{
                 }else{
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'department\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
-
+                
                 $all_data[] = [
                     'sno'=> $sno++,
                     'department_name'=> $record->department_name,
