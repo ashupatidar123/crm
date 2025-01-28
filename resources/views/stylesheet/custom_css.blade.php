@@ -19,7 +19,7 @@
     input[readonly] {
         background-color: #FFFFFF !important;
     }
-    .modal-dialog{
+    .modal-popup-scroll{
         overflow-y: scroll;
         height: 90%;
     }

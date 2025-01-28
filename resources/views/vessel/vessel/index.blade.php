@@ -64,7 +64,7 @@
     <!-- Modal -->
     <section class="content">
         <div class="modal fade" id="addEditModal" role="dialog">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-popup-scroll">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Vessel</h4>
