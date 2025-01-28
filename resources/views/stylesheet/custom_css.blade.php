@@ -19,6 +19,10 @@
     input[readonly] {
         background-color: #FFFFFF !important;
     }
+    .modal-dialog{
+        overflow-y: scroll;
+        height: 90%;
+    }
 
     /*dropzone file upload*/
     #myDropzone {
