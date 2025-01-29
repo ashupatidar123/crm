@@ -12,17 +12,34 @@
             <ul class="nav nav-pills nav-sidebar flex-column text-sm" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item {{(Request::segment(1)=='dashboard')?'menu-open':''}}">
                     <a href="{{url('/dashboard')}}" class="nav-link {{(Request::segment(1)=='dashboard')?'active':''}}">
-                        <i class="nav-icon fa fa-database"></i>
-                        <p>Dashboard
+                        <i class="nav-icon fa fa-home"></i>
+                        <p>Home
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                 </li>
 
-                <li class="nav-item {{(Request::segment(1)=='master')?'menu-is-opening menu-open':''}}">
-                    <a href="#" class="nav-link {{(Request::segment(1)=='master')?'active':''}}">
+                <li class="nav-item {{(Request::segment(1)=='user')?'menu-is-opening menu-open':''}}">
+                    <a href="#" class="nav-link {{(Request::segment(2)=='user')?'active':''}}">
                         <i class="nav-icon fa fa-database"></i>
-                        <p>Master Section
+                        <p>User Management
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item {{((Request::segment(2)=='user') || (Request::segment(2)=='user-details'))?'nav_active':''}}">
+                            <a href="{{url('master/user')}}" class="nav-link">
+                                <i class="fa fa-mail-reply-all nav-icon"></i>
+                                <p>Users</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item {{(Request::segment(1)=='master')?'menu-is-opening menu-open':''}}">
+                    <a href="#" class="nav-link {{((Request::segment(1)=='master') && (Request::segment(2) != 'user'))?'active':''}}">
+                        <i class="nav-icon fa fa-database"></i>
+                        <p>Master Management
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
@@ -50,14 +67,7 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item {{((Request::segment(2)=='user') || (Request::segment(2)=='user-details'))?'nav_active':''}}">
-                            <a href="{{url('master/user')}}" class="nav-link">
-                                <i class="fa fa-mail-reply-all nav-icon"></i>
-                                <p>Users</p>
-                            </a>
-                        </li>
-                    </ul>
+                    
                     <ul class="nav nav-treeview">
                         <li class="nav-item {{(Request::segment(2)=='document')?'nav_active':''}}">
                             <a href="{{url('master/document')}}" class="nav-link">
@@ -95,7 +105,7 @@
                 <li class="nav-item {{(Request::segment(1)=='vessel')?'menu-is-opening menu-open':''}}">
                     <a href="#" class="nav-link {{(Request::segment(1)=='vessel')?'active':''}}">
                         <i class="nav-icon fa fa-database"></i>
-                        <p>Vessel Section
+                        <p>Vessel Management
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
@@ -116,42 +126,6 @@
                         </li>
                     </ul>
                 </li>
-
-                @if(1==2)
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-edit"></i>
-                        <p>Forms
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{url('advanced-form')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Advanced Elements</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-table"></i>
-                        <p>Tables
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{url('user-tables')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>DataTables</p>
-                            </a>
-                        </li>
-                        
-                    </ul>
-                </li>
-                @endif
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
