@@ -323,4 +323,4 @@
 </script>
 @include('script.user_js')
 @include('script.comman_js')
-@include('master.user.tab.user_details_js')
+@include('user.user.tab.user_details_js')

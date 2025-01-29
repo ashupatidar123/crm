@@ -22,7 +22,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{url("master/user_document_list_tab")}}',
+                url: '{{url("user/user_document_list_tab")}}',
                 type: 'GET',
                 data:{user_id,start_limit,end_limit,
                 search_document_name,search_user_name,search_document_category,
@@ -66,7 +66,7 @@
 
         $.ajax({
             type: "POST",
-            url: "{{ url('master/user_document_edit') }}",
+            url: "{{ url('user/user_document_edit') }}",
             data: {p_id,type},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
@@ -107,7 +107,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{url("master/access_rights_user_document_list_tab")}}',
+                url: '{{url("user/access_rights_user_document_list_tab")}}',
                 type: 'GET',
                 data:{start_limit,end_limit,p_id},
             },
@@ -149,7 +149,7 @@
 
         $.ajax({
             type: "POST",
-            url: "{{ url('master/user_document_access_save') }}",
+            url: "{{ url('user/user_document_access_save') }}",
             data: {user_id,document_id},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
@@ -178,7 +178,7 @@
         formData.append('user_document',save_file_name);
         $.ajax({
             type: "POST",
-            url: "{{url('master/add_user_document')}}",
+            url: "{{url('user/add_user_document')}}",
             data: formData,
             processData: false,
             contentType: false,
@@ -255,7 +255,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{url("master/user_other_document_list_tab")}}',
+                url: '{{url("user/user_other_document_list_tab")}}',
                 type: 'GET',
                 data:{user_id,start_limit,end_limit,
                 search_document_name,search_user_name,search_document_category,

@@ -37,30 +37,6 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('ajax_delete', [CommonController::class, 'ajax_delete']);
     Route::post('ajax_view', [CommonController::class, 'ajax_view'])->name('ajax_view');
 
-    /* user routes */
-    Route::get('add-user', [UserController::class, 'showAddUser']);
-    Route::post('add-user', [UserController::class, 'add_user']);
-    Route::post('ajax_user_check_record', [UserController::class, 'ajax_user_check_record']);
-    Route::post('get_role_reporting', [UserController::class, 'get_role_reporting'])->name('get_role_reporting');
-    Route::post('get_department_record', [UserController::class, 'get_department_record'])->name('get_department_record');
-    Route::post('get_designation_record', [UserController::class, 'get_designation_record'])->name('get_designation_record');
-
-    Route::get('user', [UserController::class, 'user'])->name('user');
-    Route::get('user_list', [UserController::class, 'user_list']);
-
-    Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
-    Route::post('update_user', [UserController::class, 'update_user']);
-    Route::post('user_delete', [UserController::class, 'user_delete']);
-    Route::get('user-details/{id}', [UserController::class, 'showUserDetails'])->name('user-details');
-    Route::post('user_tab_detail', [UserController::class, 'user_tab_detail'])->name('user_tab_detail');
-    Route::get('user_document_list_tab', [UserController::class, 'user_document_list_tab']);
-    Route::post('add_user_document', [UserController::class, 'add_user_document']);
-    Route::post('user_document_edit', [UserController::class, 'user_document_edit']);
-    Route::get('access_rights_user_document_list_tab', [UserController::class, 'access_rights_user_document_list_tab']);
-    Route::post('user_document_access_save', [UserController::class, 'user_document_access_save']);
-
-    Route::get('user_other_document_list_tab', [UserController::class, 'user_other_document_list_tab']);
-
     /* document routes */
     Route::resource('document', DocumentController::class);
     Route::get('document_list', [DocumentController::class, 'document_list'])->name('document.list');

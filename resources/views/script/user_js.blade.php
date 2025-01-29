@@ -17,7 +17,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{url("master/user_list")}}',
+                url: '{{url("user/user_list")}}',
                 type: 'GET',
                 data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date},
             },
@@ -47,7 +47,7 @@
         }
         $.ajax({
             type: "POST",
-            url: "{{url('master/ajax_user_check_record')}}",
+            url: "{{url('user/ajax_user_check_record')}}",
             data: {where_value,check_type,id},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
@@ -240,7 +240,7 @@
         
         $.ajax({
             type: "POST",
-            url: "{{url('master/add-user')}}",
+            url: "{{url('user/add-user')}}",
             data: formData,
             processData: false,
             contentType: false,
@@ -253,7 +253,7 @@
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
                     window.setTimeout(function(){
-                        window.location.href = "{{url('master/user')}}";
+                        window.location.href = "{{url('user/user')}}";
                     },3000);
                 }else{
                     swal_error(resp.s_msg);
@@ -347,7 +347,7 @@
         
         $.ajax({
             type: "POST",
-            url: "{{url('master/update_user')}}",
+            url: "{{url('user/update_user')}}",
             data: formData,
             processData: false,
             contentType: false,
@@ -360,7 +360,7 @@
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
                     window.setTimeout(function(){
-                        window.location.href = "{{url('master/user')}}";
+                        window.location.href = "{{url('user/user')}}";
                     },3000);
                 }else{
                     swal_error(resp.s_msg);

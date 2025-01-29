@@ -28,7 +28,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item {{((Request::segment(2)=='user') || (Request::segment(2)=='user-details'))?'nav_active':''}}">
-                            <a href="{{url('master/user')}}" class="nav-link">
+                            <a href="{{url('user/user')}}" class="nav-link">
                                 <i class="fa fa-mail-reply-all nav-icon"></i>
                                 <p>Users</p>
                             </a>
@@ -37,7 +37,7 @@
                 </li>
 
                 <li class="nav-item {{(Request::segment(1)=='master')?'menu-is-opening menu-open':''}}">
-                    <a href="#" class="nav-link {{((Request::segment(1)=='master') && (Request::segment(2) != 'user'))?'active':''}}">
+                    <a href="#" class="nav-link {{(Request::segment(1)=='master')?'active':''}}">
                         <i class="nav-icon fa fa-database"></i>
                         <p>Master Management
                             <i class="fas fa-angle-left right"></i>

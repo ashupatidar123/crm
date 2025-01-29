@@ -31,7 +31,7 @@ class UserController extends Controller
     }
 
     public function user(){
-        return view('master.user.user_list');
+        return view('user.user.user_list');
     }
 
     public function user_list_filter_count($search,$postData){
@@ -124,7 +124,7 @@ class UserController extends Controller
             $recordsTotal = User::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<a href="'.url('master/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
+                $edit = '<a href="'.url('user/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
                 $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user\');" title="View"><i class="fa fa-eye"></i></button>';
 
                 $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'user\');" title="Delete"><i class="fa fa-trash"></i></button>';
@@ -181,7 +181,7 @@ class UserController extends Controller
         $user = User::where('id',Auth::user()->id)->first();
         $role = Role::select('id','role_name','rank')->where('is_active',1)->get();
         $department = Department::select('id','department_name')->where('is_active',1)->get();
-        return view('master.user.add_user',compact('user','role','department'));
+        return view('user.user.add_user',compact('user','role','department'));
     }
 
     public function add_user(Request $request){
@@ -248,10 +248,10 @@ class UserController extends Controller
     public function showEditUser(Request $request){
         $data = User::where('id',$request->id)->first();
         if(empty($data)){
-            return redirect(url('master/user'),302);
+            return redirect(url('user/user'),302);
         }
         $address = UserAddress::where('user_id',$request->id)->first();
-        return view('master.user.edit_user',compact('data','address'));
+        return view('user.user.edit_user',compact('data','address'));
     }
 
     public function update_user(Request $request){
@@ -393,14 +393,14 @@ class UserController extends Controller
             return redirect(route('user'),302);
         }
         $address = UserAddress::where('user_id',$request->id)->first();
-        return view('master.user.user_details',compact('data','address'));
+        return view('user.user.user_details',compact('data','address'));
     }
 
     public function showProfile(){
         $data = User::with('single_department','single_designation')->where('id',Auth::user()->id)->first();
         //printr($data);
         if(empty($data)){
-            return redirect(url('master/user'),302);
+            return redirect(url('user/user'),302);
         }
         $address = UserAddress::where('user_id',Auth::user()->id)->first();
         return view('admin.profile.profile',compact('data','address'));
@@ -508,16 +508,16 @@ class UserController extends Controller
         $department_type = @$data->department_type;
         if($page_type == 'profile'){
             $address = UserAddress::where('user_id',$id)->first();
-            return view('master.user.tab.edit_user',compact('data','address'));
+            return view('user.user.tab.edit_user',compact('data','address'));
         }
         else if($page_type == 'document'){
             $data_document = Document::where(['document_type'=>$department_type,'is_active'=>1])->limit(50)->get();
             $data_user = User::where(['is_active'=>1])->orderBy('id','DESC')->limit(50)->get();
-            return view('master.user.tab.user_document_list',compact('data','data_document','data_user'));
+            return view('user.user.tab.user_document_list',compact('data','data_document','data_user'));
         }
         else if($page_type == 'other_document'){
             $data_document = Document::where(['is_active'=>1])->limit(50)->get();
-            return view('master.user.tab.other_document_list',compact('data','data_document'));
+            return view('user.user.tab.other_document_list',compact('data','data_document'));
         }
     }
 
