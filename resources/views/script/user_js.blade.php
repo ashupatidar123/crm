@@ -12,14 +12,18 @@
         var search_designation_name = $('#search_designation_name').val();
         var search_start_date = $('#search_start_date').val();
         var search_end_date = $('#search_end_date').val();
+        var summernote = $('#summernote').val();
         
         $('#tableList').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 url: '{{url("user/user_list")}}',
-                type: 'GET',
-                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date},
+                type: 'POST',
+                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date,summernote},
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
             },
             columns: [
                 { data: 'sno' },

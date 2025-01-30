@@ -6,7 +6,7 @@
 
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ url('public/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-<!-- Summernote -->
+<!-- Summernote ckEditor-->
 <script src="{{ url('public/assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ url('public/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>

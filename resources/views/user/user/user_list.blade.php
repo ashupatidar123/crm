@@ -3,6 +3,10 @@
 @section('title') Users @endsection
 
 @section('content')
+
+<!-- Add CKEditor via CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/38.0.0/classic/ckeditor.js"></script>
+
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -84,6 +88,20 @@
                                                     </div>
                                                 </div>
 
+                                                @if(1==11)
+                                                <div class="col-md-12">
+                                                    <textarea name="editor" id="summernote"></textarea>
+                                                </div>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $('#summernote').summernote({
+                                                            placeholder: 'Enter your text here...',
+                                                            height: 200
+                                                        });
+                                                    });
+                                                </script>
+                                                @endif
+                                                    
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <button type="button" class="btn btn-primary" onclick="return user_search();">Search</button>

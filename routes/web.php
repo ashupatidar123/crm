@@ -46,7 +46,7 @@ Route::prefix('user')->middleware('auth')->group(function () {
     Route::post('get_designation_record', [UserController::class, 'get_designation_record'])->name('get_designation_record');
 
     Route::get('user', [UserController::class, 'user'])->name('user');
-    Route::get('user_list', [UserController::class, 'user_list']);
+    Route::post('user_list', [UserController::class, 'user_list']);
 
     Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
     Route::post('update_user', [UserController::class, 'update_user']);
