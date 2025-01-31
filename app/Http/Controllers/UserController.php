@@ -654,6 +654,16 @@ class UserController extends Controller
                 $issue_date = !empty($record->issue_date)?date('d/M/Y',strtotime($record->issue_date)):'';
                 $expiry_date = !empty($record->expiry_date)?date('d/M/Y',strtotime($record->expiry_date)):'';
                 
+                
+                $expiry_date_text = '';
+                if(!empty($record->expiry_date)){
+                    if(date($record->expiry_date) < date('Y-m-d')){
+                        $expiry_date_text = '<span class="text-danger expiry_date_text">Expired</span>';
+                    }else{
+                        $expiry_date_text = '<span class="text-success">Active</span>';
+                    }
+                }
+
                 if(!empty($record->user_document)){
                     $file_type = check_file_type($record->user_document);
                     
@@ -673,7 +683,7 @@ class UserController extends Controller
                     'category_name'=> @$category_name,
                     'document_type'=> @$record->document_type,
                     'issue_date'=> $issue_date,
-                    'expiry_date'=> $expiry_date,
+                    'expiry_date'=> $expiry_date.' '.$expiry_date_text,
                     'user_document'=> @$doc_url,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at))
                 ];

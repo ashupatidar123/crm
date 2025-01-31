@@ -94,6 +94,9 @@
                             else if(tbl == 'vessel_document'){
                                 vessel_document_data_table_list();
                             }
+                            else if(tbl == 'vessel_check_out'){
+                                vessel_check_in_out_data_table_list();
+                            }
                             else{
                                 swal_error(resp.message,1800);
                                 location.reload();
@@ -165,6 +168,9 @@
                             }
                             else if(tbl == 'vessel_document'){
                                 vessel_document_data_table_list();
+                            }
+                            else if(tbl == 'vessel_check_out'){
+                                vessel_check_in_out_data_table_list();
                             }
                             else{
                                 location.reload();

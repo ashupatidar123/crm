@@ -310,7 +310,7 @@
     $(document).ready(function() {
         $('.select2').select2();
         user_document_data_table_list();
-
+    
         /* file upload section */
         Dropzone.autoDiscover = false;
         var myDropzone = new Dropzone("#myDropzone", {

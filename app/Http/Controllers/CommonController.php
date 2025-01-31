@@ -15,6 +15,7 @@ use App\Models\UserDocument;
 use App\Models\Vessel;
 use App\Models\VesselCategory;
 use App\Models\VesselDocument;
+use App\Models\VesselCheckInOut;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -61,6 +62,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'vessel_document'){
             VesselDocument::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'vessel_check_out'){
+            VesselCheckInOut::where('id',$request->p_id)->update(['is_active'=>$type]);
         }
         else{
            return response()->json(['status' =>'error','message' => 'Something went wrong'],200); 
@@ -113,6 +117,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'vessel_document'){
             $record_dlt = VesselDocument::find($request->p_id);
+        }
+        else if($tbl == 'vessel_check_out'){
+            $record_dlt = VesselCheckInOut::find($request->p_id);
         }
         else{
             return response()->json(['status' =>'error','message' => 'Deletion failed'],201);

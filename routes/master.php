@@ -11,6 +11,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\VesselCategoryController;
 use App\Http\Controllers\UserDocumentAccess;
+use App\Http\Controllers\VesselCheckInOutController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -96,4 +97,10 @@ Route::prefix('vessel')->middleware('auth')->group(function () {
     Route::get('vessel_category_list', [VesselCategoryController::class, 'vessel_category_list'])->name('vessel_category_list');
     Route::post('vessel_category_edit', [VesselCategoryController::class, 'vessel_category_edit'])->name('vessel_category_edit');
     Route::post('get_parent_vessel_category', [VesselCategoryController::class, 'get_parent_vessel_category'])->name('get_parent_vessel_category');
+
+    /* vessel check in out routes */
+    Route::resource('check-in-out', VesselCheckInOutController::class);
+    Route::post('check_in_out_list', [VesselCheckInOutController::class, 'check_in_out_list'])->name('check_in_out_list');
+    Route::post('check_in_out_edit', [VesselCheckInOutController::class, 'check_in_out_edit'])->name('check_in_out_edit');
+    Route::post('check_out', [VesselCheckInOutController::class, 'check_out'])->name('check_out');
 });
