@@ -17,6 +17,8 @@ use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use App\Models\Vessel;
+use App\Models\VesselCheckInOut;
 use App\Traits\FileUploadTrait;
 
 class UserController extends Controller
@@ -519,6 +521,10 @@ class UserController extends Controller
             $data_document = Document::where(['is_active'=>1])->limit(50)->get();
             return view('user.user.tab.other_document_list',compact('data','data_document'));
         }
+        else if($page_type == 'vessel_check_in_out'){
+            $vessel = Vessel::select('id','vessel_name','vessel_email')->where('is_active',1)->orderBy('vessel_name','ASC')->limit(50)->get();
+            return view('user.user.tab.vessel_check_in_out',compact('data','vessel'));
+        }
     }
 
     public function user_document_list_tab_filter_count($search,$postData){
@@ -658,9 +664,9 @@ class UserController extends Controller
                 $expiry_date_text = '';
                 if(!empty($record->expiry_date)){
                     if(date($record->expiry_date) < date('Y-m-d')){
-                        $expiry_date_text = '<span class="text-danger expiry_date_text">Expired</span>';
+                        $expiry_date_text = '<span class="text-danger expiry_date_text">(Expired)</span>';
                     }else{
-                        $expiry_date_text = '<span class="text-success">Active</span>';
+                        $expiry_date_text = '<span class="text-success">(Active)</span>';
                     }
                 }
 
@@ -1001,6 +1007,15 @@ class UserController extends Controller
                     $doc_url = '<button class="btn btn-default"><i class="fa fa-close"> no</i></button>';
                 }
 
+                $expiry_date_text = '';
+                if(!empty($record->expiry_date)){
+                    if(date($record->expiry_date) < date('Y-m-d')){
+                        $expiry_date_text = '<span class="text-danger expiry_date_text">(Expired)</span>';
+                    }else{
+                        $expiry_date_text = '<span class="text-success">(Active)</span>';
+                    }
+                }
+
                 $category_name = @$record->single_document->category_name;
                 $document_user_name = @$record->single_user->first_name;
 
@@ -1012,7 +1027,7 @@ class UserController extends Controller
                     'category_name'=> @$category_name,
                     'document_type'=> @$record->document_type,
                     'issue_date'=> $issue_date,
-                    'expiry_date'=> $expiry_date,
+                    'expiry_date'=> $expiry_date.' '.$expiry_date_text,
                     'user_document'=> @$doc_url,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at))
                 ];
@@ -1023,6 +1038,123 @@ class UserController extends Controller
             'draw' => $draw,
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $this->user_other_document_list_tab_filter_count($search,$postData),
+            'data' => $all_data,
+        ]);
+    }
+
+    public function vessel_check_in_out_list_tab_filter_count($search,$postData){
+        $filter_count = VesselCheckInOut::where('id','>',0)->where('user_id',$postData['user_id']);
+
+        if(!empty($search)) {
+            $filter_count = VesselCheckInOut::where('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
+        }
+        if(!empty($postData['search_vessel_id'])) {
+            $filter_count->where('vessel_id',$postData['search_vessel_id']);
+        }
+        if(!empty($postData['search_start_check_in_date']) && !empty($postData['search_end_check_in_date'])) {
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_in_date'])));
+            $search_end_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_check_in_date'])));
+            
+            $filter_count->where('check_in_date', '>=', date($search_start_check_in_date));
+            $filter_count->where('check_in_date', '<=', date($search_end_check_in_date));
+        }
+        else if(!empty($postData['search_start_check_in_date'])){
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_in_date'])));
+            $filter_count->where('check_in_date',date($search_start_check_in_date));
+        }
+
+        if(!empty($postData['search_start_check_out_date']) && !empty($postData['search_end_check_out_date'])) {
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_out_date'])));
+            $search_end_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_check_out_date'])));
+            
+            $filter_count->where('check_out_date', '>=', date($search_start_check_out_date));
+            $filter_count->where('check_out_date', '<=', date($search_end_check_out_date));
+        }
+        else if(!empty($postData['search_start_check_out_date'])){
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_out_date'])));
+            $filter_count->where('check_out_date',date($search_start_check_out_date));
+        }
+        return $filter_count->count();
+    }
+
+    public function vessel_check_in_out_list_tab(Request $request){
+        $postData = $request->input();
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
+        if($start_limit < 1){
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
+        }
+        
+        $draw  = $request->input('draw');
+        $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
+
+        $columns = ['','is_active','','','check_in_date','check_out_date','description','check_out_date','created_at'];
+        $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
+        $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
+        
+        $query = VesselCheckInOut::with('single_user','single_vessel')->select('id','user_id','vessel_id','description','check_out_description','check_in_date','check_out_date','created_at','is_active','check_status')->where('user_id',$request->input('user_id'));
+        
+        if(!empty($request->input('search_vessel_id'))){
+            $query->where('vessel_id',$request->input('search_vessel_id')); 
+        }
+        
+        if(!empty($request->input('search_start_check_in_date')) && !empty($request->input('search_end_check_in_date'))){
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_in_date'))));
+            $search_end_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_check_in_date'))));
+            
+            $query->where('check_in_date', '>=', date($search_start_check_in_date));
+            $query->where('check_in_date', '<=', date($search_end_check_in_date));
+        }
+        else if(!empty($request->input('search_start_check_in_date'))){
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_in_date'))));
+            $query->where('check_in_date',date($search_start_check_in_date));
+        }
+
+        if(!empty($request->input('search_start_check_out_date')) && !empty($request->input('search_end_check_out_date'))){
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_out_date'))));
+            $search_end_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_check_out_date'))));
+            
+            $query->where('check_out_date', '>=', date($search_start_check_out_date));
+            $query->where('check_out_date', '<=', date($search_end_check_out_date));
+        }
+        else if(!empty($request->input('search_start_check_out_date'))){
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_out_date'))));
+            $query->where('check_out_date',date($search_start_check_out_date));
+        }
+
+
+        $query->orderBy($orderColumnIndex, $orderDirection);
+        $response_data = $query->offset($start_limit)->limit($end_limit)->get(); 
+        //printr($response_data);
+        $all_data = [];
+        $recordsTotal = $recordsFiltered = 0;
+        if(!empty($response_data)){
+            $recordsTotal = VesselCheckInOut::where('user_id',$request->input('user_id'))->count();
+            $sno = 1+$start_limit;
+            foreach($response_data as $record){
+                $check_in_date = !empty($record->check_in_date)?date('d/M/Y',strtotime($record->check_in_date)):'Empty';
+
+                $user_name = !empty(@$record->single_user->first_name)?$record->single_user->first_name.' ('.$record->single_user->email.')':'';
+                $vessel_name = !empty(@$record->single_vessel->vessel_name)?$record->single_vessel->vessel_name.' ('.$record->single_vessel->vessel_email.')':'';
+
+                $all_data[] = [
+                    'sno'=> $sno++,
+                    'user_name'=> $user_name,
+                    'vessel_name'=> $vessel_name,
+                    'check_in_date'=> date('d/M/Y',strtotime($record->check_in_date)),
+                    'check_out_date'=> !empty($record->check_out_date)?'<span class="text-danger">'.date('d/M/Y',strtotime($record->check_out_date)).'</span>':'',
+                    'description'=> $record->description,
+                    'check_out_description'=> $record->check_out_description,
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                ];
+            }
+        }
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $this->vessel_check_in_out_list_tab_filter_count($search,$postData),
             'data' => $all_data,
         ]);
     }

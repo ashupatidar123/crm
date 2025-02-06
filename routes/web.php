@@ -60,4 +60,5 @@ Route::prefix('user')->middleware('auth')->group(function () {
     Route::post('user_document_access_save', [UserController::class, 'user_document_access_save']);
 
     Route::get('user_other_document_list_tab', [UserController::class, 'user_other_document_list_tab']);
+    Route::post('vessel_check_in_out_list_tab', [UserController::class, 'vessel_check_in_out_list_tab'])->name('vessel_check_in_out_list_tab');
 });

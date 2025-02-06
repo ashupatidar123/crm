@@ -390,6 +390,15 @@ class VesselController extends Controller{
                     $doc_url = '<button class="btn btn-default"><i class="fa fa-close"> no</i></button>';
                 }
 
+                $expiry_date_text = '';
+                if(!empty($record->expiry_date)){
+                    if(date($record->expiry_date) < date('Y-m-d')){
+                        $expiry_date_text = '<span class="text-danger expiry_date_text">(Expired)</span>';
+                    }else{
+                        $expiry_date_text = '<span class="text-success">(Active)</span>';
+                    }
+                }
+
                 $category_name = @$record->single_document->category_name;
                 $vessel_name = @$record->single_vessel->vessel_name;
 
@@ -400,7 +409,7 @@ class VesselController extends Controller{
                     'document_name'=> @$record->document_name,
                     'category_name'=> @$category_name,
                     'issue_date'=> $issue_date,
-                    'expiry_date'=> $expiry_date,
+                    'expiry_date'=> $expiry_date.' '.$expiry_date_text,
                     'vessel_document'=> @$doc_url,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at))
                 ];

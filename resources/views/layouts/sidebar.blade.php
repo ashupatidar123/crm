@@ -129,7 +129,7 @@
                         <li class="nav-item {{(Request::segment(2)=='check-in-out')?'nav_active':''}}">
                             <a href="{{route('check-in-out.index')}}" class="nav-link">
                                 <i class="fa fa-mail-reply-all nav-icon"></i>
-                                <p>Check In/Out</p>
+                                <p>Signing/SignOut</p>
                             </a>
                         </li>
                     </ul>

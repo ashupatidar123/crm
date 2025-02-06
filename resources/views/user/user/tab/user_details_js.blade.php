@@ -291,4 +291,60 @@
         $('#userOtherDocumentSearch').trigger("reset");
         other_document_data_table_list();
     }
+
+    function vessel_check_in_out_data_table_list_tab(){    
+        var user_id = $('#user_id').val();
+        
+        $('#tableList').DataTable().clear().destroy();
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit   = $('#end_limit').val();
+        var end_limit = (end_limit > 0)?end_limit:10;
+        var pageLength = (end_limit > 0)?end_limit:10;
+
+        var search_vessel_id = $('#search_vessel_id').val();
+        var search_start_check_in_date = $('#search_start_check_in_date').val();
+        var search_end_check_in_date = $('#search_end_check_in_date').val();
+        var search_start_check_out_date = $('#search_start_check_out_date').val();
+        var search_end_check_out_date = $('#search_end_check_out_date').val();
+        
+        $('#tableList').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{route("vessel_check_in_out_list_tab")}}',
+                type: 'POST',
+                data:{user_id,start_limit,end_limit,search_vessel_id,search_start_check_in_date,search_end_check_in_date,search_start_check_out_date,search_end_check_out_date},
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
+            },
+            columns: [
+                { data: 'sno' },
+                { data: 'user_name' },
+                { data: 'vessel_name' },
+                { data: 'check_in_date' },
+                { data: 'check_out_date' },
+                { data: 'description' },
+                { data: 'check_out_description' },
+                { data: 'created_at', type: 'date' }
+            ],
+            "order": [[7, 'DESC']],
+            "lengthMenu": [10,25,75,50,100,500,550,1000],
+            "pageLength": pageLength,
+            "responsive": true,
+            "searching": false,
+            "dom": 'Bfrtip',
+            "buttons": ['copy', 'csv', 'excel', 'pdf', 'print',"colvis"],
+            "columnDefs": [{"targets": [0,1,2],"orderable": false}]
+        });
+    }
+
+    function vessel_check_in_out_advance_search_tab(){
+        vessel_check_in_out_data_table_list_tab();
+    }
+    function vessel_search_reset_form_tab(){
+        $('#search_start_check_in_date, #search_end_check_in_date, #search_start_check_out_date, #search_end_check_out_date').val('');
+        $('#vesselAdvanceSearch').trigger("reset");
+        vessel_check_in_out_data_table_list_tab();
+    }
 </script>

@@ -32,6 +32,88 @@
                         <div class="card-header card_header_color">
                             <h3 class="card-title">All Signing Vessel</h3>
                         </div>
+                        <div class="modal-body">
+                            <form method="POST" id="advanceSearch">
+                                @csrf    
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card card-primary">
+                                            <div class="show_message"></div>
+                                            <div class="card-body row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <select class="form-control select2" id="search_vessel_id">
+                                                            <option value="" hidden="">Select vessel</option>
+                                                            @if(!empty($vessel))
+                                                                @foreach($vessel as $vsl)
+                                                                    <option  value="{{$vsl->id}}">{{$vsl->vessel_name}} ({{$vsl->vessel_email}})</option>
+                                                                @endforeach    
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <select class="form-control select2" id="search_user_id">
+                                                            <option value="" hidden="">Select user</option>
+                                                            @if(!empty($vessel_user))
+                                                                @foreach($vessel_user as $u_vsl)
+                                                                    <option value="{{$u_vsl->id}}">{{$u_vsl->name_title}} {{$u_vsl->first_name}} {{$u_vsl->last_name}} ({{$u_vsl->email}})</option>
+                                                                @endforeach
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="input-group date">
+                                                            <input type="text" id="search_start_check_in_date" class="form-control" placeholder="Search start signing date" readonly>
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="input-group date">
+                                                            <input type="text" id="search_end_check_in_date" class="form-control" placeholder="Search end signing date" readonly>
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="input-group date">
+                                                            <input type="text" id="search_start_check_out_date" class="form-control" placeholder="Search start signout date" readonly>
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <div class="input-group date">
+                                                            <input type="text" id="search_end_check_out_date" class="form-control" placeholder="Search end signout date" readonly>
+                                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <button type="button" class="btn btn-primary" onclick="return check_in_out_advance_search();"><i class="fa fa-search"></i> Search</button>
+                                                        <button type="button" class="btn btn-danger" onclick="return search_reset_form();"><i class="fa fa-refresh"></i> Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- /.card-header -->
                         <div class="card-body responsive">
                             <table id="tableList" class="table table-bordered table-striped">
@@ -43,8 +125,9 @@
                                         <th>Vessel Name</th>
                                         <th>Signing Date</th>
                                         <th>SignOut Date</th>
-                                        <th>Description</th>
-                                        <th>Date</th>
+                                        <th>Signing Remark</th>
+                                        <th>SignOut Remark</th>
+                                        <th>Created AT</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

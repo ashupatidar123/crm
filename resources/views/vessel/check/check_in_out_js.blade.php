@@ -5,6 +5,13 @@
         var end_limit = $('#end_limit').val();
         var end_limit = (end_limit > 0)?end_limit:10;
         var pageLength = (end_limit > 0)?end_limit:10;
+
+        var search_vessel_id = $('#search_vessel_id').val();
+        var search_user_id = $('#search_user_id').val();
+        var search_start_check_in_date = $('#search_start_check_in_date').val();
+        var search_end_check_in_date = $('#search_end_check_in_date').val();
+        var search_start_check_out_date = $('#search_start_check_out_date').val();
+        var search_end_check_out_date = $('#search_end_check_out_date').val();
         
         $('#tableList').DataTable({
             processing: true,
@@ -12,7 +19,7 @@
             ajax: {
                 url: '{{route("check_in_out_list")}}',
                 type: 'POST',
-                data:{start_limit,end_limit},
+                data:{start_limit,end_limit,search_vessel_id,search_user_id,search_start_check_in_date,search_end_check_in_date,search_start_check_out_date,search_end_check_out_date},
                 headers: {
                     'X-CSRF-TOKEN': csrf_token
                 },
@@ -25,13 +32,16 @@
                 { data: 'check_in_date' },
                 { data: 'check_out_date' },
                 { data: 'description' },
+                { data: 'check_out_description' },
                 { data: 'created_at', type: 'date' }
             ],
-            "order": [[7, 'DESC']],
+            "order": [[8, 'DESC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "columnDefs": [{"targets": [0,2,3,4],"orderable": false}]
+            "searching": false,
+            //"lengthChange": false,
+            "columnDefs": [{"targets": [0,2,3],"orderable": false}]
         });
     }  
 
@@ -183,6 +193,15 @@
         });
     });
 
+    function check_in_out_advance_search(){
+        vessel_check_in_out_data_table_list();
+    }
+    function search_reset_form(){
+        $('#search_start_check_in_date, #search_end_check_in_date, #search_start_check_out_date, #search_end_check_out_date').val('');
+        $('#advanceSearch').trigger("reset");
+        vessel_check_in_out_data_table_list();
+    }
+
     $('#check_in_date').datepicker({
         dateFormat: 'dd/mm/yy',
         changeMonth: true,
@@ -195,5 +214,11 @@
         changeMonth: true,
         changeYear: true,
         minDate: 0
+    });
+
+    $('#search_start_check_in_date, #search_end_check_in_date, #search_start_check_out_date, #search_end_check_out_date').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
     });
 </script>

@@ -43,12 +43,11 @@
                                         <a class="nav-link" id="custom-tabs-one-other-document-tab" data-toggle="pill" href="#custom-tabs-one-other-document" role="tab" aria-controls="custom-tabs-one-other-document" aria-selected="false" onclick="return user_change_tab('other_document');">Other Document</a>
                                     </li>
 
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Messages</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Settings</a>
-                                    </li>
+                                    @if(@$data->department_type == 'vessel') 
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-one-vessel_check_in_out-tab" data-toggle="pill" href="#custom-tabs-one-vessel_check_in_out" role="tab" aria-controls="custom-tabs-one-vessel_check_in_out" aria-selected="false" onclick="return user_change_tab('vessel_check_in_out');">Vessel Signing/Signout</a>
+                                        </li>
+                                    @endif    
                                 </ul>
                             </div>
                             <div class="card-body">
@@ -57,21 +56,20 @@
                                         <div class="setTabLoaderDiv"></div>
                                         <div id="setProfileDiv"></div>
                                     </div>
+
                                     <div class="tab-pane fade" id="custom-tabs-one-document" role="tabpanel" aria-labelledby="custom-tabs-one-document-tab">
                                         <div class="setTabLoaderDiv"></div>
                                         <div id="setDocumentDiv"></div>
                                     </div>
+
                                     <div class="tab-pane fade" id="custom-tabs-one-other-document" role="tabpanel" aria-labelledby="custom-tabs-one-other-document-tab">
                                         <div class="setTabLoaderDiv"></div>
                                         <div id="setOtherDocumentDiv"></div>
                                     </div>
-                                    <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel" aria-labelledby="custom-tabs-one-messages-tab">
+
+                                    <div class="tab-pane fade" id="custom-tabs-one-vessel_check_in_out" role="tabpanel" aria-labelledby="custom-tabs-one-vessel_check_in_out-tab">
                                         <div class="setTabLoaderDiv"></div>
-                                        <div id="setMessageDiv"></div>
-                                    </div>
-                                    <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
-                                        <div class="setTabLoaderDiv"></div>
-                                        <div id="setSettingDiv"></div>
+                                        <div id="setvesselCheckInOutDiv"></div>
                                     </div>
                                 </div>
                             </div>
@@ -122,6 +120,11 @@
                     else if(page_type == 'other_document'){
                         $('#setDocumentDiv').html('');
                         $('#setOtherDocumentDiv').html(response);
+                    }
+                    else if(page_type == 'vessel_check_in_out'){
+                        $('#setDocumentDiv').html('');
+                        $('#setOtherDocumentDiv').html('');
+                        $('#setvesselCheckInOutDiv').html(response);
                     }
                     $('.hideSection').show();
                 }

@@ -15,17 +15,46 @@ class VesselCheckInOutController extends Controller{
         return view('vessel.check.index',compact('vessel','vessel_user'));
     }
 
-    public function check_in_out_list_filter_count($search){
+    public function check_in_out_list_filter_count($search,$postData){
+        $filter_count = VesselCheckInOut::where('id','>',0);
+
         if(!empty($search)) {
-            $filter_count = VesselCheckInOut::where('category_name', 'LIKE', '%'.$search.'%')->orWhere('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
-        }else{
-            $filter_count = VesselCheckInOut::count();
+            $filter_count = VesselCheckInOut::where('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
         }
-        return $filter_count;
+        if(!empty($postData['search_vessel_id'])) {
+            $filter_count->where('vessel_id',$postData['search_vessel_id']);
+        }
+        if(!empty($postData['search_user_id'])) {
+            $filter_count->where('user_id',$postData['search_user_id']);
+        }
+        if(!empty($postData['search_start_check_in_date']) && !empty($postData['search_end_check_in_date'])) {
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_in_date'])));
+            $search_end_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_check_in_date'])));
+            
+            $filter_count->where('check_in_date', '>=', date($search_start_check_in_date));
+            $filter_count->where('check_in_date', '<=', date($search_end_check_in_date));
+        }
+        else if(!empty($postData['search_start_check_in_date'])){
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_in_date'])));
+            $filter_count->where('check_in_date',date($search_start_check_in_date));
+        }
+
+        if(!empty($postData['search_start_check_out_date']) && !empty($postData['search_end_check_out_date'])) {
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_out_date'])));
+            $search_end_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_check_out_date'])));
+            
+            $filter_count->where('check_out_date', '>=', date($search_start_check_out_date));
+            $filter_count->where('check_out_date', '<=', date($search_end_check_out_date));
+        }
+        else if(!empty($postData['search_start_check_out_date'])){
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_out_date'])));
+            $filter_count->where('check_out_date',date($search_start_check_out_date));
+        }
+        return $filter_count->count();
     }
 
     public function check_in_out_list(Request $request){
-        
+        $postData = $request->input();
         $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
         $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
         if($start_limit < 1){
@@ -36,14 +65,46 @@ class VesselCheckInOutController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','is_active','','','check_in_date','check_out_date','description','created_at'];
+        $columns = ['','is_active','','','check_in_date','check_out_date','description','check_out_date','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = VesselCheckInOut::with('single_user','single_vessel')->select('id','user_id','vessel_id','description','check_in_date','check_out_date','created_at','is_active','check_status');
+        $query = VesselCheckInOut::with('single_user','single_vessel')->select('id','user_id','vessel_id','description','check_out_description','check_in_date','check_out_date','created_at','is_active','check_status');
         if(!empty($search)) {
             $query->where('check_in_date', 'LIKE', '%'.$search.'%')->orWhere('check_out_date', 'LIKE', '%'.$search.'%');
         }
+        if(!empty($request->input('search_vessel_id'))){
+            $query->where('vessel_id',$request->input('search_vessel_id')); 
+        }
+        if(!empty($request->input('search_user_id'))){
+            $query->where('user_id',$request->input('search_user_id')); 
+        }
+        
+        if(!empty($request->input('search_start_check_in_date')) && !empty($request->input('search_end_check_in_date'))){
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_in_date'))));
+            $search_end_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_check_in_date'))));
+            
+            $query->where('check_in_date', '>=', date($search_start_check_in_date));
+            $query->where('check_in_date', '<=', date($search_end_check_in_date));
+        }
+        else if(!empty($request->input('search_start_check_in_date'))){
+            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_in_date'))));
+            $query->where('check_in_date',date($search_start_check_in_date));
+        }
+
+        if(!empty($request->input('search_start_check_out_date')) && !empty($request->input('search_end_check_out_date'))){
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_out_date'))));
+            $search_end_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_check_out_date'))));
+            
+            $query->where('check_out_date', '>=', date($search_start_check_out_date));
+            $query->where('check_out_date', '<=', date($search_end_check_out_date));
+        }
+        else if(!empty($request->input('search_start_check_out_date'))){
+            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_out_date'))));
+            $query->where('check_out_date',date($search_start_check_out_date));
+        }
+
+
         $query->orderBy($orderColumnIndex, $orderDirection);
         $response_data = $query->offset($start_limit)->limit($end_limit)->get(); 
         //printr($response_data);
@@ -71,8 +132,8 @@ class VesselCheckInOutController extends Controller{
                     }
                 }
 
-                $user_name = !empty(@$record->single_user->first_name)?$record->single_user->first_name:'';
-                $vessel_name = !empty(@$record->single_vessel->vessel_name)?$record->single_vessel->vessel_name:'';
+                $user_name = !empty(@$record->single_user->first_name)?$record->single_user->first_name.' ('.$record->single_user->email.')':'';
+                $vessel_name = !empty(@$record->single_vessel->vessel_name)?$record->single_vessel->vessel_name.' ('.$record->single_vessel->vessel_email.')':'';
 
                 $all_data[] = [
                     'sno'=> $sno++,
@@ -81,6 +142,7 @@ class VesselCheckInOutController extends Controller{
                     'check_in_date'=> date('d/M/Y',strtotime($record->check_in_date)),
                     'check_out_date'=> !empty($record->check_out_date)?'<span class="text-danger">'.date('d/M/Y',strtotime($record->check_out_date)).'</span>':'',
                     'description'=> $record->description,
+                    'check_out_description'=> $record->check_out_description,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'action'=>$edit.' '.$status.' '.$delete.' '.$sign_out
                 ];
@@ -90,7 +152,7 @@ class VesselCheckInOutController extends Controller{
         return response()->json([
             'draw' => $draw,
             'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $this->check_in_out_list_filter_count($search),
+            'recordsFiltered' => $this->check_in_out_list_filter_count($search,$postData),
             'data' => $all_data,
         ]);
     }
@@ -140,6 +202,8 @@ class VesselCheckInOutController extends Controller{
             'check_out_date' => !empty($request->check_out_date)?date('Y-m-d',strtotime(str_replace('/','-',$request->check_out_date))):null,
             'check_out_description' => $request->check_out_description,
             'check_status' => 2,
+            'check_out_by_user'=>Auth::user()->id,
+            'check_out_created_at'=>date('Y-m-d H:i:s')
         ];
         
         if($p_id > 0){
