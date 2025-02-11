@@ -12,6 +12,7 @@ use App\Http\Controllers\VesselController;
 use App\Http\Controllers\VesselCategoryController;
 use App\Http\Controllers\UserDocumentAccess;
 use App\Http\Controllers\VesselCheckInOutController;
+use App\Http\Controllers\MenuController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -76,6 +77,12 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('region/city_update', [RegionController::class,'city_update']);
 
     Route::post('region/region_active_inactive', [RegionController::class,'region_active_inactive']);
+
+    /* menu routes */
+    Route::resource('menu', MenuController::class);
+    Route::post('menu_list', [MenuController::class, 'menu_list'])->name('menu_list');
+    Route::post('menu_list_edit', [MenuController::class, 'menu_list_edit'])->name('menu_list_edit');
+    Route::post('get_parent_menu', [MenuController::class, 'get_parent_menu'])->name('get_parent_menu');
 });
 
 Route::prefix('vessel')->middleware('auth')->group(function () {

@@ -51,6 +51,15 @@
                             </a>
                         </li>
                     </ul> -->
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item {{(Request::segment(2)=='menu')?'nav_active':''}}">
+                            <a href="{{route('menu.index')}}" class="nav-link">
+                                <i class="fa fa-mail-reply-all nav-icon"></i>
+                                <p>Menu</p>
+                            </a>
+                        </li>
+                    </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item {{(Request::segment(2)=='department')?'nav_active':''}}">
                             <a href="{{route('department.index')}}" class="nav-link">
