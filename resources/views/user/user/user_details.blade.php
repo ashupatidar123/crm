@@ -45,7 +45,13 @@
 
                                     @if(@$data->department_type == 'vessel') 
                                         <li class="nav-item">
-                                            <a class="nav-link" id="custom-tabs-one-vessel_check_in_out-tab" data-toggle="pill" href="#custom-tabs-one-vessel_check_in_out" role="tab" aria-controls="custom-tabs-one-vessel_check_in_out" aria-selected="false" onclick="return user_change_tab('vessel_check_in_out');">Vessel Signing/Signout</a>
+                                            <a class="nav-link" id="custom-tabs-one-vessel_check_in_out-tab" data-toggle="pill" href="#custom-tabs-one-vessel_check_in_out" role="tab" aria-controls="custom-tabs-one-vessel_check_in_out" aria-selected="false" onclick="return user_change_tab('vessel_check_in_out');">Vessel Signing/SignOff</a>
+                                        </li>
+                                    @endif
+
+                                    @if(@$data->department_type == 'vessel') 
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-one-vessel_apprisal-tab" data-toggle="pill" href="#custom-tabs-one-vessel_apprisal" role="tab" aria-controls="custom-tabs-one-vessel_apprisal" aria-selected="false" onclick="return user_change_tab('vessel_apprisal_list_tab');">Vessel Apprisal</a>
                                         </li>
                                     @endif    
                                 </ul>
@@ -70,6 +76,11 @@
                                     <div class="tab-pane fade" id="custom-tabs-one-vessel_check_in_out" role="tabpanel" aria-labelledby="custom-tabs-one-vessel_check_in_out-tab">
                                         <div class="setTabLoaderDiv"></div>
                                         <div id="setvesselCheckInOutDiv"></div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="custom-tabs-one-vessel_apprisal_tab" role="tabpanel" aria-labelledby="custom-tabs-one-vessel_apprisal-tab">
+                                        <div class="setTabLoaderDiv"></div>
+                                        <div id="setvesselApprisalDiv"></div>
                                     </div>
                                 </div>
                             </div>
@@ -125,6 +136,11 @@
                         $('#setDocumentDiv').html('');
                         $('#setOtherDocumentDiv').html('');
                         $('#setvesselCheckInOutDiv').html(response);
+                    }
+                    else if(page_type == 'vessel_apprisal_list'){
+                        $('#setDocumentDiv').html('');
+                        $('#setOtherDocumentDiv').html('');
+                        $('#setvesselApprisalDiv').html(response);
                     }
                     $('.hideSection').show();
                 }
