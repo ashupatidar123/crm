@@ -17,6 +17,7 @@ use App\Models\VesselCategory;
 use App\Models\VesselDocument;
 use App\Models\VesselCheckInOut;
 use App\Models\Menu;
+use App\Models\Apprisal;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -69,6 +70,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'menu'){
             Menu::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'apprisal'){
+            Apprisal::where('id',$request->p_id)->update(['is_active'=>$type]);
         }
         else{
            return response()->json(['status' =>'error','message' => 'Something went wrong'],200); 
@@ -127,6 +131,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'menu'){
             $record_dlt = Menu::find($request->p_id);
+        }
+        else if($tbl == 'apprisal'){
+            $record_dlt = Apprisal::find($request->p_id);
         }
         else{
             return response()->json(['status' =>'error','message' => 'Deletion failed'],201);

@@ -100,6 +100,9 @@
                             else if(tbl == 'menu'){
                                 menu_data_table_list();
                             }
+                            else if(tbl == 'apprisal'){
+                                vessel_apprisal_data_table_list_tab();
+                            }
                             else{
                                 swal_error(resp.message,1800);
                                 location.reload();
@@ -177,6 +180,9 @@
                             }
                             else if(tbl == 'menu'){
                                 menu_data_table_list();
+                            }
+                            else if(tbl == 'apprisal'){
+                                vessel_apprisal_data_table_list_tab();
                             }
                             else{
                                 location.reload();

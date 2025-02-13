@@ -8,6 +8,7 @@
 
         var search_name = $('#search_name').val();
         var search_email = $('#search_email').val();
+        var search_department_type = $('#search_department_type').val();
         var search_department_name = $('#search_department_name').val();
         var search_designation_name = $('#search_designation_name').val();
         var search_start_date = $('#search_start_date').val();
@@ -20,7 +21,7 @@
             ajax: {
                 url: '{{url("user/user_list")}}',
                 type: 'POST',
-                data:{start_limit,end_limit,search_name,search_email,search_department_name,search_designation_name,search_start_date,search_end_date,summernote},
+                data:{start_limit,end_limit,search_name,search_email,search_department_type,search_department_name,search_designation_name,search_start_date,search_end_date,summernote},
                 headers: {
                     'X-CSRF-TOKEN': csrf_token
                 },
@@ -98,6 +99,9 @@
     function get_department_record(p_id='',html_id=''){
         var selectedOption = $('#department_type').find('option:selected');
         var department_type = selectedOption.val();
+        if(department_type == '' || department_type == undefined){
+            var department_type = $('#search_department_type').val();
+        }
         
         var type = 'ajax_list';
         $.ajax({
@@ -123,7 +127,7 @@
         $.ajax({
             type: "POST",
             url: "{{route('get_designation_record')}}",
-            data: {p_id,type,department_id},
+            data: {p_id,type,department_id,search_department_type},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
@@ -501,9 +505,6 @@
         }
     });
 
-    function user_search(){
-        user_data_table_list();
-    }
     function search_reset_form(){
         $('#search_start_date, #search_end_date').val('');
         $('#userSearch').trigger("reset");

@@ -19,6 +19,8 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Vessel;
 use App\Models\VesselCheckInOut;
+use App\Models\Apprisal;
+
 use App\Traits\FileUploadTrait;
 
 class UserController extends Controller
@@ -59,6 +61,9 @@ class UserController extends Controller
             $filter_count->where('created_at', '>=', date($search_start_date));
             $filter_count->where('created_at', '<=', date($search_end_date)); 
         }
+        if(!empty($postData['search_department_type'])){
+            $filter_count->where('department_type',$postData['search_department_type']);
+        }
         if(!empty($search_department_name)){
             $filter_count->where('department_id',$search_department_name);
         }
@@ -80,6 +85,7 @@ class UserController extends Controller
 
         $search_name = !empty($request->input('search_name'))?$request->input('search_name'):'';
         $search_email = !empty($request->input('search_email'))?$request->input('search_email'):'';
+        $search_department_type = !empty($request->input('search_department_type'))?$request->input('search_department_type'):'';
         $search_department_name = !empty($request->input('search_department_name'))?$request->input('search_department_name'):'';
         $search_designation_name = !empty($request->input('search_designation_name'))?$request->input('search_designation_name'):'';
 
@@ -110,6 +116,9 @@ class UserController extends Controller
 
             $query->where('created_at', '>=', date($search_start_date));
             $query->where('created_at', '<=', date($search_end_date)); 
+        }
+        if(!empty($search_department_type)){
+            $query->where('department_type',$search_department_type);
         }
         if(!empty($search_department_name)){
             $query->where('department_id',$search_department_name);
@@ -369,7 +378,6 @@ class UserController extends Controller
         $id = !empty($request->p_id)?$request->p_id:'';
         $show_type = !empty($request->type)?$request->type:'all';
         $department_id = !empty($request->department_id)?trim($request->department_id):'';
-        
         if($show_type == 'ajax_list'){
             $data = DepartmentDesignation::select('id','designation_name')->where('department_id',$department_id)->where('is_active',1)->orderBy('rank','ASC')->limit(500)->get();
             $html = '<option value="" hidden="">Select designation</option>';
@@ -525,9 +533,9 @@ class UserController extends Controller
             $vessel = Vessel::select('id','vessel_name','vessel_email')->where('is_active',1)->orderBy('vessel_name','ASC')->limit(50)->get();
             return view('user.user.tab.vessel_check_in_out',compact('data','vessel'));
         }
-        else if($page_type == 'vessel_apprisal_list'){
+        else if($page_type == 'vessel_apprisal'){
             $vessel = Vessel::select('id','vessel_name','vessel_email')->where('is_active',1)->orderBy('vessel_name','ASC')->limit(50)->get();
-            return view('user.user.tab.vessel_check_in_out',compact('data','vessel'));
+            return view('user.user.tab.vessel_apprisal',compact('data','vessel'));
         }
     }
 
@@ -1165,36 +1173,24 @@ class UserController extends Controller
 
     /* vessel apprisal list tab */
     public function vessel_apprisal_list_tab_filter_count($search,$postData){
-        $filter_count = VesselCheckInOut::where('id','>',0)->where('user_id',$postData['user_id']);
+        $filter_count = Apprisal::where('id','>',0)->where('user_id',$postData['user_id']);
 
         if(!empty($search)) {
-            $filter_count = VesselCheckInOut::where('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
+            $filter_count = Apprisal::where('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->count();
         }
-        if(!empty($postData['search_vessel_id'])) {
-            $filter_count->where('vessel_id',$postData['search_vessel_id']);
-        }
-        if(!empty($postData['search_start_check_in_date']) && !empty($postData['search_end_check_in_date'])) {
-            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_in_date'])));
-            $search_end_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_check_in_date'])));
+        else if(!empty($postData['search_start_apprisal_date']) && !empty($postData['search_end_apprisal_date'])){
+            $search_start_apprisal_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_apprisal_date'])));
+            $search_end_apprisal_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_apprisal_date'])));
             
-            $filter_count->where('check_in_date', '>=', date($search_start_check_in_date));
-            $filter_count->where('check_in_date', '<=', date($search_end_check_in_date));
+            $filter_count->where('apprisal_date', '>=', date($search_start_apprisal_date));
+            $filter_count->where('apprisal_date', '<=', date($search_end_apprisal_date));
         }
-        else if(!empty($postData['search_start_check_in_date'])){
-            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_in_date'])));
-            $filter_count->where('check_in_date',date($search_start_check_in_date));
+        else if(!empty($postData['search_start_apprisal_date'])){
+            $search_start_apprisal_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_apprisal_date'])));
+            $filter_count->where('apprisal_date',date($search_start_apprisal_date));
         }
-
-        if(!empty($postData['search_start_check_out_date']) && !empty($postData['search_end_check_out_date'])) {
-            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_out_date'])));
-            $search_end_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_end_check_out_date'])));
-            
-            $filter_count->where('check_out_date', '>=', date($search_start_check_out_date));
-            $filter_count->where('check_out_date', '<=', date($search_end_check_out_date));
-        }
-        else if(!empty($postData['search_start_check_out_date'])){
-            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$postData['search_start_check_out_date'])));
-            $filter_count->where('check_out_date',date($search_start_check_out_date));
+        else if(!empty($postData['search_rating'])){
+            $filter_count->where('rating',$postData['search_rating']);
         }
         return $filter_count->count();
     }
@@ -1211,38 +1207,25 @@ class UserController extends Controller
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','is_active','','','check_in_date','check_out_date','description','check_out_date','created_at'];
+        $columns = ['','is_active','','','apprisal_date','rating','specific_strength','area_of_improvement','','','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = VesselCheckInOut::with('single_user','single_vessel')->select('id','user_id','vessel_id','description','check_out_description','check_in_date','check_out_date','created_at','is_active','check_status')->where('user_id',$request->input('user_id'));
+        $query = Apprisal::with('assign_user','vessel_user')->select('*')->where('user_id',$request->input('user_id'));
         
-        if(!empty($request->input('search_vessel_id'))){
-            $query->where('vessel_id',$request->input('search_vessel_id')); 
-        }
-        
-        if(!empty($request->input('search_start_check_in_date')) && !empty($request->input('search_end_check_in_date'))){
-            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_in_date'))));
-            $search_end_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_check_in_date'))));
+        if(!empty($request->input('search_start_apprisal_date')) && !empty($request->input('search_end_apprisal_date'))){
+            $search_start_apprisal_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_apprisal_date'))));
+            $search_end_apprisal_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_apprisal_date'))));
             
-            $query->where('check_in_date', '>=', date($search_start_check_in_date));
-            $query->where('check_in_date', '<=', date($search_end_check_in_date));
+            $query->where('apprisal_date', '>=', date($search_start_apprisal_date));
+            $query->where('apprisal_date', '<=', date($search_end_apprisal_date));
         }
-        else if(!empty($request->input('search_start_check_in_date'))){
-            $search_start_check_in_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_in_date'))));
-            $query->where('check_in_date',date($search_start_check_in_date));
+        else if(!empty($request->input('search_start_apprisal_date'))){
+            $search_start_apprisal_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_apprisal_date'))));
+            $query->where('apprisal_date',date($search_start_apprisal_date));
         }
-
-        if(!empty($request->input('search_start_check_out_date')) && !empty($request->input('search_end_check_out_date'))){
-            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_out_date'))));
-            $search_end_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_end_check_out_date'))));
-            
-            $query->where('check_out_date', '>=', date($search_start_check_out_date));
-            $query->where('check_out_date', '<=', date($search_end_check_out_date));
-        }
-        else if(!empty($request->input('search_start_check_out_date'))){
-            $search_start_check_out_date = date('Y-m-d',strtotime(str_replace('/','-',$request->input('search_start_check_out_date'))));
-            $query->where('check_out_date',date($search_start_check_out_date));
+        if(!empty($request->input('search_rating'))){
+            $query->where('rating',$request->input('search_rating'));
         }
 
 
@@ -1252,7 +1235,7 @@ class UserController extends Controller
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($response_data)){
-            $recordsTotal = VesselCheckInOut::where('user_id',$request->input('user_id'))->count();
+            $recordsTotal = Apprisal::where('user_id',$request->input('user_id'))->count();
             $sno = 1+$start_limit;
             foreach($response_data as $record){
                 $check_in_date = !empty($record->check_in_date)?date('d/M/Y',strtotime($record->check_in_date)):'Empty';
@@ -1260,14 +1243,36 @@ class UserController extends Controller
                 $user_name = !empty(@$record->single_user->first_name)?$record->single_user->first_name.' ('.$record->single_user->email.')':'';
                 $vessel_name = !empty(@$record->single_vessel->vessel_name)?$record->single_vessel->vessel_name.' ('.$record->single_vessel->vessel_email.')':'';
 
+                $edit = $delete = '';
+                $status = '#';
+                if($record->login_user_id == Auth::user()->id){
+
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_apprisal('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'apprisal\');" title="Delete"><i class="fa fa-trash"></i></button>';
+
+                    if($record->is_active == 1){
+                        $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'apprisal\');" title="Active"><i class="fa fa-check"></i></button>';
+                    }else{
+                        $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'apprisal\');" title="In-Active"><i class="fa fa-close"></i></button>';
+                    }
+                }
+
+
+                $vessel_user = @$record->vessel_user->name_title.' '.@$record->vessel_user->first_name.' ('.@$record->vessel_user->email.')';
+                $assign_user = @$record->assign_user->name_title.' '.@$record->assign_user->first_name.' ('.@$record->assign_user->email.')';;
+
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'user_name'=> $user_name,
-                    'vessel_name'=> $vessel_name,
-                    'check_in_date'=> date('d/M/Y',strtotime($record->check_in_date)),
-                    'check_out_date'=> !empty($record->check_out_date)?'<span class="text-danger">'.date('d/M/Y',strtotime($record->check_out_date)).'</span>':'',
-                    'description'=> $record->description,
-                    'check_out_description'=> $record->check_out_description,
+                    'action'=>$edit.' '.$status.' '.$delete,
+                    'vessel_user'=> $vessel_user,
+                    'assign_user'=> $assign_user,
+                    'apprisal_date'=> date('d/M/Y',strtotime($record->apprisal_date)),
+                    'rating'=> $record->rating,
+                    'specific_strength'=> '<a href="#" title="'.$record->specific_strength.'">'.substr($record->specific_strength,0,15).'...</a>',
+                    'area_of_improvement'=> '<a href="#" title="'.$record->area_of_improvement.'">'.substr($record->area_of_improvement,0,15).'...</a>',
+                    'additional_notes'=> '<a href="#" title="'.$record->additional_notes.'">'.substr($record->additional_notes,0,15).'...</a>',
+                    'description'=> '<a href="#" title="'.$record->description.'">'.substr($record->description,0,15).'...</a>',
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                 ];
             }
@@ -1279,5 +1284,48 @@ class UserController extends Controller
             'recordsFiltered' => $this->vessel_apprisal_list_tab_filter_count($search,$postData),
             'data' => $all_data,
         ]);
+    }
+
+    public function vessel_apprisal_list_edit(Request $request){
+        $data = Apprisal::where('id',$request->p_id)->first();
+        if(!empty($data->apprisal_date)){
+            $data['apprisal_date'] = date('d/m/Y',strtotime($data->apprisal_date));
+        }
+        echo json_encode(['data'=>$data]);
+    }
+
+    public function add_update_vessel_apprisal(Request $request){
+        //printr($request->file('user_document'),'pp');
+        if(empty($request->rating) || empty($request->apprisal_date) || empty($request->user_id)){
+            return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
+        }
+        $p_id = !empty(@$request->p_id)?@$request->p_id:'';
+        
+        $postData = [
+            'user_id'=>@$request->user_id,
+            'rating' => $request->rating,
+            'apprisal_date' => !empty($request->apprisal_date)?date('Y-m-d',strtotime(str_replace('/','-',$request->apprisal_date))):null,
+            'is_active' => ($request->is_active==1)?1:2,
+            'login_user_id' => Auth::user()->id,
+            'specific_strength' => @$request->specific_strength,
+            'area_of_improvement' => @$request->area_of_improvement,
+            'additional_notes' => @$request->additional_notes,
+            'description' => @$request->apprisal_description,
+            'created_by'=>Auth::user()->id
+        ];
+
+        if($p_id < 1){
+            $id = Apprisal::insertGetId($postData);
+            $s_msg = 'Apprisal added successfully...';
+        }else{
+            Apprisal::where('id',$request->p_id)->update($postData);
+            $s_msg = 'Apprisal updated successfully...';
+            $id = $p_id;
+        }
+        if($id > 0){
+            return response()->json(['status' =>'success','s_msg'=>$s_msg],200);
+        }else{
+            return response()->json(['status' =>'failed','s_msg'=>'Opps! Something went wrong...'],200);
+        }
     }
 }

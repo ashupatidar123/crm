@@ -57,6 +57,16 @@
                                                 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <select class="form-control" name="search_department_type" id="search_department_type" onchange="return get_department_record('','search_department_name');">
+                                                            <option value="" hidden="">Department type</option>
+                                                            <option value="office">Office</option>
+                                                            <option value="vessel">Vessel</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <select class="form-control select2" name="search_department_name" id="search_department_name" onchange="return get_designation_record('','search_designation_name','search_department_name');">
                                                             <option value="" hidden="">Select department</option>
                                                         </select>
@@ -104,7 +114,7 @@
                                                     
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <button type="button" class="btn btn-primary" onclick="return user_search();">Search</button>
+                                                        <button type="button" class="btn btn-primary" onclick="return user_data_table_list();">Search</button>
                                                         <button type="button" class="btn btn-danger" onclick="return search_reset_form();">Reset</button>
                                                     </div>
                                                 </div>

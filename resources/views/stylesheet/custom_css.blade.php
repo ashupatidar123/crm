@@ -7,7 +7,7 @@
         padding: 6px !important;
     }
     .set_action_width3{
-        width: 112px !important;
+        width: 114px !important;
     }
     .set_action_width4{
         width: 60px !important;

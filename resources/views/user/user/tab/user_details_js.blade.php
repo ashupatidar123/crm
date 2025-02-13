@@ -286,6 +286,7 @@
     function user_other_document_search(){
         other_document_data_table_list();
     }
+
     function user_other_document_search_reset_form(){
         $('#search_issue_date, #search_expiry_date, #search_start_date, #search_end_date').val('');
         $('#userOtherDocumentSearch').trigger("reset");
@@ -342,9 +343,63 @@
     function vessel_check_in_out_advance_search_tab(){
         vessel_check_in_out_data_table_list_tab();
     }
+    
     function vessel_search_reset_form_tab(){
         $('#search_start_check_in_date, #search_end_check_in_date, #search_start_check_out_date, #search_end_check_out_date').val('');
         $('#vesselAdvanceSearch').trigger("reset");
         vessel_check_in_out_data_table_list_tab();
+    }
+
+    /* vessel_apprisal */
+    function vessel_apprisal_data_table_list_tab(){    
+        var user_id = $('#user_id').val();
+        
+        $('#tableList').DataTable().clear().destroy();
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit   = $('#end_limit').val();
+        var end_limit = (end_limit > 0)?end_limit:10;
+        var pageLength = (end_limit > 0)?end_limit:10;
+
+        var search_start_apprisal_date = $('#search_start_apprisal_date').val();
+        var search_end_apprisal_date = $('#search_end_apprisal_date').val();
+        var search_rating = $('#search_rating').val();
+        
+        $('#tableList').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{route("vessel_apprisal_list_tab")}}',
+                type: 'POST',
+                data:{user_id,start_limit,end_limit,search_start_apprisal_date,search_end_apprisal_date,search_rating},
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
+            },
+            columns: [
+                { data: 'sno' },
+                { data: 'action' },
+                { data: 'vessel_user' },
+                { data: 'assign_user' },
+                { data: 'apprisal_date' },
+                { data: 'rating' },
+                { data: 'specific_strength' },
+                { data: 'area_of_improvement' },
+                { data: 'additional_notes' },
+                { data: 'description' },
+                { data: 'created_at', type: 'date' }
+            ],
+            "order": [[10, 'DESC']],
+            "lengthMenu": [10,25,75,50,100,500,550,1000],
+            "pageLength": pageLength,
+            "responsive": true,
+            "searching": true,
+            "columnDefs": [{"targets": [0,1,2,3,6,7,8,9],"orderable": false}]
+        });
+    }
+    
+    function vessel_apprisal_search_reset_form_tab(){
+        $('#search_start_apprisal_date, #search_end_apprisal_date, #rating').val('');
+        $('#vesselApprisalAdvanceSearch').trigger("reset");
+        vessel_apprisal_data_table_list_tab();
     }
 </script>

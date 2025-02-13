@@ -63,4 +63,6 @@ Route::prefix('user')->middleware('auth')->group(function () {
     Route::post('vessel_check_in_out_list_tab', [UserController::class, 'vessel_check_in_out_list_tab'])->name('vessel_check_in_out_list_tab');
 
     Route::post('vessel_apprisal_list_tab', [UserController::class, 'vessel_apprisal_list_tab'])->name('vessel_apprisal_list_tab');
+    Route::post('vessel_apprisal_list_edit', [UserController::class, 'vessel_apprisal_list_edit'])->name('vessel_apprisal_list_edit');
+    Route::post('add_update_vessel_apprisal', [UserController::class, 'add_update_vessel_apprisal'])->name('add_update_vessel_apprisal');
 });
