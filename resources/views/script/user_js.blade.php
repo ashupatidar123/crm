@@ -127,7 +127,7 @@
         $.ajax({
             type: "POST",
             url: "{{route('get_designation_record')}}",
-            data: {p_id,type,department_id,search_department_type},
+            data: {p_id,type,department_id},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },
