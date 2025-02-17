@@ -18,7 +18,7 @@
                                     </div>
                                     <div class="show_message"></div>
                                     <div class="card-body row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Rating<span class="text-danger">*</span></label>
                                                 <select class="form-control" name="rating" id="rating" required>
@@ -32,7 +32,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Apprisal Date<span class="text-danger">*</span></label>
                                                 <input type="text" name="apprisal_date" id="apprisal_date" class="form-control apprisal_date" placeholder="dd/mm/yyyy" readonly>
@@ -40,7 +40,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Is Active<span class="text-danger">*</span></label>
                                                 <select class="form-control" name="is_active" id="is_active" required>

@@ -518,7 +518,8 @@ class UserController extends Controller
         $department_type = @$data->department_type;
         if($page_type == 'profile'){
             $address = UserAddress::where('user_id',$id)->first();
-            return view('user.user.tab.edit_user',compact('data','address'));
+            $apprisal_rate = Apprisal::selectRaw('SUM(rating) as total_rating, COUNT(*) as count_rating, ROUND(AVG(rating),1) as average_rating')->where('user_id',$id)->where('is_active',1)->first();
+            return view('user.user.tab.edit_user',compact('data','address','apprisal_rate'));
         }
         else if($page_type == 'document'){
             $data_document = Document::where(['document_type'=>$department_type,'is_active'=>1])->limit(50)->get();

@@ -11,6 +11,9 @@
                             <h3 class="card-title">Update user</h3>
                         </div> -->
                         <strong class="ml-3 mt-4">Contact Information</strong>
+                        @if($apprisal_rate->count_rating > 0)
+                            <strong class="ml-3 mt-4 text-success">Vessel User Average Rating <i class="fa fa-star-o"></i> {{$apprisal_rate->average_rating}}/5.0</strong>
+                        @endif    
                         <div class="card-body row">
                             <div class="col-md-6">    
                                 <?php

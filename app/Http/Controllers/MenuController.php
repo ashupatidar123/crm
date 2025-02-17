@@ -90,7 +90,7 @@ class MenuController extends Controller{
         if($check > 0){
             return response()->json(['status' =>'error','message' => 'Menu already exist...'],200);
         }
-        $check = Menu::where('menu_link',$request->menu_link)->where('id','!=',$p_id)->count();
+        $check = Menu::where('menu_link',$request->menu_link)->where('menu_link','!=','')->where('id','!=',$p_id)->count();
         if($check > 0){
             return response()->json(['status' =>'error','message' => 'Menu link already exist...'],200);
         }
