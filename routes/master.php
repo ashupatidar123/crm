@@ -13,6 +13,7 @@ use App\Http\Controllers\VesselCategoryController;
 use App\Http\Controllers\UserDocumentAccess;
 use App\Http\Controllers\VesselCheckInOutController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PermissionController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -83,6 +84,12 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('menu_list', [MenuController::class, 'menu_list'])->name('menu_list');
     Route::post('menu_list_edit', [MenuController::class, 'menu_list_edit'])->name('menu_list_edit');
     Route::post('get_parent_menu', [MenuController::class, 'get_parent_menu'])->name('get_parent_menu');
+
+    /* department menu permission routes */
+    Route::resource('department-permission', PermissionController::class);
+    Route::get('menu-department-permission/{id}', [PermissionController::class, 'menu_department_permission'])->name('menu_department_permission');
+    Route::post('get_permission_department_record', [PermissionController::class, 'get_permission_department_record'])->name('get_permission_department_record');
+    Route::post('menu_permission_department_list', [PermissionController::class, 'menu_permission_department_list'])->name('menu_permission_department_list');
 });
 
 Route::prefix('vessel')->middleware('auth')->group(function () {

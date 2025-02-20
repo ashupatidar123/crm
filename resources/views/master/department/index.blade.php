@@ -38,7 +38,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sno</th>
-                                        <th>Action</th>
+                                        <th class="set_action_width4">Action</th>
                                         <th>Department Name</th>
                                         <th>Department Type</th>
                                         <th>Description</th>

@@ -59,7 +59,8 @@ class DepartmentController extends Controller{
                 }else{
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'department\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
-                
+                $permission = '<a href="'.route('menu_department_permission', ['id'=>$record->id]).'" class="btn btn-default btn-sm" title="Menu permission"><i class="fa fa-key"></i></a>';
+
                 $all_data[] = [
                     'sno'=> $sno++,
                     'department_name'=> $record->department_name,
@@ -67,7 +68,7 @@ class DepartmentController extends Controller{
                     'description'=> $record->description,
                     'created_at'=> date('d/M/Y',strtotime($record->created_at)),
                     'status'=>$status,
-                    'action'=>$edit.' '.$delete.' '.$status
+                    'action'=>$edit.' '.$delete.' '.$status.' '.$permission
                 ];
             }
         }

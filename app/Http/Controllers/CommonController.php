@@ -18,6 +18,7 @@ use App\Models\VesselDocument;
 use App\Models\VesselCheckInOut;
 use App\Models\Menu;
 use App\Models\Apprisal;
+use App\Models\Permission;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -134,6 +135,9 @@ class CommonController extends Controller{
         }
         else if($tbl == 'apprisal'){
             $record_dlt = Apprisal::find($request->p_id);
+        }
+        else if($tbl == 'menu_permission_department'){
+            $record_dlt = Permission::find($request->p_id);
         }
         else{
             return response()->json(['status' =>'error','message' => 'Deletion failed'],201);

@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\PermissionController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
