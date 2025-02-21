@@ -53,6 +53,59 @@
     }
 
     
+    function user_permission(){
+        var all_menu_ids = [];
+        var all_menu_names = [];
+        var user_id = $('#user_id').val();
+        var first_name = $('#first_name').val();
+        $('.menu_ids:checked').each(function() {
+            all_menu_ids.push($(this).val());
+            all_menu_names.push($(this).data('name'));
+        });
+        if(all_menu_ids == ''){
+            swal_error('Please select atleast one permission menu');
+            return false;
+        }
+        else if(user_id < 1){
+            swal_error('Opps! Something went wrong');
+            return false;
+        }
+        
+        Swal.fire({
+            title: 'Are you sure to apply permission for '+first_name+'?',
+            text: "You will be able to revert this permission!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, ok it!"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                $('#applyPermissionLoader').html('Permission loading...');
+                $('#applyPermissionLoader').attr('disabled',true);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('menu_user_permission_store') }}",
+                    data: {user_id,all_menu_ids},
+                    headers: {
+                        'X-CSRF-TOKEN': csrf_token
+                    },
+                    dataType:'JSON',
+                    success: function (resp) {
+                        $('#applyPermissionLoader').html('<i class="fas fa-user-shield"></i> Apply Permission');
+                        $('#applyPermissionLoader').attr('disabled',false);
+                        if(resp.status == 'success'){
+                            swal_success(resp.message);
+                        }else{
+                            swal_error(resp.message);
+                        }
+                    }
+                });
+            }
+        });        
+    }
+
     /* table list record start */
     function menu_department_permissiondata_table_list(){
         $('#tableList').DataTable().clear().destroy();

@@ -66,4 +66,8 @@ Route::prefix('user')->middleware('auth')->group(function () {
     Route::post('vessel_apprisal_list_tab', [UserController::class, 'vessel_apprisal_list_tab'])->name('vessel_apprisal_list_tab');
     Route::post('vessel_apprisal_list_edit', [UserController::class, 'vessel_apprisal_list_edit'])->name('vessel_apprisal_list_edit');
     Route::post('add_update_vessel_apprisal', [UserController::class, 'add_update_vessel_apprisal'])->name('add_update_vessel_apprisal');
+
+    /* user menu permission routes */
+    Route::get('menu-user-permission/{id}', [PermissionController::class, 'menu_user_permission'])->name('menu_user_permission');
+    Route::post('menu-user-permission-store', [PermissionController::class, 'menu_user_permission_store'])->name('menu_user_permission_store');
 });
