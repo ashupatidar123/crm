@@ -32,7 +32,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('department-permission.store') }}",
+                    url: "{{ route('menu_department_permission_store') }}",
                     data: {department_id,all_menu_ids},
                     headers: {
                         'X-CSRF-TOKEN': csrf_token
@@ -52,6 +52,8 @@
         });        
     }
 
+    
+    /* table list record start */
     function menu_department_permissiondata_table_list(){
         $('#tableList').DataTable().clear().destroy();
         var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
@@ -94,4 +96,5 @@
         $('#advanceSearch').trigger("reset");
         menu_department_permissiondata_table_list();
     }
+    /* table list record end*/
 </script>

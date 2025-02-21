@@ -31,7 +31,7 @@ class PermissionController extends Controller{
 
     }
 
-    public function menu_permission_check($menu_id,$department_id){
+    public function menu_department_permission_check($menu_id,$department_id){
         $count = Permission::where('menu_id',$menu_id)->where('department_id',$department_id)->where('permission_type','department')->count();
         if($count > 0){
             return 'yes';
@@ -40,7 +40,7 @@ class PermissionController extends Controller{
         }
     }
 
-    public function sub_menu_one($menu_id,$department_id=''){
+    public function department_sub_menu($menu_id,$department_id=''){
         $menu = Menu::select('id','menu_name','menu_code','menu_link')->where('parent_menu_id',$menu_id)->where('is_active',1)->orderBy('menu_sequence','ASC')->limit(20)->get();
         $menu_one_array = [];
         if(count($menu) > 0){
@@ -49,8 +49,8 @@ class PermissionController extends Controller{
                     'id'=>$record->id,
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
-                    'permission_check'=>$this->menu_permission_check($record->id,$department_id),
-                    'sub_menus'=>empty($record->menu_link)?$this->sub_menu_one($record->id,$department_id):[],
+                    'permission_check'=>$this->menu_department_permission_check($record->id,$department_id),
+                    'sub_menus'=>empty($record->menu_link)?$this->department_sub_menu($record->id,$department_id):[],
                 ];
             }
             return $menu_one_array;
@@ -77,39 +77,16 @@ class PermissionController extends Controller{
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
                     'permission_check'=>'no',
-                    'sub_menu_one'=>empty($record->menu_link)?$this->sub_menu_one($record->id,$department_id):[],
+                    'sub_menu_one'=>empty($record->menu_link)?$this->department_sub_menu($record->id,$department_id):[],
                 ];
             }
         }
 
         //printr($all_menu,'p');
-        return view('master.permission.index',compact('all_menu','department_id','department'));
+        return view('permission.department',compact('all_menu','department_id','department'));
     }
 
-    public function get_permission_department_record(Request $request){
-        $id = !empty($request->p_id)?$request->p_id:'';
-        $show_type = !empty($request->type)?$request->type:'all';
-        
-        if($show_type == 'ajax_list'){
-            $data = Department::select('id','department_name','department_type')->where('department_type','!=','')->where('is_active',1)->orderBy('department_name','ASC')->limit(500)->get();
-            
-            $html = '<option value="" hidden="">Select department</option>';
-            if(!empty($data)){
-                foreach($data as $record){
-                    $selected = '';
-                    if($id == $record->id){
-                        $selected = 'selected';
-                    }
-                    $html .= '<option value="'.$record->id.'" '.$selected.' data-name="'.strtolower($record->department_name).'">'.trim(ucfirst($record->department_name)).'</option>';
-                }
-            }else{
-                $html .= '<option value="" hidden>Not found</option>';
-            }
-            echo $html;
-        }
-    }
-
-    public function store(Request $request){
+    public function menu_department_permission_store(Request $request){
         $all_menu_ids = !empty($request->all_menu_ids)?$request->all_menu_ids:'';
         $department_id = !empty($request->department_id)?$request->department_id:'';    
         
@@ -118,10 +95,8 @@ class PermissionController extends Controller{
         }
         //printr($all_menu_ids,'p');
         $lastId = 0;
+        Permission::where(['department_id'=>$department_id,'permission_type'=>'department'])->forceDelete();
         foreach($all_menu_ids as $menu_id){
-            
-            Permission::where(['menu_id'=>$menu_id,'department_id'=>$department_id,'permission_type'=>'department'])->forceDelete();
-            
             $save_data = [
                 'menu_id' => $menu_id,
                 'department_id' => $department_id,
@@ -134,6 +109,7 @@ class PermissionController extends Controller{
         return response()->json(['status' =>'success','message' =>'Permission applied successfully...'],200);
     }
 
+    /* permission table start*/
     public function menu_permission_department_list_filter_count($search,$postData){
         $filter_count = Permission::where('id','>',0);
         if(!empty($postData['search_menu_id'])){

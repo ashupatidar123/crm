@@ -109,16 +109,6 @@
                             </a>
                         </li>
                     </ul>
-
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item {{(Request::segment(3)=='city')?'nav_active':''}}">
-                            <a href="{{route('department-permission.index')}}" class="nav-link">
-                                <i class="fa fa-mail-reply-all nav-icon"></i>
-                                <p>Department Permission</p>
-                            </a>
-                        </li>
-                    </ul>
-
                 </li>
 
                 <li class="nav-item {{(Request::segment(1)=='vessel')?'menu-is-opening menu-open':''}}">

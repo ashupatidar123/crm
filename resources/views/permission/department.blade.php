@@ -154,5 +154,5 @@
 </div>
 
 @include('script.comman_js')
-@include('master.permission.permission_js')
+@include('permission.permission_js')
 @endsection

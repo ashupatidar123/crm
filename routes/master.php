@@ -86,9 +86,8 @@ Route::prefix('master')->middleware('auth')->group(function () {
     Route::post('get_parent_menu', [MenuController::class, 'get_parent_menu'])->name('get_parent_menu');
 
     /* department menu permission routes */
-    Route::resource('department-permission', PermissionController::class);
     Route::get('menu-department-permission/{id}', [PermissionController::class, 'menu_department_permission'])->name('menu_department_permission');
-    Route::post('get_permission_department_record', [PermissionController::class, 'get_permission_department_record'])->name('get_permission_department_record');
+    Route::post('menu-department-permission-store', [PermissionController::class, 'menu_department_permission_store'])->name('menu_department_permission_store');
     Route::post('menu_permission_department_list', [PermissionController::class, 'menu_permission_department_list'])->name('menu_permission_department_list');
 });
 
