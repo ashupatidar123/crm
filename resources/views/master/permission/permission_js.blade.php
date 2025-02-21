@@ -3,6 +3,7 @@
         var all_menu_ids = [];
         var all_menu_names = [];
         var department_id = $('#department_id').val();
+        var department_name = $('#department_name').val();
         $('.menu_ids:checked').each(function() {
             all_menu_ids.push($(this).val());
             all_menu_names.push($(this).data('name'));
@@ -15,28 +16,40 @@
             swal_error('Opps! Something went wrong');
             return false;
         }
-        alert(all_menu_ids);
-        $('#applyPermissionLoader').html('Permission loading...');
-        $('#applyPermissionLoader').attr('disabled',true);
         
-        $.ajax({
-            type: "POST",
-            url: "{{ route('department-permission.store') }}",
-            data: {department_id,all_menu_ids},
-            headers: {
-                'X-CSRF-TOKEN': csrf_token
-            },
-            dataType:'JSON',
-            success: function (resp) {
-                $('#applyPermissionLoader').html('<i class="fas fa-user-shield"></i> Apply Permission');
-                $('#applyPermissionLoader').attr('disabled',false);
-                if(resp.status == 'success'){
-                    swal_success(resp.message);
-                }else{
-                    swal_error(resp.message);
-                }
+        Swal.fire({
+            title: 'Are you sure to apply permission for '+department_name+'?',
+            text: "You will be able to revert this permission!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, ok it!"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                $('#applyPermissionLoader').html('Permission loading...');
+                $('#applyPermissionLoader').attr('disabled',true);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('department-permission.store') }}",
+                    data: {department_id,all_menu_ids},
+                    headers: {
+                        'X-CSRF-TOKEN': csrf_token
+                    },
+                    dataType:'JSON',
+                    success: function (resp) {
+                        $('#applyPermissionLoader').html('<i class="fas fa-user-shield"></i> Apply Permission');
+                        $('#applyPermissionLoader').attr('disabled',false);
+                        if(resp.status == 'success'){
+                            swal_success(resp.message);
+                        }else{
+                            swal_error(resp.message);
+                        }
+                    }
+                });
             }
-        });
+        });        
     }
 
     function menu_department_permissiondata_table_list(){

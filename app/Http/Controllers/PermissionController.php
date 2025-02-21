@@ -59,13 +59,14 @@ class PermissionController extends Controller{
         }
     }
 
-    public function menu_department_permission($department_id=''){
+    public function menu_department_permission($department_id='0'){
         
         $count = Department::where('id',$department_id)->where('is_active',1)->count();
         if($count < 1){
-            return redirect(url('master/department'),301);
-            
+            return redirect(url('master/department'),301); 
         }
+        $department = Department::select('id','department_name','department_type')->where('id',$department_id)->where('is_active',1)->first();
+
         $main_menu = Menu::select('id','menu_name','menu_code','menu_link','menu_icon')->where('parent_menu_id',0)->where('is_active',1)->orderBy('parent_menu_id','ASC')->limit(50)->get();
         
         $all_menu = [];
@@ -82,7 +83,7 @@ class PermissionController extends Controller{
         }
 
         //printr($all_menu,'p');
-        return view('master.permission.index',compact('all_menu','department_id'));
+        return view('master.permission.index',compact('all_menu','department_id','department'));
     }
 
     public function get_permission_department_record(Request $request){
@@ -118,19 +119,19 @@ class PermissionController extends Controller{
         //printr($all_menu_ids,'p');
         $lastId = 0;
         foreach($all_menu_ids as $menu_id){
-            $check_department = Permission::where('menu_id',$menu_id)->where('department_id',$department_id)->where('permission_type','department')->count();
-            if($check_department === 0){
-                $save_data = [
-                    'menu_id' => $menu_id,
-                    'department_id' => $department_id,
-                    'permission_type'=> 'department',
-                    'created_by'=>Auth::user()->id
-                ];
-                //$lastId = Permission::insertGetId($save_data);
-            }
+            
+            Permission::where(['menu_id'=>$menu_id,'department_id'=>$department_id,'permission_type'=>'department'])->forceDelete();
+            
+            $save_data = [
+                'menu_id' => $menu_id,
+                'department_id' => $department_id,
+                'permission_type'=> 'department',
+                'created_by'=>Auth::user()->id
+            ];
+            $lastId = Permission::insertGetId($save_data);
         }
     
-        return response()->json(['status' =>'success','message' =>'Menu permission added successfully...'],200);
+        return response()->json(['status' =>'success','message' =>'Permission applied successfully...'],200);
     }
 
     public function menu_permission_department_list_filter_count($search,$postData){
