@@ -39,6 +39,14 @@ class PermissionController extends Controller{
             return 'no';
         }
     }
+    public function menu_department_action_permission_check($menu_id,$department_id,$type='add_access'){
+        $count = Permission::where('menu_id',$menu_id)->where('department_id',$department_id)->where($type,'yes')->where('permission_type','department')->count();
+        if($count > 0){
+            return 'yes';
+        }else{
+            return 'no';
+        }
+    }
 
     public function department_sub_menu($menu_id,$department_id=''){
         $menu = Menu::select('id','menu_name','menu_code','menu_link')->where('parent_menu_id',$menu_id)->where('is_active',1)->orderBy('menu_sequence','ASC')->limit(20)->get();
@@ -50,6 +58,9 @@ class PermissionController extends Controller{
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
                     'permission_check'=>$this->menu_department_permission_check($record->id,$department_id),
+                    'add_access'=>$this->menu_department_action_permission_check($record->id,$department_id,'add_access'),
+                    'edit_access'=>$this->menu_department_action_permission_check($record->id,$department_id,'edit_access'),
+                    'delete_access'=>$this->menu_department_action_permission_check($record->id,$department_id,'delete_access'),
                     'sub_menus'=>empty($record->menu_link)?$this->department_sub_menu($record->id,$department_id):[],
                 ];
             }
@@ -77,6 +88,9 @@ class PermissionController extends Controller{
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
                     'permission_check'=>'no',
+                    'add_access'=>'no',
+                    'edit_access'=>'no',
+                    'delete_access'=>'no',
                     'sub_menu_one'=>empty($record->menu_link)?$this->department_sub_menu($record->id,$department_id):[],
                 ];
             }
@@ -93,19 +107,34 @@ class PermissionController extends Controller{
         if(empty($all_menu_ids) || empty($department_id)){
             return response()->json(['status' =>'failed','s_msg'=>'All fields are required...'],200);
         }
-        //printr($all_menu_ids,'p');
+        //printr($request->menu_add_access,'p');
         
         Permission::where(['department_id'=>$department_id,'permission_type'=>'department'])->forceDelete();
-        foreach($all_menu_ids as $menu_id){
+        
+        $menu_add_access = $menu_edit_access = $menu_delete_access = 'no';
+        foreach($all_menu_ids as $key=>$menu_id){
+            if(!empty($request->menu_add_access[$key])){
+                $menu_add_access = $request->menu_add_access[$key];
+            }
+            if(!empty($request->menu_edit_access[$key])){
+                $menu_edit_access = $request->menu_edit_access[$key];
+            }
+            if(!empty($request->menu_delete_access[$key])){
+                $menu_delete_access = $request->menu_delete_access[$key];
+            }
+
             $save_data = [
                 'menu_id' => $menu_id,
                 'department_id' => $department_id,
                 'permission_type'=> 'department',
+                'add_access'=> !empty($menu_add_access)?$menu_add_access:'no',
+                'edit_access'=> !empty($menu_edit_access)?$menu_edit_access:'no',
+                'delete_access'=> !empty($menu_delete_access)?$menu_delete_access:'no',
                 'created_by'=>Auth::user()->id
             ];
+            //printr($save_data,'p');
             $lastId = Permission::insertGetId($save_data);
         }
-    
         return response()->json(['status' =>'success','message' =>'Permission applied successfully...'],200);
     }
 
@@ -209,6 +238,7 @@ class PermissionController extends Controller{
     public function menu_user_permission($user_id='0'){
         
         $count = User::where('id',$user_id)->where('is_active',1)->count();
+        
         if($count < 1){
             return redirect(url('user/user'),301); 
         }

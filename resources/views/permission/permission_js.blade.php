@@ -2,12 +2,39 @@
     function department_permission(){
         var all_menu_ids = [];
         var all_menu_names = [];
+        var menu_add_access = [];
+        var menu_edit_access = [];
+        var menu_delete_access = [];
+
         var department_id = $('#department_id').val();
         var department_name = $('#department_name').val();
         $('.menu_ids:checked').each(function() {
             all_menu_ids.push($(this).val());
             all_menu_names.push($(this).data('name'));
+
+            if($(this).attr('data-add_access') == undefined || $(this).attr('data-add_access') == ''){
+                menu_add_access.push('no');
+            }else{
+                menu_add_access.push($(this).attr('data-add_access')); 
+            }
+
+            if($(this).attr('data-edit_access') == undefined || $(this).attr('data-edit_access') == ''){
+                menu_edit_access.push('no');
+            }else{
+                menu_edit_access.push($(this).attr('data-edit_access')); 
+            }
+
+            if($(this).attr('data-delete_access') == undefined || $(this).attr('data-delete_access') == ''){
+                menu_delete_access.push('no');
+            }else{
+                menu_delete_access.push($(this).attr('data-delete_access')); 
+            }
+            
         });
+        
+        //console.log(all_menu_names+' '+menu_add_access); return false;
+        
+
         if(all_menu_ids == ''){
             swal_error('Please select atleast one permission menu');
             return false;
@@ -28,12 +55,14 @@
         }).then((result) => {
             if(result.isConfirmed) {
                 $('#applyPermissionLoader').html('Permission loading...');
-                $('#applyPermissionLoader').attr('disabled',true);
+                //$('#applyPermissionLoader').attr('disabled',true);
 
                 $.ajax({
                     type: "POST",
                     url: "{{ route('menu_department_permission_store') }}",
-                    data: {department_id,all_menu_ids},
+                    data:{department_id,all_menu_ids,menu_add_access,
+                        menu_edit_access,menu_delete_access
+                    },
                     headers: {
                         'X-CSRF-TOKEN': csrf_token
                     },
@@ -52,7 +81,6 @@
         });        
     }
 
-    
     function user_permission(){
         var all_menu_ids = [];
         var all_menu_names = [];
@@ -104,6 +132,32 @@
                 });
             }
         });        
+    }
+
+    function add_edit_delete_access(check,id='',type=''){
+        var isChecked = $(check).prop('checked');
+        
+        if(type == 'add'){
+            if(isChecked == true){
+                $('.add_edit_delete_access_check_'+id).attr('data-add_access','yes');
+            }else{
+                $('.add_edit_delete_access_check_'+id).attr('data-add_access','no');
+            }
+        }
+        else if(type == 'edit'){
+            if(isChecked == true){
+                $('.add_edit_delete_access_check_'+id).attr('data-edit_access','yes');
+            }else{
+                $('.add_edit_delete_access_check_'+id).attr('data-edit_access','no');
+            }
+        }
+        else if(type == 'delete'){
+            if(isChecked == true){
+                $('.add_edit_delete_access_check_'+id).attr('data-delete_access','yes');
+            }else{
+                $('.add_edit_delete_access_check_'+id).attr('data-delete_access','no');
+            }
+        }
     }
 
     /* table list record start */

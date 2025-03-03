@@ -20,6 +20,8 @@ use App\Models\City;
 use App\Models\Vessel;
 use App\Models\VesselCheckInOut;
 use App\Models\Apprisal;
+use App\Models\Menu;
+use App\Models\Permission;
 
 use App\Traits\FileUploadTrait;
 
@@ -249,6 +251,22 @@ class UserController extends Controller
                 'is_active' => ($request->is_active==1)?1:2,
                 'created_by'=>Auth::user()->id
             ]);
+
+            $get_menu_permission = Permission::where('department_id',8)->where('permission_type','department')->get();
+            if(count($get_menu_permission) > 0){
+                foreach($get_menu_permission as $record){
+                    $save_data = [
+                        'menu_id' => $record->menu_id,
+                        'user_id' => $id,
+                        'permission_type'=> 'user',
+                        'add_access'=> $record->add_access,
+                        'edit_access'=> $record->edit_access,
+                        'delete_access'=> $record->delete_access,
+                        'created_by'=>Auth::user()->id
+                    ];
+                    Permission::insertGetId($save_data);
+                }
+            }
 
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User registration success...</p>','s_msg'=>'User registration success...'],200);
         }else{

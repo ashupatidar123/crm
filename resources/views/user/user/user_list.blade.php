@@ -111,6 +111,18 @@
                                                     });
                                                 </script>
                                                 @endif
+                                                <!-- <div class="col-md-12">
+                                                    <div class="form-group"><input type="text" name="search_m_user" id="search_m_user" class="form-control" placeholder="Search maintion user">
+                                                    </div>
+                                                </div> -->
+
+                                                <div class="col-md-12">
+                                                    <div class="mention-container">
+                                                        <input type="text" id="mentionInput" class="mention-input form-control" placeholder="Type '@' to mention a user..." oninput="showMentionDropdown()">
+                                                        <div id="mentionDropdown" class="mention-dropdown form-control"></div>
+                                                    </div>
+                                                </div>    
+
                                                     
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -216,6 +228,72 @@
         user_data_table_list();
         get_department_record('','search_department_name');
     });
+</script>
+
+<script>
+  // Example list of users
+  const users = ["John", "Jane", "Alex", "Alice", "Bob", "Charlie", "David", "Diana", "Eva"];
+
+  const mentionInput = document.getElementById('mentionInput');
+  const mentionDropdown = document.getElementById('mentionDropdown');
+
+  let isMentioning = false;
+
+  // Function to display the dropdown
+  function showMentionDropdown() {
+    const inputText = mentionInput.value;
+    const lastChar = inputText.slice(-1);
+
+    // Check if the last character is '@'
+    if (lastChar === '@') {
+      isMentioning = true;
+      mentionDropdown.style.display = 'block';
+      showSuggestions('');
+    } else if (isMentioning && lastChar === ' ') {
+      // End mentioning if space is typed
+      isMentioning = false;
+      mentionDropdown.style.display = 'none';
+    }
+
+    if (isMentioning) {
+      // Extract query after '@' to filter users
+      const searchQuery = inputText.slice(inputText.lastIndexOf('@') + 1).toLowerCase();
+      showSuggestions(searchQuery);
+    }
+  }
+
+  // Function to show suggestions based on search query
+  function showSuggestions(query) {
+    mentionDropdown.innerHTML = '';  // Clear previous suggestions
+
+    // Filter users based on query
+    const filteredUsers = users.filter(user => user.toLowerCase().includes(query));
+
+    if (filteredUsers.length === 0) {
+      mentionDropdown.style.display = 'none';
+      return;
+    }
+
+    // Show filtered suggestions
+    filteredUsers.forEach(user => {
+      const div = document.createElement("div");
+      div.textContent = user;
+      div.onclick = function() {
+        insertMention(user);
+      };
+      mentionDropdown.appendChild(div);
+    });
+  }
+
+  // Function to insert selected mention back into the input field
+  function insertMention(user) {
+    const inputText = mentionInput.value;
+    const atIndex = inputText.lastIndexOf('@');
+    const beforeText = inputText.slice(0, atIndex);
+    const afterText = inputText.slice(inputText.indexOf(' ', atIndex));
+    mentionInput.value = `${beforeText}@${user}${afterText}`;
+    mentionDropdown.style.display = 'none';  // Hide the dropdown after selection
+  }
 </script>
 @include('script.user_js')
 @include('script.comman_js')

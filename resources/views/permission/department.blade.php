@@ -61,7 +61,7 @@
                                 <div class="col-md-12">
                                     <!-- 1nd level -->
                                     <div class="main_menu_heading">
-                                        {{ucwords(@$menu['menu_name'])}} <i class='fas fa-level-down-alt'></i>
+                                        {{ucwords(@$menu['menu_name'])}}<i class='fas fa-level-down-alt'></i>
                                         @if(!empty(@$menu['menu_link']))
                                             <?php $permission_check = ($menu['permission_check']=='yes')?'checked':''; ?>
                                             <input type="checkbox" class="menu_ids" name="menu_ids[]" value="{{@$menu['id']}}" data-name="{{@$menu['menu_name']}}"{{$permission_check}}>
@@ -75,7 +75,23 @@
                                                 <i class='fas fa-arrow-right fa_arrow'></i> {{ucwords(@$one_menu['menu_name'])}}
                                                 @if(!empty(@$one_menu['menu_link']))
                                                     <?php $permission_check = ($one_menu['permission_check']=='yes')?'checked':''; ?>
-                                                    <input type="checkbox" class="menu_ids" name="menu_ids[]" value="{{@$one_menu['id']}}" data-name="{{@$one_menu['menu_name']}}" {{$permission_check}}>
+                                                    <input type="checkbox" class="menu_ids add_edit_delete_access_check_{{@$one_menu['id']}}" name="menu_ids[]" value="{{@$one_menu['id']}}" data-name="{{@$one_menu['menu_name']}}" data-add_access="{{($one_menu['add_access']=='yes')?'yes':'no'}}" data-edit_access="{{($one_menu['edit_access']=='yes')?'yes':'no'}}" data-delete_access="{{($one_menu['delete_access']=='yes')?'yes':'no'}}" {{$permission_check}}>
+                                                    || 
+                                                    
+                                                    <span class="action_div">
+                                                    <?php $add_access_permission_check = ($one_menu['add_access']=='yes')?'checked':''; 
+                                                    ?>
+
+                                                    add <input type="checkbox" value="{{@$one_menu['id']}}" onclick="return add_edit_delete_access(this,this.value,'add');" {{$add_access_permission_check}}> 
+
+                                                    <?php $edit_access_permission_check = ($one_menu['edit_access']=='yes')?'checked':''; 
+                                                    ?>
+                                                    edit <input type="checkbox" value="{{@$one_menu['id']}}" onclick="return add_edit_delete_access(this,this.value,'edit');" {{$edit_access_permission_check}}>
+
+                                                    <?php $delete_access_permission_check = ($one_menu['delete_access']=='yes')?'checked':''; 
+                                                    ?>
+                                                    delete <input type="checkbox" value="{{@$one_menu['id']}}" onclick="return add_edit_delete_access(this,this.value,'delete');" {{$delete_access_permission_check}}>
+                                                    </span>
                                                 @endif
                                             </div>
                                             <!-- 2nd level end-->
@@ -88,7 +104,21 @@
                                                             <i class='fas fa-arrow-right fa_arrow'></i> {{ucwords(@$sbm1['menu_name'])}}
                                                         @if(!empty(@$sbm1['menu_link']))
                                                             <?php $permission_check = ($sbm1['permission_check']=='yes')?'checked':''; ?>
-                                                            <input type="checkbox" class="menu_ids" name="menu_ids[]" value="{{@$sbm1['id']}}" data-name="{{@$sbm1['menu_name']}}" {{$permission_check}}>
+                                                            <input type="checkbox" class="menu_ids add_edit_delete_access_check_{{@$sbm1['id']}}" name="menu_ids[]" value="{{@$sbm1['id']}}" data-name="{{@$sbm1['menu_name']}}" data-add_access="{{($sbm1['add_access']=='yes')?'yes':'no'}}" data-edit_access="{{($sbm1['edit_access']=='yes')?'yes':'no'}}" data-delete_access="{{($sbm1['delete_access']=='yes')?'yes':'no'}}" {{$permission_check}}>
+                                                            ||
+                                                            <span class="action_div">
+                                                            <?php $add_access_permission_check = ($sbm1['add_access']=='yes')?'checked':''; 
+                                                            ?>
+                                                            add <input type="checkbox" value="{{@$sbm1['id']}}" onclick="return add_edit_delete_access(this,this.value,'add');" {{$add_access_permission_check}}> 
+
+                                                            <?php $edit_access_permission_check = ($sbm1['edit_access']=='yes')?'checked':''; 
+                                                            ?>
+                                                            edit <input type="checkbox" value="{{@$sbm1['id']}}" onclick="return add_edit_delete_access(this,this.value,'edit');" {{$edit_access_permission_check}}>
+
+                                                            <?php $delete_access_permission_check = ($sbm1['delete_access']=='yes')?'checked':''; 
+                                                            ?>
+                                                            delete <input type="checkbox" value="{{@$sbm1['id']}}" onclick="return add_edit_delete_access(this,this.value,'delete');" {{$delete_access_permission_check}}>
+                                                            </span>
                                                         @endif
                                                         </div>
                                                         <!-- 3rd level end-->
@@ -101,7 +131,22 @@
                                                             <i class='fas fa-arrow-right fa_arrow'></i> {{ucwords(@$sbm2['menu_name'])}}
                                                             @if(!empty(@$sbm2['menu_link']))
                                                                 <?php $permission_check = ($sbm2['permission_check']=='yes')?'checked':''; ?>
-                                                                <input type="checkbox" class="menu_ids" name="menu_ids[]" value="{{@$sbm2['id']}}" data-name="{{@$sbm2['menu_name']}}" {{$permission_check}}>
+                                                                <input type="checkbox" class="menu_ids add_edit_delete_access_check_{{@$sbm2['id']}}" name="menu_ids[]" value="{{@$sbm2['id']}}" data-name="{{@$sbm2['menu_name']}}" data-add_access="{{($sbm2['add_access']=='yes')?'yes':'no'}}" data-edit_access="{{($sbm2['edit_access']=='yes')?'yes':'no'}}" data-delete_access="{{($sbm2['delete_access']=='yes')?'yes':'no'}}" {{$permission_check}}>
+                                                                ||
+                                                                <span class="action_div">
+                                                                <?php $add_access_permission_check = ($sbm2['add_access']=='yes')?'checked':''; 
+                                                                ?>
+
+                                                                add <input type="checkbox" value="{{@$sbm2['id']}}" onclick="return add_edit_delete_access(this,this.value,'add');" {{$add_access_permission_check}}> 
+
+                                                                <?php $edit_access_permission_check = ($sbm2['edit_access']=='yes')?'checked':''; 
+                                                                ?>
+                                                                edit <input type="checkbox" value="{{@$sbm2['id']}}" onclick="return add_edit_delete_access(this,this.value,'edit');" {{$edit_access_permission_check}}>
+
+                                                                <?php $delete_access_permission_check = ($sbm2['delete_access']=='yes')?'checked':''; 
+                                                                ?> 
+                                                                delete <input type="checkbox" value="{{@$sbm2['id']}}" onclick="return add_edit_delete_access(this,this.value,'delete');" {{$delete_access_permission_check}}>
+                                                                </span>
                                                             @endif
 
                                                             </div>
@@ -115,7 +160,23 @@
                                                                     <i class='fas fa-arrow-right fa_arrow'></i> {{ucwords(@$sbm3['menu_name'])}}
                                                                 @if(!empty(@$sbm3['menu_link']))
                                                                     <?php $permission_check = ($sbm3['permission_check']=='yes')?'checked':''; ?>
-                                                                    <input type="checkbox" class="menu_ids" name="menu_ids[]" value="{{@$sbm3['id']}}" data-name="{{@$sbm3['menu_name']}}" {{$permission_check}}>
+                                                                    <input type="checkbox" class="menu_ids add_edit_delete_access_check_{{@$sbm3['id']}}" name="menu_ids[]" value="{{@$sbm3['id']}}" data-name="{{@$sbm3['menu_name']}}" data-add_access="{{($sbm3['add_access']=='yes')?'yes':'no'}}" data-edit_access="{{($sbm3['add_access']=='yes')?'yes':'no'}}" data-delete_access="{{($sbm3['add_access']=='yes')?'yes':'no'}}" {{$permission_check}}>
+                                                                ||
+                                                                <span class="action_div">
+                                                                <?php $add_access_permission_check = ($sbm3['add_access']=='yes')?'checked':''; 
+                                                                ?>
+
+                                                                add <input type="checkbox" value="{{@$sbm3['id']}}" onclick="return add_edit_delete_access(this,this.value,'add');" {{$add_access_permission_check}}> 
+
+                                                                <?php $edit_access_permission_check = ($sbm3['edit_access']=='yes')?'checked':''; 
+                                                                ?>
+                                                                edit <input type="checkbox" value="{{@$sbm3['id']}}" onclick="return add_edit_delete_access(this,this.value,'edit');" {{$edit_access_permission_check}}>
+
+                                                                <?php $delete_access_permission_check = ($sbm3['delete_access']=='yes')?'checked':''; 
+                                                                ?>
+                                                                delete <input type="checkbox" value="{{@$sbm3['id']}}" onclick="return add_edit_delete_access(this,this.value,'delete');" {{$delete_access_permission_check}}>
+                                                                </span>
+
                                                                 @endif
                                                                 </div>
                                                                 <!--5th level end -->
