@@ -72,6 +72,9 @@ class PermissionController extends Controller{
 
     public function menu_department_permission($department_id='0'){
         
+        //$department = Department::select('id','department_name','department_type')->where('id',$department_id)->where('is_active',1)->first();
+        //return view('permission.department1',compact('department_id','department'));
+
         $count = Department::where('id',$department_id)->where('is_active',1)->count();
         if($count < 1){
             return redirect(url('master/department'),301); 
@@ -107,7 +110,7 @@ class PermissionController extends Controller{
         if(empty($all_menu_ids) || empty($department_id)){
             return response()->json(['status' =>'failed','s_msg'=>'All fields are required...'],200);
         }
-        //printr($request->menu_add_access,'p');
+        //printr($request->all_menu_ids,'p');
         
         Permission::where(['department_id'=>$department_id,'permission_type'=>'department'])->forceDelete();
         

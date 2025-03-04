@@ -261,6 +261,7 @@ class UserController extends Controller
                         'permission_type'=> 'user',
                         'add_access'=> $record->add_access,
                         'edit_access'=> $record->edit_access,
+                        'view_access'=> $record->view_access,
                         'delete_access'=> $record->delete_access,
                         'created_by'=>Auth::user()->id
                     ];
