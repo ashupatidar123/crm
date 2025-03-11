@@ -80,41 +80,35 @@ function check_user_action_permission($menu_name=''){
     if($menu_name == 'users'){
         $menu_id = 4;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'menu'){
+        $menu_id = 5;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'department'){
+        $menu_id = 6;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'designation'){
+        $menu_id = 7;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'document'){
+        $menu_id = 8;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'country'){
+        $menu_id = 9;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'state'){
+        $menu_id = 10;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'city'){
+        $menu_id = 11;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'vessel'){
+        $menu_id = 12;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'category'){
+        $menu_id = 13;
     }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
-    }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
-    }
-    else if($menu_name == 'users'){
-        $menu_id = 4;
+    else if($menu_name == 'signing_signout'){
+        $menu_id = 14;
     }
     else{
         $menu_id = '';
@@ -123,6 +117,39 @@ function check_user_action_permission($menu_name=''){
     $record = DB::table('permissions')->select('id','add_access','edit_access','delete_access','view_access','tab_access')->where('user_id',Auth::user()->id)->where('menu_id',$menu_id)->where('permission_type','user')->first();
     //printr($record,'p');
     return $record;
+}
+
+function check_authorize($action='',$menu_name=''){
+    if(empty($action) || empty($menu_name)){
+        return abort(403, 'Forbidden error');
+    }
+
+    $action_permission = check_user_action_permission($menu_name);
+    if($action == 'add'){
+        if($action_permission->add_access != 'yes'){
+            return abort(403, 'Unauthorized action.');
+        }
+    }
+    else if($action == 'edit'){
+        if($action_permission->edit_access != 'yes'){
+            return abort(403, 'Unauthorized action.');
+        }
+    }
+    else if($action == 'delete'){
+        if($action_permission->delete_access != 'yes'){
+            return abort(403, 'Unauthorized action.');
+        }
+    }
+    else if($action == 'view'){
+        if($action_permission->view_access != 'yes'){
+            return abort(403, 'Unauthorized action.');
+        }
+    }
+    else if($action == 'tab'){
+        if($action_permission->tab_access != 'yes'){
+            return abort(403, 'Unauthorized action.');
+        }
+    }
 } 
 
 ?>
