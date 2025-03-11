@@ -50,7 +50,7 @@ if(!function_exists('check_file_type')) {
 
 function sidebar_menu_open($menu_url,$menu_name){
     $menu_open = '';
-    if(($menu_url=='user/user') && ($menu_name=='User Management')){
+    if(($menu_url=='user/user' || $menu_url=='user/add-user' || $menu_url=='user/edit-user') && ($menu_name=='User Management')){
         $menu_open = 'menu-is-opening menu-open';
     }
     else if(($menu_url == 'master/menu' || $menu_url == 'master/department' || $menu_url == 'master/designation' || $menu_url == 'master/document' || $menu_url == 'master/region/country' || $menu_url == 'master/region/state' || $menu_url == 'master/region/city') && ($menu_name == 'Master Management')){

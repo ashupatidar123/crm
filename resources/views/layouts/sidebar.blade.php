@@ -22,12 +22,15 @@
                     $permission_menu = @Session::get('permission_menu');
                     
                     $check_menu_url = str_replace(url('/').'/','',url()->current());
+
+                    //$check_menu_url = Request::segment(1).'/'.Request::segment(2);
                 ?>
                 @if(!empty($permission_menu))
                     @foreach($permission_menu as $d_menu)
                     <?php
                         $menu_open = sidebar_menu_open($check_menu_url,$d_menu['menu_name']);
                         $menu_active = sidebar_menu_active(Request::segment(2),$d_menu['menu_name']);
+                    //echo $check_menu_url;
                     ?>
 
                     <li class="nav-item {{$menu_open}}">
