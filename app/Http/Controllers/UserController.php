@@ -25,8 +25,7 @@ use App\Models\Permission;
 
 use App\Traits\FileUploadTrait;
 
-class UserController extends Controller
-{   
+class UserController extends Controller{   
     use FileUploadTrait;
     public function __construct(){
 
@@ -134,13 +133,23 @@ class UserController extends Controller
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($users)){
+            $action_permission = check_user_action_permission('users');
+
             $recordsTotal = User::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
-                $edit = '<a href="'.url('user/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
-                $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user\');" title="View"><i class="fa fa-eye"></i></button>';
+                $edit = $view = $delete = $details = '';
+                if($action_permission->edit_access == 'yes'){
+                    $edit = '<a href="'.url('user/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
+                }
+                
+                if($action_permission->view_access == 'yes'){
+                    $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user\');" title="View"><i class="fa fa-eye"></i></button>';
+                }
 
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'user\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if($action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'user\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 $details = '<a target="_blank" href="'.route('user-details',['id'=>$record->id]).'" class="btn btn-default btn-sm" title="User details"><i class="fa fa-eye"></i></a>';
 
@@ -252,7 +261,7 @@ class UserController extends Controller
                 'created_by'=>Auth::user()->id
             ]);
 
-            $get_menu_permission = Permission::where('department_id',8)->where('permission_type','department')->get();
+            $get_menu_permission = Permission::where('department_id',$request->department_id)->where('permission_type','department')->get();
             if(count($get_menu_permission) > 0){
                 foreach($get_menu_permission as $record){
                     $save_data = [

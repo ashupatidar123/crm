@@ -170,6 +170,8 @@ ul.tree>li:before {
                                 <container>
                                     <i class='fa fa-user'></i>
                                     ({{$main_key+1}}) <strong class="main_heading">{{ucwords(@$menu['menu_name'])}}</strong>
+                                    <?php $permission_check = ($menu['permission_check']=='yes')?'checked':''; ?>
+                                    <input type="checkbox" class="top_menu_ids" value="{{@$menu['id']}}" data-name="{{@$menu['menu_name']}}" {{@$permission_check}}>
                                 </container>
                                 <ul>
                                     <!-- 1st level -->

@@ -18,7 +18,44 @@
                         </p>
                     </a>
                 </li>
+                <?php
+                    $permission_menu = @Session::get('permission_menu');
+                    
+                    $check_menu_url = str_replace(url('/').'/','',url()->current());
+                ?>
+                @if(!empty($permission_menu))
+                    @foreach($permission_menu as $d_menu)
+                    <?php
+                        $menu_open = sidebar_menu_open($check_menu_url,$d_menu['menu_name']);
+                        $menu_active = sidebar_menu_active(Request::segment(2),$d_menu['menu_name']);
+                    ?>
 
+                    <li class="nav-item {{$menu_open}}">
+                        <a href="#" class="nav-link {{$menu_active}}">
+                            <i class="nav-icon fa fa-database"></i>
+                            <p>{{@$d_menu['menu_name']}}
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        @foreach($d_menu['sub_menu_one'] as $s_menu)
+                            <?php
+                                $s_menu_link = !empty($s_menu['menu_link']) ?$s_menu['menu_link']: '#';
+                            ?>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item {{($s_menu_link == $check_menu_url)?'nav_active':''}}">
+                                    <a href="{{url($s_menu_link)}}" class="nav-link">
+                                        <i class="fa fa-mail-reply-all nav-icon"></i>
+                                        <p>{{@$s_menu['menu_name']}}</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        @endforeach    
+                    </li>
+                    @endforeach
+                @endif    
+
+                <!-- static menu -->
+                @if(1 == 11)
                 <li class="nav-item {{(Request::segment(1)=='user')?'menu-is-opening menu-open':''}}">
                     <a href="#" class="nav-link {{(Request::segment(2)=='user')?'active':''}}">
                         <i class="nav-icon fa fa-database"></i>
@@ -143,6 +180,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

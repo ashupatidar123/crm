@@ -8,8 +8,11 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class LoginController extends Controller
-{
+use App\Models\Department;
+use App\Models\Menu;
+use App\Models\Permission;
+
+class LoginController extends Controller{
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -92,9 +95,9 @@ class LoginController extends Controller
             //session()->flash('error', 'reCAPTCHA verification failed. Please try again....');
             //return redirect()->back();
         }
-        
 
-        if (Auth::attempt(['login_id' => $request->username, 'password' => $request->password, 'is_active' => 1])) {
+        if(Auth::attempt(['login_id' => $request->username, 'password' => $request->password, 'is_active' => 1])) {
+            $this->menu_access_permission(Auth::user()->id);
             return redirect()->intended('/dashboard');
         }else{
            session()->flash('error', 'Invalid login details...');
@@ -109,5 +112,72 @@ class LoginController extends Controller
         return redirect('/login',301);
     }
 
-    
+    public function menu_permission_check($menu_id,$user_id){
+        $count = Permission::where('menu_id',$menu_id)->where('user_id',$user_id)->where('permission_type','user')->count();
+        if($count > 0){
+            return 'yes';
+        }else{
+            return 'no';
+        }
+    }
+    public function menu_action_permission_check($menu_id,$user_id,$type='add_access'){
+        $count = Permission::where('menu_id',$menu_id)->where('user_id',$user_id)->where($type,'yes')->where('permission_type','user')->count();
+        if($count > 0){
+            return 'yes';
+        }else{
+            return 'no';
+        }
+    }
+
+    public function sub_menu($menu_id,$user_id=''){
+        $menu = Menu::select('id','menu_name','menu_code','menu_link')->where('parent_menu_id',$menu_id)->where('is_active',1)->orderBy('menu_sequence','ASC')->limit(20)->get();
+        $menu_one_array = [];
+        if(count($menu) > 0){
+            foreach($menu as $record){
+                $permission_check = $this->menu_permission_check($record->id,$user_id);
+                if($permission_check == 'yes'){    
+                    $menu_one_array[] = [
+                        'id'=>$record->id,
+                        'menu_name'=>$record->menu_name,
+                        'menu_link'=>$record->menu_link,
+                        'permission_check'=>$permission_check,
+                        'add_access'=>$this->menu_action_permission_check($record->id,$user_id,'add_access'),
+                        'edit_access'=>$this->menu_action_permission_check($record->id,$user_id,'edit_access'),
+                        'delete_access'=>$this->menu_action_permission_check($record->id,$user_id,'delete_access'),
+                        'sub_menus'=>empty($record->menu_link)?$this->sub_menu($record->id,$user_id):[],
+                    ];
+                }
+            }
+            return $menu_one_array;
+        }else{
+            return $menu_one_array;
+        }
+    }
+
+    public function menu_access_permission($user_id='0'){
+        
+        $main_menu = Menu::select('id','menu_name','menu_code','menu_link','menu_icon')->where('parent_menu_id',0)->where('is_active',1)->orderBy('parent_menu_id','ASC')->limit(50)->get();
+        
+        $all_menu = [];
+        if(count($main_menu) > 0){
+            foreach($main_menu as $record){
+                $permission_check = $this->menu_permission_check($record->id,$user_id);
+                if($permission_check == 'yes'){
+                    $all_menu[] = [
+                        'id'=>$record->id,
+                        'menu_name'=>$record->menu_name,
+                        'menu_link'=>$record->menu_link,
+                        'permission_check'=>$permission_check,
+                        'add_access'=>'no',
+                        'edit_access'=>'no',
+                        'delete_access'=>'no',
+                        'sub_menu_one'=>empty($record->menu_link)?$this->sub_menu($record->id,$user_id):[],
+                    ];
+                }
+            }
+        }
+        //printr($all_menu,'p');
+        Session::put('permission_menu',$all_menu);
+        return true;
+    }
 }

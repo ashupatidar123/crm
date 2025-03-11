@@ -71,10 +71,6 @@ class PermissionController extends Controller{
     }
 
     public function menu_department_permission($department_id='0'){
-        
-        //$department = Department::select('id','department_name','department_type')->where('id',$department_id)->where('is_active',1)->first();
-        //return view('permission.department1',compact('department_id','department'));
-
         $count = Department::where('id',$department_id)->where('is_active',1)->count();
         if($count < 1){
             return redirect(url('master/department'),301); 
@@ -90,7 +86,7 @@ class PermissionController extends Controller{
                     'id'=>$record->id,
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
-                    'permission_check'=>'no',
+                    'permission_check'=>$this->menu_department_permission_check($record->id,$department_id),
                     'add_access'=>'no',
                     'edit_access'=>'no',
                     'delete_access'=>'no',
@@ -105,15 +101,29 @@ class PermissionController extends Controller{
 
     public function menu_department_permission_store(Request $request){
         $all_menu_ids = !empty($request->all_menu_ids)?$request->all_menu_ids:'';
+        $top_menu_ids = !empty($request->top_menu_ids)?$request->top_menu_ids:'';
         $department_id = !empty($request->department_id)?$request->department_id:'';    
         
-        if(empty($all_menu_ids) || empty($department_id)){
+        if(empty($top_menu_ids) || empty($all_menu_ids) || empty($department_id)){
             return response()->json(['status' =>'failed','s_msg'=>'All fields are required...'],200);
         }
-        //printr($request->all_menu_ids,'p');
+        //printr($request->top_menu_ids,'p');
         
         Permission::where(['department_id'=>$department_id,'permission_type'=>'department'])->forceDelete();
         
+        foreach($top_menu_ids as $key=>$top_menu_id){
+            $save_main_data = [
+                'menu_id' => $top_menu_id,
+                'department_id' => $department_id,
+                'permission_type'=> 'department',
+                'add_access'=> 'no',
+                'edit_access'=> 'no',
+                'delete_access'=> 'no',
+                'created_by'=>Auth::user()->id
+            ];
+            Permission::insertGetId($save_main_data);
+        }
+
         $menu_add_access = $menu_edit_access = $menu_delete_access = 'no';
         foreach($all_menu_ids as $key=>$menu_id){
             if(!empty($request->menu_add_access[$key])){
@@ -218,6 +228,14 @@ class PermissionController extends Controller{
             return 'no';
         }
     }
+    public function menu_user_action_permission_check($menu_id,$user_id,$type='add_access'){
+        $count = Permission::where('menu_id',$menu_id)->where('user_id',$user_id)->where($type,'yes')->where('permission_type','user')->count();
+        if($count > 0){
+            return 'yes';
+        }else{
+            return 'no';
+        }
+    }
 
     public function user_sub_menu($menu_id,$user_id=''){
         $menu = Menu::select('id','menu_name','menu_code','menu_link')->where('parent_menu_id',$menu_id)->where('is_active',1)->orderBy('menu_sequence','ASC')->limit(20)->get();
@@ -229,6 +247,9 @@ class PermissionController extends Controller{
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
                     'permission_check'=>$this->menu_user_permission_check($record->id,$user_id),
+                    'add_access'=>$this->menu_user_action_permission_check($record->id,$user_id,'add_access'),
+                    'edit_access'=>$this->menu_user_action_permission_check($record->id,$user_id,'edit_access'),
+                    'delete_access'=>$this->menu_user_action_permission_check($record->id,$user_id,'delete_access'),
                     'sub_menus'=>empty($record->menu_link)?$this->user_sub_menu($record->id,$user_id):[],
                 ];
             }
@@ -239,9 +260,7 @@ class PermissionController extends Controller{
     }
 
     public function menu_user_permission($user_id='0'){
-        
         $count = User::where('id',$user_id)->where('is_active',1)->count();
-        
         if($count < 1){
             return redirect(url('user/user'),301); 
         }
@@ -256,7 +275,10 @@ class PermissionController extends Controller{
                     'id'=>$record->id,
                     'menu_name'=>$record->menu_name,
                     'menu_link'=>$record->menu_link,
-                    'permission_check'=>'no',
+                    'permission_check'=>$this->menu_user_permission_check($record->id,$user_id),
+                    'add_access'=>'no',
+                    'edit_access'=>'no',
+                    'delete_access'=>'no',
                     'sub_menu_one'=>empty($record->menu_link)?$this->user_sub_menu($record->id,$user_id):[],
                 ];
             }
@@ -268,24 +290,53 @@ class PermissionController extends Controller{
 
     public function menu_user_permission_store(Request $request){
         $all_menu_ids = !empty($request->all_menu_ids)?$request->all_menu_ids:'';
+        $top_menu_ids = !empty($request->top_menu_ids)?$request->top_menu_ids:'';
         $user_id = !empty($request->user_id)?$request->user_id:'';    
         
-        if(empty($all_menu_ids) || empty($user_id)){
+        if(empty($top_menu_ids) || empty($all_menu_ids) || empty($user_id)){
             return response()->json(['status' =>'failed','s_msg'=>'All fields are required...'],200);
         }
-        //printr($all_menu_ids,'p');
+        //printr($request->top_menu_ids,'p');
         
         Permission::where(['user_id'=>$user_id,'permission_type'=>'user'])->forceDelete();
-        foreach($all_menu_ids as $menu_id){
+        
+        foreach($top_menu_ids as $key=>$top_menu_id){
+            $save_main_data = [
+                'menu_id' => $top_menu_id,
+                'user_id' => $user_id,
+                'permission_type'=> 'user',
+                'add_access'=> 'no',
+                'edit_access'=> 'no',
+                'delete_access'=> 'no',
+                'created_by'=>Auth::user()->id
+            ];
+            Permission::insertGetId($save_main_data);
+        }
+
+        $menu_add_access = $menu_edit_access = $menu_delete_access = 'no';
+        foreach($all_menu_ids as $key=>$menu_id){
+            if(!empty($request->menu_add_access[$key])){
+                $menu_add_access = $request->menu_add_access[$key];
+            }
+            if(!empty($request->menu_edit_access[$key])){
+                $menu_edit_access = $request->menu_edit_access[$key];
+            }
+            if(!empty($request->menu_delete_access[$key])){
+                $menu_delete_access = $request->menu_delete_access[$key];
+            }
+
             $save_data = [
                 'menu_id' => $menu_id,
                 'user_id' => $user_id,
                 'permission_type'=> 'user',
+                'add_access'=> !empty($menu_add_access)?$menu_add_access:'no',
+                'edit_access'=> !empty($menu_edit_access)?$menu_edit_access:'no',
+                'delete_access'=> !empty($menu_delete_access)?$menu_delete_access:'no',
                 'created_by'=>Auth::user()->id
             ];
+            //printr($save_data,'p');
             $lastId = Permission::insertGetId($save_data);
         }
-    
         return response()->json(['status' =>'success','message' =>'Permission applied successfully...'],200);
     }
 }

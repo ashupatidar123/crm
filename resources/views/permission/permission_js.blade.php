@@ -1,5 +1,6 @@
 <script type="text/javascript">
     function department_permission(){
+        
         var all_menu_ids = [];
         var all_menu_names = [];
         var menu_add_access = [];
@@ -28,14 +29,22 @@
                 menu_delete_access.push('no');
             }else{
                 menu_delete_access.push($(this).attr('data-delete_access')); 
-            }
-            
+            } 
+        });
+
+        var top_menu_ids = [];
+        $('.top_menu_ids:checked').each(function() {
+            top_menu_ids.push($(this).val());
         });
         
-        //console.log(all_menu_names+' '+menu_add_access); return false;
+        //console.log(top_menu_ids); return false;
         
 
-        if(all_menu_ids == ''){
+        if(top_menu_ids == ''){
+            swal_error('Please select atleast one main permission menu');
+            return false;
+        }
+        else if(all_menu_ids == ''){
             swal_error('Please select atleast one permission menu');
             return false;
         }
@@ -55,12 +64,12 @@
         }).then((result) => {
             if(result.isConfirmed) {
                 $('#applyPermissionLoader').html('Permission loading...');
-                //$('#applyPermissionLoader').attr('disabled',true);
+                $('#applyPermissionLoader').attr('disabled',true);
 
                 $.ajax({
                     type: "POST",
                     url: "{{ route('menu_department_permission_store') }}",
-                    data:{department_id,all_menu_ids,menu_add_access,
+                    data:{department_id,top_menu_ids,all_menu_ids,menu_add_access,
                         menu_edit_access,menu_delete_access
                     },
                     headers: {
@@ -82,15 +91,51 @@
     }
 
     function user_permission(){
+        
         var all_menu_ids = [];
         var all_menu_names = [];
+        var menu_add_access = [];
+        var menu_edit_access = [];
+        var menu_delete_access = [];
+
         var user_id = $('#user_id').val();
         var first_name = $('#first_name').val();
         $('.menu_ids:checked').each(function() {
             all_menu_ids.push($(this).val());
             all_menu_names.push($(this).data('name'));
+
+            if($(this).attr('data-add_access') == undefined || $(this).attr('data-add_access') == ''){
+                menu_add_access.push('no');
+            }else{
+                menu_add_access.push($(this).attr('data-add_access')); 
+            }
+
+            if($(this).attr('data-edit_access') == undefined || $(this).attr('data-edit_access') == ''){
+                menu_edit_access.push('no');
+            }else{
+                menu_edit_access.push($(this).attr('data-edit_access')); 
+            }
+
+            if($(this).attr('data-delete_access') == undefined || $(this).attr('data-delete_access') == ''){
+                menu_delete_access.push('no');
+            }else{
+                menu_delete_access.push($(this).attr('data-delete_access')); 
+            } 
         });
-        if(all_menu_ids == ''){
+
+        var top_menu_ids = [];
+        $('.top_menu_ids:checked').each(function() {
+            top_menu_ids.push($(this).val());
+        });
+        
+        //console.log(top_menu_ids); return false;
+        
+
+        if(top_menu_ids == ''){
+            swal_error('Please select atleast one main permission menu');
+            return false;
+        }
+        else if(all_menu_ids == ''){
             swal_error('Please select atleast one permission menu');
             return false;
         }
@@ -115,7 +160,9 @@
                 $.ajax({
                     type: "POST",
                     url: "{{ route('menu_user_permission_store') }}",
-                    data: {user_id,all_menu_ids},
+                    data:{user_id,top_menu_ids,all_menu_ids,menu_add_access,
+                        menu_edit_access,menu_delete_access
+                    },
                     headers: {
                         'X-CSRF-TOKEN': csrf_token
                     },
