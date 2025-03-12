@@ -37,7 +37,7 @@ class MenuController extends Controller{
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = Menu::with('parent_menu')->select('id','menu_name','menu_code','menu_sequence','menu_link','menu_icon','parent_menu_id','description','is_active','created_at');
+        $query = Menu::with('parent_menu')->select('id','menu_name','menu_slug','menu_code','menu_sequence','menu_link','menu_icon','parent_menu_id','description','is_active','created_at');
         if(!empty($search)) {
             $query->where('menu_name', 'LIKE', '%'.$search.'%')->orWhere('menu_code', 'LIKE', '%'.$search.'%')->orWhere('menu_link', 'LIKE', '%'.$search.'%')->orWhere('description', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%');
         }
@@ -63,6 +63,7 @@ class MenuController extends Controller{
                 $all_data[] = [
                     'sno'=> $sno++,
                     'menu_name'=> $record->menu_name,
+                    'menu_slug'=> $record->menu_slug,
                     'parent_menu'=> $parent_menu_name,
                     'menu_code'=> $record->menu_code,
                     'menu_sequence'=> $record->menu_sequence,
@@ -97,6 +98,7 @@ class MenuController extends Controller{
         
         $data = [
             'menu_name' => $request->menu_name,
+            'menu_slug'=> $request->menu_slug,
             'parent_menu_id' => !empty($request->parent_menu_id)?$request->parent_menu_id:0,
             'menu_code' => $request->menu_code,
             'menu_sequence' => $request->menu_sequence,

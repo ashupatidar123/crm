@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    @if($action_permission->add_access == 'yes')
+                    @if(@$action_permission->add_access == 'yes')
                         <a href="{{url('user/add-user')}}" class="btn btn-sm btn-default" title="Add new user"><i class="fa fa-plus"></i> Add</a>
                     @endif
                     <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>

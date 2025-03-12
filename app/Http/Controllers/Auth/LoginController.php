@@ -120,17 +120,9 @@ class LoginController extends Controller{
             return 'no';
         }
     }
-    public function menu_action_permission_check($menu_id,$user_id,$type='add_access'){
-        $count = Permission::where('menu_id',$menu_id)->where('user_id',$user_id)->where($type,'yes')->where('permission_type','user')->count();
-        if($count > 0){
-            return 'yes';
-        }else{
-            return 'no';
-        }
-    }
 
     public function sub_menu($menu_id,$user_id=''){
-        $menu = Menu::select('id','menu_name','menu_code','menu_link')->where('parent_menu_id',$menu_id)->where('is_active',1)->orderBy('menu_sequence','ASC')->limit(20)->get();
+        $menu = Menu::select('id','menu_name','menu_slug','menu_code','menu_link')->where('parent_menu_id',$menu_id)->where('is_active',1)->orderBy('menu_sequence','ASC')->limit(20)->get();
         $menu_one_array = [];
         if(count($menu) > 0){
             foreach($menu as $record){
@@ -139,11 +131,9 @@ class LoginController extends Controller{
                     $menu_one_array[] = [
                         'id'=>$record->id,
                         'menu_name'=>$record->menu_name,
+                        'menu_slug'=>$record->menu_slug,
                         'menu_link'=>$record->menu_link,
                         'permission_check'=>$permission_check,
-                        'add_access'=>$this->menu_action_permission_check($record->id,$user_id,'add_access'),
-                        'edit_access'=>$this->menu_action_permission_check($record->id,$user_id,'edit_access'),
-                        'delete_access'=>$this->menu_action_permission_check($record->id,$user_id,'delete_access'),
                         'sub_menus'=>empty($record->menu_link)?$this->sub_menu($record->id,$user_id):[],
                     ];
                 }
@@ -156,7 +146,7 @@ class LoginController extends Controller{
 
     public function menu_access_permission($user_id='0'){
         
-        $main_menu = Menu::select('id','menu_name','menu_code','menu_link','menu_icon')->where('parent_menu_id',0)->where('is_active',1)->orderBy('parent_menu_id','ASC')->limit(50)->get();
+        $main_menu = Menu::select('id','menu_name','menu_slug','menu_code','menu_link','menu_icon')->where('parent_menu_id',0)->where('is_active',1)->orderBy('parent_menu_id','ASC')->limit(50)->get();
         
         $all_menu = [];
         if(count($main_menu) > 0){
@@ -166,11 +156,9 @@ class LoginController extends Controller{
                     $all_menu[] = [
                         'id'=>$record->id,
                         'menu_name'=>$record->menu_name,
+                        'menu_slug'=>$record->menu_slug,
                         'menu_link'=>$record->menu_link,
                         'permission_check'=>$permission_check,
-                        'add_access'=>'no',
-                        'edit_access'=>'no',
-                        'delete_access'=>'no',
                         'sub_menu_one'=>empty($record->menu_link)?$this->sub_menu($record->id,$user_id):[],
                     ];
                 }

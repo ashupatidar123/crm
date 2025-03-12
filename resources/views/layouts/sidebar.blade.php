@@ -21,16 +21,16 @@
                 <?php
                     $permission_menu = @Session::get('permission_menu');
                     
-                    $check_menu_url = str_replace(url('/').'/','',url()->current());
+                    //$check_menu_url = str_replace(url('/').'/','',url()->current());
 
-                    //$check_menu_url = Request::segment(1).'/'.Request::segment(2);
+                    $check_menu_url = Request::segment(1).'/'.Request::segment(2);
+                    $check_menu_url_region = 'master/region/'.Request::segment(3);
                 ?>
                 @if(!empty($permission_menu))
                     @foreach($permission_menu as $d_menu)
                     <?php
-                        $menu_open = sidebar_menu_open($check_menu_url,$d_menu['menu_name']);
-                        $menu_active = sidebar_menu_active(Request::segment(2),$d_menu['menu_name']);
-                    //echo $check_menu_url;
+                        $menu_open = sidebar_menu_open($check_menu_url,$d_menu['menu_slug']);
+                        $menu_active = sidebar_menu_active(Request::segment(2),$d_menu['menu_slug']);   
                     ?>
 
                     <li class="nav-item {{$menu_open}}">
@@ -43,9 +43,14 @@
                         @foreach($d_menu['sub_menu_one'] as $s_menu)
                             <?php
                                 $s_menu_link = !empty($s_menu['menu_link']) ?$s_menu['menu_link']: '#';
+
+                                $sub_nav_active = '';
+                                if($s_menu_link == $check_menu_url || $check_menu_url_region == $s_menu_link){
+                                    $sub_nav_active = 'nav_active';
+                                }
                             ?>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item {{($s_menu_link == $check_menu_url)?'nav_active':''}}">
+                                <li class="nav-item {{$sub_nav_active}}">
                                     <a href="{{url($s_menu_link)}}" class="nav-link">
                                         <i class="fa fa-mail-reply-all nav-icon"></i>
                                         <p>{{@$s_menu['menu_name']}}</p>

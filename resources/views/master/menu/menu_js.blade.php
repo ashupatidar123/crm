@@ -43,6 +43,7 @@
         if(type == 'add'){
             $("#addFormId")[0].reset();
             $('#p_id, #description').val('');
+            $('#menu_slug').prop('readonly', true);
             $("#addModal").modal();
             get_parent_menu('');
             return false;
@@ -62,8 +63,10 @@
                 
                 if(resp.data != ''){
                     var rep = resp.data;
+                    $('#menu_slug').prop('readonly', false);
                     $('#p_id').val(rep.id);
                     $('#menu_name').val(rep.menu_name);
+                    $('#menu_slug').val(rep.menu_slug);
                     $('#menu_code').val(rep.menu_code);
                     $('#menu_sequence').val(rep.menu_sequence);
                     $('#menu_link').val(rep.menu_link);
@@ -90,6 +93,10 @@
         if($('#menu_name').val() == ''){
             var check = 1;
             $('#menu_nameError').html('This field is required');
+        }
+        if($('#menu_slug').val() == ''){
+            var check = 1;
+            $('#menu_slugError').html('This field is required');
         }
         if($('#menu_sequence').val() == ''){
             var check = 1;
@@ -144,5 +151,15 @@
                 $('#parent_menu_id').html(resp);
             }
         });
+    }
+
+    function create_menu_slug(val=''){
+        var slug = val.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '_').replace(/-+/g, '_');
+        if(slug == ''){
+            $('#menu_slug').prop('readonly', true);
+        }else{
+            $('#menu_slug').prop('readonly', false); 
+        }
+        $('#menu_slug').val(slug);
     }
 </script>

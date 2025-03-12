@@ -36,7 +36,8 @@ class UserController extends Controller{
     }
 
     public function user(){
-        $action_permission = check_user_action_permission('users');
+        check_authorize('list','user');
+        $action_permission = check_user_action_permission('user');
         return view('user.user.user_list',compact('action_permission'));
     }
 
@@ -134,21 +135,21 @@ class UserController extends Controller{
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($users)){
-            $action_permission = check_user_action_permission('users');
+            $action_permission = check_user_action_permission('user');
 
             $recordsTotal = User::count();
             $sno = 1+$start_limit;
             foreach($users as $record){
                 $edit = $view = $delete = $details = '';
-                if($action_permission->edit_access == 'yes'){
+                if(@$action_permission->edit_access == 'yes'){
                     $edit = '<a href="'.url('user/edit-user').'/'.$record->id.'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-edit"></i></a>';
                 }
                 
-                if($action_permission->view_access == 'yes'){
+                if(@$action_permission->view_access == 'yes'){
                     $view = '<button class="btn btn-default btn-sm" onclick="return ajax_view('.$record->id.',\'user\');" title="View"><i class="fa fa-eye"></i></button>';
                 }
 
-                if($action_permission->delete_access == 'yes'){
+                if(@$action_permission->delete_access == 'yes'){
                     $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'user\');" title="Delete"><i class="fa fa-trash"></i></button>';
                 }
 
@@ -201,18 +202,16 @@ class UserController extends Controller{
     }
 
     public function showAddUser(){
+        check_authorize('add','user');
+
         $user = User::where('id',Auth::user()->id)->first();
         $role = Role::select('id','role_name','rank')->where('is_active',1)->get();
         $department = Department::select('id','department_name')->where('is_active',1)->get();
-        $action_permission = check_user_action_permission('users');
-        if($action_permission->add_access == 'no'){
-            return abort(403, 'Unauthorized action.');
-        }
         return view('user.user.add_user',compact('user','role','department'));
     }
 
     public function add_user(Request $request){
-        check_authorize('add','users');
+        check_authorize('add','user');
 
         if(empty($request->first_name) || empty($request->login_id) || empty($request->department_type) || empty($request->department_designation_id) || empty($request->department_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
@@ -291,7 +290,7 @@ class UserController extends Controller{
     }
 
     public function showEditUser(Request $request){
-        check_authorize('edit','users');
+        check_authorize('edit','user');
 
         $data = User::where('id',$request->id)->first();
         if(empty($data)){
@@ -302,7 +301,7 @@ class UserController extends Controller{
     }
 
     public function update_user(Request $request){
-        check_authorize('edit','users');
+        check_authorize('edit','user');
         if(empty($request->first_name) || empty($request->department_type) || empty($request->department_id) || empty($request->department_designation_id) || empty($request->user_id) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }

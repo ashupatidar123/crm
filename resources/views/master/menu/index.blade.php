@@ -87,8 +87,16 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Menu Name<span class="text-danger">*</span></label>
-                                                    <input type="text" name="menu_name" id="menu_name" class="form-control" placeholder="Enter menu name">
+                                                    <input type="text" name="menu_name" id="menu_name" class="form-control" placeholder="Enter menu name" onkeyup="return create_menu_slug(this.value);">
                                                     <p class="text-danger remove_error" id="menu_nameError"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Menu Slug<span class="text-danger">*</span></label>
+                                                    <input type="text" name="menu_slug" id="menu_slug" class="form-control" placeholder="Enter menu slug" readonly>
+                                                    <p class="text-danger remove_error" id="menu_slugError"></p>
                                                 </div>
                                             </div>
 
