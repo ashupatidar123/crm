@@ -161,6 +161,8 @@ class UserController extends Controller{
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'user\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
 
+                $permission = '<a href="'.route('menu_user_permission', ['id'=>$record->id]).'" class="btn btn-default btn-sm" title="Menu permission"><i class="fa fa-key"></i></a>';
+
                 $department_type = @$record->single_department->department_type;
                 $department_name = @$record->single_department->department_name;
                 $designation_name = @$record->single_designation->designation_name;
@@ -169,7 +171,7 @@ class UserController extends Controller{
 
                 $all_data[] = [
                     'sno'=> $sno++,
-                    'action'=>$edit.' '.$status.' '.$details.' '.$delete,
+                    'action'=>$edit.' '.$status.' '.$details.' '.$delete.' '.$permission,
                     'first_name'=> @$record->name_title.' '.@$record->first_name.' '.@$record->middle_name.' '.@$record->last_name,
                     'login_id'=> @$record->login_id,
                     'email'=> @$record->email,
@@ -256,6 +258,7 @@ class UserController extends Controller{
                 'country_id' => !empty($request->country_id)?$request->country_id:'',
                 'state_id' => !empty($request->state_id)?$request->state_id:'',
                 'city_id' => !empty($request->city_id)?$request->city_id:'',
+                'address_type' => !empty($request->address_type)?$request->address_type:'office_address',
                 'zip_code' => $request->zip_code,
                 'phone1' => $request->phone1,
                 'phone2' => $request->phone2,
@@ -332,30 +335,108 @@ class UserController extends Controller{
         
         $id = User::where('id',$request->user_id)->update($update_data);
         if($id > 0){
-            $update_address = [
-                'country_id' => !empty($request->country_id)?$request->country_id:'',
-                'state_id' => !empty($request->state_id)?$request->state_id:'',
-                'city_id' => !empty($request->city_id)?$request->city_id:'',
-                'zip_code' => $request->zip_code,
-                'phone1' => $request->phone1,
-                'phone2' => $request->phone2,
-                'address1' => $request->address1,
-                'address2' => $request->address2,
-                'address3' => $request->address3,
-                'is_active' => ($request->is_active==1)?1:2,
-                'created_by'=>Auth::user()->id
-            ];
-
-            if(@$request->address_id > 0){
-                UserAddress::where('id',$request->address_id)->update($update_address);
-            }else{
-                $update_address['user_id'] = $request->user_id;
-                UserAddress::insertGetId($update_address);
-            }
-
             return response()->json(['status' =>'success','message' => '<p class="alert alert-success">User updated successfully...</p>','s_msg'=>'User updated successfully...'],200);
         }else{
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">Opps! Something went wrong...</p>','s_msg'=>'Opps! Something went wrong...'],200);
+        }
+    }
+
+    /* user address section*/
+    public function user_address_list(Request $request){
+        $postData = $request->input();
+
+        $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
+        $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
+        if($start_limit < 1){
+            $start_limit = !empty($request->input('start'))?$request->input('start'):0;
+            $end_limit   = !empty($request->input('length'))?$request->input('length'):10;
+        }
+        
+        $draw  = $request->input('draw');
+        $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
+
+        $orderColumnIndex = 'created_at';
+        $orderDirection   = 'DESC';
+        
+        $query = UserAddress::with('single_country','single_state','single_city')->select('id','user_id','country_id','state_id','city_id','address_type','zip_code','address1','address2','address3','created_at','is_active')->where('user_id',$postData['user_id']);
+        
+        if(!empty($search)) {
+            $query->where('user_id', 'LIKE', '%'.$search.'%')->orWhere('country_id', 'LIKE', '%'.$search.'%');
+        }
+        
+        $query->orderBy($orderColumnIndex, $orderDirection);
+        $users = $query->offset($start_limit)->limit($end_limit)->get(); 
+        //printr($users);
+        $all_data = [];
+        $recordsTotal = $recordsFiltered = 0;
+        if(!empty($users)){
+            $recordsTotal = UserAddress::where('user_id',$postData['user_id'])->count();
+            $sno = 1+$start_limit;
+            foreach($users as $record){
+                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_address('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+
+                $all_data[] = [
+                    'sno'=> $sno++,
+                    'action'=>$edit,
+                    'country_id'=> @$record->single_country->name,
+                    'state_id'=> @$record->single_state->name,
+                    'city_id'=> @$record->single_city->name,
+                    'address_type'=> @$record->address_type,
+                    'zip_code'=> @$record->zip_code,
+                    'address1'=> @$record->address1,
+                    'address2'=> @$record->address2,
+                    'address3'=> @$record->address3,
+                    'created_at'=> date('d/M/Y',strtotime($record->created_at)),
+                ];
+            }
+        }
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data' => $all_data,
+        ]);
+    }
+
+    public function address_edit(Request $request){
+        $data = UserAddress::where('id',$request->p_id)->first();
+        echo json_encode(['data'=>$data]);
+    }
+
+    public function add_edit_address_save(Request $request){
+        if(empty($request->user_id) || empty($request->country_id) || empty($request->state_id) || empty($request->city_id) || empty($request->address_type) || empty($request->zip_code) || empty($request->address1) || empty($request->address2)){
+            return response()->json(['status' =>'failed','message'=>'All fields are required...'],200);
+        }
+        $p_id = !empty($request->p_id)?$request->p_id:'';
+
+        $check_address_type = UserAddress::where('id','!=',$p_id)->where('address_type',$request->address_type)->where('user_id',$request->user_id)->count();
+        if($check_address_type > 0){
+            return response()->json(['status' =>'failed','message'=>'Address type already exist'],200);
+        }
+        
+        $save_data = [
+            'user_id'=>$request->user_id,
+            'country_id' => $request->country_id,
+            'state_id' => $request->state_id,
+            'city_id' => $request->city_id,
+            'address_type' => $request->address_type,
+            'zip_code' => $request->zip_code,
+            'address1' => $request->address1,
+            'address2' => $request->address2,
+            'address3' => $request->address3,
+            'created_by'=>Auth::user()->id
+        ];
+        //printr($save_data,'p');
+        if($p_id > 0){
+            $id = UserAddress::where('id',$p_id)->update($save_data);
+        }else{
+            $id = UserAddress::insertGetId($save_data);
+        }
+        
+        if($id > 0){
+            return response()->json(['status' =>'success','message'=>'Address saved successfully'],200);
+        }else{
+            return response()->json(['status' =>'failed','message'=>'Opps! Something went wrong...'],200);
         }
     }
 

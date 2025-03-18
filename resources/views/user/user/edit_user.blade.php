@@ -168,63 +168,7 @@
                                             <p class="text-danger" id="department_designation_idError"></p>
                                         </div>
                                     </div>
-                                </div>
-                                <hr>
-                                <strong class="text-center1 ml-3">Address Information</strong>
-                                <div class="card-body row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Country<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="country_id" id="country_id" onchange="return get_ajax_state(this.value,'state_id');">
-                                                <option value="">Select country</option>
-                                            </select>
-                                            <p class="text-danger" id="countryError"></p>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>City<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="city_id" id="city_id">
-                                                <option value="">Select city</option>
-                                            </select>
-                                            <p class="text-danger" id="cityError"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>State<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="state_id" id="state_id" onchange="return get_ajax_city(this.value,'city_id');">
-                                                <option value="">Select state</option>
-                                            </select>
-                                            <p class="text-danger" id="stateError"></p>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label>ZIP Code / Postal code<span class="text-danger">*</span></label>
-                                            <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code" value="{{@$address->zip_code}}">
-                                            <p class="text-danger" id="zip_codeError"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Address line 1<span class="text-danger">*</span></label>
-                                            <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name" value="{{@$address->address1}}">
-                                            <p class="text-danger" id="address1Error"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Address line 2<span class="text-danger">*</span></label>
-                                            <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor" value="{{@$address->address2}}">
-                                            <p class="text-danger" id="address2Error"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Address line 3</label>
-                                            <input type="text" name="address3" id="address3" class="form-control"  placeholder="Enter further address details or landmarks" value="{{@$address->address3}}">
-                                            <p class="text-danger" id="address3Error"></p>
-                                        </div>
-                                    </div>
+                                
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <button id="userSubmitButton" type="button" class="btn btn-primary">Submit</button>
@@ -241,12 +185,170 @@
                 </form>
             </div>
         </section>
+
+        <!-- address section -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- /.card -->
+                        <div class="card card-primary">
+                            <div class="card-header card_header_color">
+                                <h3 class="card-title">All Address</h3>
+                            </div>
+
+                            <!-- /.card-header -->
+                            <div class="card-body responsive">
+                                <button type="button" class="btn btn-sm btn-default mb-3" onclick="return add_edit_address('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add New Address</button>
+                                <table id="tableList" class="table responsive table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Sno</th>
+                                            <th class="set_action_width4">Action</th>
+                                            <th>Country</th>
+                                            <th>State</th>
+                                            <th>City</th>
+                                            <th>Address type</th>
+                                            <th>ZIP code</th>
+                                            <th>Address 1</th>
+                                            <th>Address 2</th>
+                                            <th>Address 3</th>
+                                            <th>Created AT</th>
+                                         </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+
+        <!-- Modal -->
+        <section class="content">
+            <div class="modal fade" id="addAddressModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add/Edit Address</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" id="addAddressFormId">
+                                @csrf    
+                                <div class="row">
+                                    <input type="hidden" name="user_id" value="{{$data->id}}">
+                                    <input type="hidden" name="p_id" id="p_id">
+                                    <div class="col-md-12">
+                                        <div class="card card-primary">
+                                            <div class="card-header card_header_color"><h3 class="card-title">Add/Edit Address</h3>
+                                            </div>
+                                            <div class="show_message"></div>
+                                            <div class="card-body row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Country<span class="text-danger">*</span></label>
+                                                        <select class="form-control select2" name="country_id" id="country_id" onchange="return get_ajax_state(this.value,'state_id');">
+                                                            <option value="">Select country</option>
+                                                        </select>
+                                                        <p class="text-danger" id="countryError"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>State<span class="text-danger">*</span></label>
+                                                        <select class="form-control select2" name="state_id" id="state_id" onchange="return get_ajax_city(this.value,'city_id');">
+                                                            <option value="">Select state</option>
+                                                        </select>
+                                                        <p class="text-danger" id="stateError"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>City<span class="text-danger">*</span></label>
+                                                        <select class="form-control select2" name="city_id" id="city_id">
+                                                            <option value="">Select city</option>
+                                                        </select>
+                                                        <p class="text-danger" id="cityError"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Address Type<span class="text-danger">*</span></label>
+                                                        <select class="form-control" name="address_type" id="address_type">
+                                                            <option value="">Select address type</option>
+                                                            <option value="permanent_address">Permanent address</option>
+                                                            <option value="current_address">Current address</option>
+                                                            <option value="office_address">Office address</option>
+                                                            <option value="other_address">Other address</option>
+                                                        </select>
+                                                        <p class="text-danger" id="address_typeError"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>ZIP Code / Postal code<span class="text-danger">*</span></label>
+                                                        <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code">
+                                                        <p class="text-danger" id="zip_codeError"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Address line 1<span class="text-danger">*</span></label>
+                                                        <input type="text" name="address1" id="address1" class="form-control"  placeholder="Enter street address or building name">
+                                                        <p class="text-danger" id="address1Error"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Address line 2<span class="text-danger">*</span></label>
+                                                        <input type="text" name="address2" id="address2" class="form-control"  placeholder="Enter apartment number, suite, or floor">
+                                                        <p class="text-danger" id="address2Error"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Address line 3</label>
+                                                        <input type="text" name="address3" id="address3" class="form-control"  placeholder="Enter further address details or landmarks">
+                                                        <p class="text-danger" id="address3Error"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <button id="addAddressSubmitButton" type="submit" class="btn btn-primary"><i class="fa fa-send-o"></i> Submit</button>
+                                                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
     <script>
+        var user_id = '{{$data->id}}';
         $(document).ready(function(){
-            get_ajax_country('{{@$address->country_id}}','country_id');
-            get_ajax_state('{{@$address->country_id}}','state_id','{{@$address->state_id}}');
-            get_ajax_city('{{@$address->state_id}}','city_id','{{@$address->city_id}}');
+            user_address_data_table_list();
+
+            //get_ajax_country('{{@$address->country_id}}','country_id');
+            //get_ajax_state('{{@$address->country_id}}','state_id','{{@$address->state_id}}');
+            //get_ajax_city('{{@$address->state_id}}','city_id','{{@$address->city_id}}');
 
             get_role_reporting('{{$data->reporting_role_id}}','reporting_role_id');
 

@@ -190,7 +190,7 @@
                                 <hr>
                                 <strong class="text-center1 ml-3">Address Information</strong>
                                 <div class="card-body row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Country<span class="text-danger">*</span></label>
                                             <select class="form-control select2" name="country_id" id="country_id" onchange="return get_ajax_state(this.value,'state_id');">
@@ -198,7 +198,19 @@
                                             </select>
                                             <p class="text-danger" id="countryError"></p>
                                         </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>State<span class="text-danger">*</span></label>
+                                            <select class="form-control select2" name="state_id" id="state_id" onchange="return get_ajax_city(this.value,'city_id');">
+                                                <option value="">Select state</option>
+                                            </select>
+                                            <p class="text-danger" id="stateError"></p>
+                                        </div>
+                                    </div>
 
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>City<span class="text-danger">*</span></label>
                                             <select class="form-control select2" name="city_id" id="city_id">
@@ -207,21 +219,28 @@
                                             <p class="text-danger" id="cityError"></p>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>State<span class="text-danger">*</span></label>
-                                            <select class="form-control select2" name="state_id" id="state_id" onchange="return get_ajax_city(this.value,'city_id');">
-                                                <option value="">Select state</option>
+                                            <label>Address Type<span class="text-danger">*</span></label>
+                                            <select class="form-control" name="address_type" id="address_type">
+                                                <option value="">Select address type</option>
+                                                <option value="permanent_address">Permanent address</option>
+                                                <option value="current_address">Current address</option>
+                                                <option value="office_address">Office address</option>
+                                                <option value="other_address">Other address</option>
                                             </select>
-                                            <p class="text-danger" id="stateError"></p>
+                                            <p class="text-danger" id="address_typeError"></p>
                                         </div>
-                                        
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>ZIP Code / Postal code<span class="text-danger">*</span></label>
-                                            <input type="number" name="zip_code" id="zip_code" class="form-control"  placeholder="Enter zip/postal code">
+                                            <input type="number" name="zip_code" id="zip_code" class="form-control" placeholder="Enter zip/postal code">
                                             <p class="text-danger" id="zip_codeError"></p>
                                         </div>
                                     </div>
+
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Address line 1<span class="text-danger">*</span></label>

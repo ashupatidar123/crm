@@ -226,6 +226,10 @@
             var check = 1;
             $('#cityError').html('City is required');
         }
+        if($('#address_type').val() == ''){
+            var check = 1;
+            $('#address_typeError').html('Address type is required');
+        }
         if($('#zip_code').val() == ''){
             var check = 1;
             $('#zip_codeError').html('ZIP code is required');
@@ -273,7 +277,7 @@
     /* update user */
     $("#userSubmitButton").on("click",function (e) {
         event.preventDefault();
-        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #department_typeError, #department_idError, #department_designation_idError, #phone1Error, #countryError, #stateError, #cityError, #zip_codeError, #address1Error, #address2Error').html('');
+        $('#first_nameError, #last_nameError, #emailError, #date_birthError, #department_typeError, #department_idError, #department_designation_idError, #phone1Error').html('');
         
         var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         var mobilePattern = /^[6789]\d{9}$/;
@@ -321,30 +325,7 @@
             var check = 1;
             $('#department_designation_idError').html('Designation is required');
         }
-        if($('#country_id').val() == ''){
-            var check = 1;
-            $('#countryError').html('Country is required');
-        }
-        if($('#state_id').val() == ''){
-            var check = 1;
-            $('#stateError').html('State is required');
-        }
-        if($('#city_id').val() == ''){
-            var check = 1;
-            $('#cityError').html('City is required');
-        }
-        if($('#zip_code').val() == ''){
-            var check = 1;
-            $('#zip_codeError').html('ZIP code is required');
-        }
-        if($('#address1').val() == ''){
-            var check = 1;
-            $('#address1Error').html('Address line 1 is required');
-        }
-        if($('#address2').val() == ''){
-            var check = 1;
-            $('#address2Error').html('Address line 2 is required');
-        }
+        
         if(check == 1){
             swal_error('Some fields are required');
             return false;
@@ -530,5 +511,155 @@
         dateFormat: 'dd/mm/yy',
         changeMonth: true,
         changeYear: true,
+    });
+
+    /* user address section*/
+    function user_address_data_table_list(){
+        $('#tableList').DataTable().clear().destroy();
+        var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
+        var end_limit = $('#end_limit').val();
+        var end_limit = (end_limit > 0)?end_limit:3;
+        var pageLength = (end_limit > 0)?end_limit:3;
+        //alert(user_id); return false; 
+        $('#tableList').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{url("user/user_address_list")}}',
+                type: 'POST',
+                data:{start_limit,end_limit,user_id},
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
+            },
+            columns: [
+                { data: 'sno' },
+                { data: 'action' },
+                { data: 'country_id' },
+                { data: 'state_id' },
+                { data: 'city_id' },
+                { data: 'address_type' },
+                { data: 'zip_code' },
+                { data: 'address1' },
+                { data: 'address2' },
+                { data: 'address3' },
+                { data: 'created_at', type: 'date' }
+            ],
+            "lengthMenu": [2,3,5,10],
+            "pageLength": pageLength,
+            "responsive": true,
+            "columnDefs": [{"targets": [0,3,6,7],"orderable": false}]
+        });
+    }
+
+    function add_edit_address(p_id='',type=''){
+        $('#addAddressSubmitButton').html('<i class="fa fa-send"></i> Submit');
+        $('#addAddressSubmitButton').attr('disabled',false);
+        if(type == 'add'){
+            $('#state_id').val('').trigger('change');
+            $('#city_id').val('').trigger('change');
+            $('#p_id, #address_type, #zip_code, #address1, #address2, #address3').val('');
+            get_ajax_country('country_id','country_id');    
+            $("#addAddressModal").modal();
+            return false;
+        }
+        $('.addEditLoader_'+p_id).html('<i class="fa fa-spinner fa-spin"></i>');
+        $('.addEditLoader_'+p_id).attr('disabled',true);
+
+        $.ajax({
+            type: "POST",
+            url: "{{ url('user/address_edit') }}",
+            data: {p_id,type},
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            dataType:'JSON',
+            success: function (resp) {
+                if(resp.data != ''){
+                    var rep = resp.data;
+                    $('#p_id').val(rep.id);
+                    $('#address_type').val(rep.address_type).trigger('change');
+                    $('#zip_code').val(rep.zip_code);
+                    $('#address1').val(rep.address1);
+                    $('#address2').val(rep.address2);
+                    $('#address3').val(rep.address3);
+                    $("#addAddressModal").modal();
+                    get_ajax_country(rep.country_id,'country_id');
+                    get_ajax_state(rep.country_id,'state_id',rep.state_id);
+                    get_ajax_city(rep.state_id,'city_id',rep.city_id);
+                }else{
+                    swal_error('Something went wrong');
+                    return false;
+                }
+                $('.addEditLoader_'+p_id).html('<i class="fa fa-edit"></i>');
+                $('.addEditLoader_'+p_id).attr('disabled',false);
+            }
+        });  
+    }
+
+    $("#addAddressSubmitButton").on("click",function (event) {
+        event.preventDefault();
+        $('.remove_error').html('');
+        var check = 0;
+
+        if($('#country_id').val() == ''){
+            var check = 1;
+            $('#countryError').html('Country is required');
+        }
+        if($('#state_id').val() == ''){
+            var check = 1;
+            $('#stateError').html('State is required');
+        }
+        if($('#city_id').val() == ''){
+            var check = 1;
+            $('#cityError').html('City is required');
+        }
+        if($('#address_type').val() == ''){
+            var check = 1;
+            $('#address_typeError').html('Address type is required');
+        }
+        if($('#zip_code').val() == ''){
+            var check = 1;
+            $('#zip_codeError').html('ZIP code is required');
+        }
+        if($('#address1').val() == ''){
+            var check = 1;
+            $('#address1Error').html('Address line 1 is required');
+        }
+        if($('#address2').val() == ''){
+            var check = 1;
+            $('#address2Error').html('Address line 2 is required');
+        }
+        if(check == 1){
+            swal_error('Some fields are required');
+            return false;
+        }
+
+        $('.show_message').html('');
+        $('#addAddressSubmitButton').html('<i class="fa fa-spinner fa-spin"></i> Loading');
+        $('#addAddressSubmitButton').attr('disabled',true);
+        
+        var formData = new FormData($("#addAddressFormId")[0]);
+        $.ajax({
+            type: "POST",
+            url: "{{ url('user/add_edit_address_save') }}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': csrf_token
+            },
+            success: function (resp) {
+                $('#addAddressSubmitButton').html('Submit');
+                $('#addAddressSubmitButton').attr('disabled',false);
+                if(resp.status == 'success'){
+                    $('#addAddressModal').modal('hide');
+                    user_address_data_table_list();
+                    swal_success(resp.message);
+                }else{
+                    swal_error(resp.message);
+                }
+            }
+        });
     });
 </script>

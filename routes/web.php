@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\CompanyController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -48,6 +49,9 @@ Route::prefix('user')->middleware('auth')->group(function () {
 
     Route::get('user', [UserController::class, 'user'])->name('user');
     Route::post('user_list', [UserController::class, 'user_list']);
+    Route::post('user_address_list', [UserController::class, 'user_address_list']);
+    Route::post('address_edit', [UserController::class, 'address_edit']);
+    Route::post('add_edit_address_save', [UserController::class, 'add_edit_address_save']);
 
     Route::get('edit-user/{id}', [UserController::class, 'showEditUser']);
     Route::post('update_user', [UserController::class, 'update_user']);
@@ -70,4 +74,10 @@ Route::prefix('user')->middleware('auth')->group(function () {
     /* user menu permission routes */
     Route::get('menu-user-permission/{id}', [PermissionController::class, 'menu_user_permission'])->name('menu_user_permission');
     Route::post('menu-user-permission-store', [PermissionController::class, 'menu_user_permission_store'])->name('menu_user_permission_store');
+});
+
+
+Route::prefix('company')->middleware('auth')->group(function () {
+    /* document routes */
+    Route::resource('company-profile', CompanyController::class);
 });
