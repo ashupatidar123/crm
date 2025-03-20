@@ -36,7 +36,7 @@ class UserController extends Controller{
     }
 
     public function user(){
-        check_authorize('list','user');
+        check_authorize('list','user','non_ajax');
         $action_permission = check_user_action_permission('user');
         return view('user.user.user_list',compact('action_permission'));
     }
@@ -204,7 +204,7 @@ class UserController extends Controller{
     }
 
     public function showAddUser(){
-        check_authorize('add','user');
+        check_authorize('add','user','non_ajax');
 
         $user = User::where('id',Auth::user()->id)->first();
         $role = Role::select('id','role_name','rank')->where('is_active',1)->get();
@@ -213,7 +213,7 @@ class UserController extends Controller{
     }
 
     public function add_user(Request $request){
-        check_authorize('add','user');
+        check_authorize('add','user','non_ajax');
 
         if(empty($request->first_name) || empty($request->login_id) || empty($request->department_type) || empty($request->department_designation_id) || empty($request->department_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
@@ -293,7 +293,7 @@ class UserController extends Controller{
     }
 
     public function showEditUser(Request $request){
-        check_authorize('edit','user');
+        check_authorize('edit','user','non_ajax');
 
         $data = User::where('id',$request->id)->first();
         if(empty($data)){
@@ -304,7 +304,7 @@ class UserController extends Controller{
     }
 
     public function update_user(Request $request){
-        check_authorize('edit','user');
+        check_authorize('edit','user','non_ajax');
         if(empty($request->first_name) || empty($request->department_type) || empty($request->department_id) || empty($request->department_designation_id) || empty($request->user_id) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }

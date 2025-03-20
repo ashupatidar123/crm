@@ -97,6 +97,7 @@ class RegionController extends Controller{
 
     /* Country section */
     public function country(){
+        check_authorize('list','country','non_ajax');
         return view('master.region.country.index');
     }
 
@@ -137,9 +138,16 @@ class RegionController extends Controller{
         if(!empty($listData)){
             $recordsTotal = Country::count();
             $sno = 1+$start_limit;
+            $edit = $view = $delete = '';
+            $action_permission = check_user_action_permission('country');
+
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return country_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return country_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return country_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return country_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',1,\'country\');" title="Active"><i class="fa fa-check"></i></button>';
@@ -169,7 +177,7 @@ class RegionController extends Controller{
     }
 
     public function country_update(Request $request){
-        
+        check_authorize('edit','country');
         $check = Country::find($request->p_id);
         if($check) {
             $data = [];
@@ -205,6 +213,7 @@ class RegionController extends Controller{
     }
 
     public function country_delete(Request $request){
+        check_authorize('delete','country');
         $record_dlt = Country::find($request->p_id);
         if($record_dlt) {
             $record_dlt->delete();
@@ -216,6 +225,7 @@ class RegionController extends Controller{
 
     /* State section */
     public function state(){
+        check_authorize('list','state','non_ajax');
         return view('master.region.state.index');
     }
 
@@ -257,9 +267,16 @@ class RegionController extends Controller{
         if(!empty($listData)){
             $recordsTotal = State::count();
             $sno = 1+$start_limit;
+            $edit = $view = $delete = '';
+            $action_permission = check_user_action_permission('state');
+
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return state_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return state_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return state_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return state_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',1,\'state\');" title="Active"><i class="fa fa-check"></i></button>';
@@ -288,6 +305,7 @@ class RegionController extends Controller{
     }
 
     public function state_update(Request $request){
+        check_authorize('edit','state');
         $check = State::find($request->p_id);
         
         if($check) {
@@ -312,6 +330,7 @@ class RegionController extends Controller{
     }
 
     public function state_delete(Request $request){
+        check_authorize('delete','state');
         $record_dlt = State::find($request->p_id);
         if($record_dlt) {
             $record_dlt->delete();
@@ -323,6 +342,7 @@ class RegionController extends Controller{
 
     /* State section */
     public function city(){
+        check_authorize('list','city','non_ajax');
         return view('master.region.city.index');
     }
 
@@ -363,9 +383,16 @@ class RegionController extends Controller{
         if(!empty($listData)){
             $recordsTotal = City::count();
             $sno = 1+$start_limit;
+            $edit = $view = $delete = '';
+            $action_permission = check_user_action_permission('city');
+
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return city_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return city_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return city_edit('.$record->id.');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return city_delete('.$record->id.');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return region_active_inactive('.$record->id.',1,\'city\');"title="Active"><i class="fa fa-check"></i></button>';
@@ -394,6 +421,7 @@ class RegionController extends Controller{
     }
 
     public function city_update(Request $request){
+        check_authorize('edit','city');
         $check = City::find($request->p_id);
         
         if($check) {
@@ -407,10 +435,9 @@ class RegionController extends Controller{
             if(!empty($request->state_id)){
                 $data['state_id'] = $request->state_id;
             }
-            if(!empty($request->country_code)){
+            if(!empty($request->state_code)){
                 $data['state_code'] = $request->state_code;
             }
-            
             City::where('id',$request->p_id)->update($data);
             return response()->json(['status' =>'success','message' => 'City updated successfully'],200); 
         }else{
@@ -419,6 +446,7 @@ class RegionController extends Controller{
     }
 
     public function city_delete(Request $request){
+        check_authorize('delete','city');
         $record_dlt = City::find($request->p_id);
         if($record_dlt) {
             $record_dlt->delete();

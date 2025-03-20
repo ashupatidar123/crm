@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <button type="button" class="btn btn-sm btn-default" onclick="return add_edit_company('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="return add_edit_company_branch('','add');"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
                     <button type="button" class="btn btn-sm btn-default" onclick="return referesh_form();"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
                 </div>
                 <div class="col-sm-6">
@@ -40,14 +40,13 @@
                                         <th>Sno</th>
                                         <th class="set_action_width3">Action</th>
                                         <th>Company Name</th>
-                                        <th>Currency</th>
+                                        <th>Branch Code</th>
+                                        <th>Branch Name</th>
+                                        <th>Country</th>
                                         <th>Phone</th>
                                         <th>Email</th>
-                                        <th>Website Url</th>
-                                        <th>GST</th>
                                         <th>Address</th>
                                         <th>ZIP Code</th>
-                                        <th>Company Logo</th>
                                         <th>Created AT</th>
                                     </tr>
                                 </thead>
@@ -72,7 +71,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Add/Edit Company</h4>
+                        <h4 class="modal-title">Add/Edit Company Branch</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -81,7 +80,7 @@
                             @csrf    
                             <div class="card card-primary">
                                 <div class="card-header card_header_color">
-                                    <h3 class="card-title">Company Details</h3>
+                                    <h3 class="card-title">Branch Details</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                         <i class="fas fa-minus"></i>
@@ -90,19 +89,33 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Company Name<span class="text-danger">*</span></label>
-                                                <input type="text" name="company_name" id="company_name" class="form-control" placeholder="Enter company name">
-                                                <p class="text-danger remove_error" id="company_nameError"></p>
+                                                <select name="company_id" id="company_id" class="form-control select2">
+                                                    <option>Select company</option>
+                                                    @if(count($company_data) > 0)
+                                                        @foreach($company_data as $cmy)
+                                                            <option value="{{$cmy->id}}">{{$cmy->company_name}}</option>
+                                                        @endforeach    
+                                                    @endif    
+                                                </select>
+                                                <p class="text-danger remove_error" id="company_idError"></p>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Currency<span class="text-danger">*</span></label>
-                                                <input type="text" name="currency" id="currency" class="form-control" placeholder="Enter currency name">
-                                                <p class="text-danger remove_error" id="currencyError"></p>
+                                                <label>Branch Code<span class="text-danger">*</span></label>
+                                                <input type="text" name="branch_code" id="branch_code" class="form-control" placeholder="Enter branch code">
+                                                <p class="text-danger remove_error" id="branch_codeError"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Branch Name<span class="text-danger">*</span></label>
+                                                <input type="text" name="branch_name" id="branch_name" class="form-control" placeholder="Enter branch name">
+                                                <p class="text-danger remove_error" id="branch_nameError"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -120,15 +133,23 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>Address<span class="text-danger">*</span></label>
+                                                <label>Country<span class="text-danger">*</span></label>
+                                                <input type="text" name="country" id="country" class="form-control" placeholder="Enter country name">
+                                                <p class="text-danger remove_error" id="countryError"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Address</label>
                                                 <input type="text" name="address" id="address" class="form-control" placeholder="Enter full address">
                                                 <p class="text-danger remove_error" id="addressError"></p>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>ZIP Code (Postal Code)<span class="text-danger">*</span></label>
                                                 <input type="text" name="zip_code" id="zip_code" class="form-control" placeholder="Enter postal code">
@@ -150,28 +171,21 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Phone<span class="text-danger">*</span></label>
                                                 <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter phone number">
                                                 <p class="text-danger remove_error" id="phoneError"></p>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Email<span class="text-danger">*</span></label>
                                                 <input type="text" name="email" id="email" class="form-control" placeholder="Enter email">
                                                 <p class="text-danger remove_error" id="emailError"></p>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Fax</label>
-                                                <input type="text" name="fax" id="fax" class="form-control" placeholder="Enter fax">
-                                                <p class="text-danger remove_error" id="faxError"></p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Website Url</label>
                                                 <input type="text" name="website_url" id="website_url" class="form-control" placeholder="Enter website url">
@@ -184,7 +198,7 @@
 
                             <div class="card card-primary">
                                 <div class="card-header card_header_color">
-                                    <h3 class="card-title">TAX Details</h3>
+                                    <h3 class="card-title">Branch Logo</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                         <i class="fas fa-minus"></i>
@@ -195,33 +209,11 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>GST<span class="text-danger">*</span></label>
-                                                <input type="text" name="gst_no" id="gst_no" class="form-control" placeholder="Enter gst number">
-                                                <p class="text-danger remove_error" id="gst_noError"></p>
+                                                <label>Branch Logo</label>
+                                                <input type="file" name="branch_logo" id="branch_logo" class="form-control">
+                                                <p class="text-danger remove_error" id="branch_logoError"></p>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card card-primary">
-                                <div class="card-header card_header_color">
-                                    <h3 class="card-title">Company Logo</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Company Logo<span class="text-danger">*</span></label>
-                                                <input type="file" name="company_logo" id="company_logo" class="form-control">
-                                                <p class="text-danger remove_error" id="company_logoError"></p>
-                                            </div>
-                                            <span id="company_logo_show"></span>
+                                            <span id="branch_logo_show"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -244,10 +236,10 @@
 <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
 <script>
     $(document).ready(function() {
-        company_data_table_list();
+        company_branch_data_table_list();
     });
 </script>
 @include('script.comman_js')
-@include('common.company.company_js')
+@include('common.company_branch.branch_js')
 
 @endsection

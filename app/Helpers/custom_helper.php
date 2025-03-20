@@ -59,6 +59,9 @@ function sidebar_menu_open($menu_url,$menu_slug){
     else if(($menu_url == 'vessel/vessel' || $menu_url == 'vessel/vessel-category' || $menu_url == 'vessel/check-in-out') && ($menu_slug == 'vessel_management')){
         $menu_open = 'menu-is-opening menu-open';
     }
+    else if(($menu_url == 'company/company-profile' || $menu_url == 'company/company-branch') && ($menu_slug == 'company_config')){
+        $menu_open = 'menu-is-opening menu-open';
+    }
     return $menu_open;
 }
 
@@ -71,6 +74,9 @@ function sidebar_menu_active($menu_uri,$menu_slug){
         $menu_active = 'active';
     }
     else if(($menu_uri=='vessel' || $menu_uri=='vessel-category' || $menu_uri=='check-in-out') && ($menu_slug=='vessel_management')){
+        $menu_active = 'active';
+    }
+    else if(($menu_uri=='company-profile' || $menu_uri=='company-branch') && ($menu_slug=='company_config')){
         $menu_active = 'active';
     }
     return $menu_active;
@@ -99,44 +105,73 @@ function check_user_action_permission($menu_slug='',$menu_name=''){
     return $record;
 }
 
-function check_authorize($action='',$menu_slug=''){
+function check_authorize($action='',$menu_slug='',$type='ajax'){
     if(empty($action) || empty($menu_slug)){
         return abort(403, 'Forbidden error');
     }
 
     $action_permission = check_user_action_permission($menu_slug);
-    if(empty($action_permission)){
-        return abort(403, 'Unauthorized action.');
-    }
+    //printr($action_permission,'p');
 
+    if(empty($action_permission)){
+        if($type == 'ajax'){
+            echo 'Opps! Unauthorized action.'; exit;
+        }else{
+            return abort(403,'Unauthorized action.'); 
+        }
+    }
     if($action == 'list'){
         if(@$action_permission->list_access != 'yes'){
-            return abort(403, 'Unauthorized action.');
+            if($type == 'ajax'){
+                echo 'Opps! Unauthorized action.'; exit;
+            }else{
+                return abort(403,'Unauthorized action.'); 
+            }
         }
     }
     else if($action == 'add'){
         if($action_permission->add_access != 'yes'){
-            return abort(403, 'Unauthorized action.');
+            if($type == 'ajax'){
+                echo 'Opps! Unauthorized action.'; exit;
+            }else{
+                return abort(403,'Unauthorized action.'); 
+            }
         }
     }
     else if($action == 'edit'){
         if($action_permission->edit_access != 'yes'){
-            return abort(403, 'Unauthorized action.');
+            if($type == 'ajax'){
+                echo 'Opps! Unauthorized action.'; exit;
+            }else{
+                return abort(403,'Unauthorized action.'); 
+            }
         }
     }
     else if($action == 'delete'){
         if($action_permission->delete_access != 'yes'){
-            return abort(403, 'Unauthorized action.');
+            if($type == 'ajax'){
+                echo 'Opps! Unauthorized action.'; exit;
+            }else{
+                return abort(403,'Unauthorized action.'); 
+            }
         }
     }
     else if($action == 'view'){
         if($action_permission->view_access != 'yes'){
-            return abort(403, 'Unauthorized action.');
+            if($type == 'ajax'){
+                echo 'Opps! Unauthorized action.'; exit;
+            }else{
+                return abort(403, 'Unauthorized action.'); 
+            }
         }
     }
     else if($action == 'tab'){
         if($action_permission->tab_access != 'yes'){
-            return abort(403, 'Unauthorized action.');
+            if($type == 'ajax'){
+                echo 'Opps! Unauthorized action.'; exit;
+            }else{
+                return abort(403, 'Unauthorized action.'); 
+            }
         }
     }
 } 

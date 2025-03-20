@@ -90,7 +90,7 @@ class LoginController extends Controller{
             //return redirect()->back();
         }
 
-        $gCaptch = $this->g_recaptcha_verify($postData['g-recaptcha-response']);
+        $gCaptch = 1;//$this->g_recaptcha_verify($postData['g-recaptcha-response']);
         if($gCaptch == 'failed'){
             //session()->flash('error', 'reCAPTCHA verification failed. Please try again....');
             //return redirect()->back();

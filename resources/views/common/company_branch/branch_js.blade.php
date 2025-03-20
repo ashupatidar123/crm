@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    function company_data_table_list(){
+    function company_branch_data_table_list(){
         $('#tableList').DataTable().clear().destroy();
         var start_limit = ($('#start_limit').val() != '')?$('#start_limit').val():0;
         var end_limit = $('#end_limit').val();
@@ -10,7 +10,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{route("company_list")}}',
+                url: '{{route("company_branch_list")}}',
                 type: 'POST',
                 data:{start_limit,end_limit},
                 headers: {
@@ -21,25 +21,24 @@
                 { data: 'sno' },
                 { data: 'action' },
                 { data: 'company_name' },
-                { data: 'currency' },
+                { data: 'branch_code' },
+                { data: 'branch_name' },
+                { data: 'country' },
                 { data: 'phone' },
                 { data: 'email' },
-                { data: 'website_url' },
-                { data: 'gst_no' },
                 { data: 'address' },
                 { data: 'zip_code' },
-                { data: 'company_logo' },
                 { data: 'created_at', type: 'date' }
             ],
             "order": [[10, 'DESC']],
             "lengthMenu": [10,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
-            "columnDefs": [{"targets": [0,1,6],"orderable": false}]
+            "columnDefs": [{"targets": [0,1,2],"orderable": false}]
         });
     }  
 
-    function add_edit_company(p_id='',type=''){
+    function add_edit_company_branch(p_id='',type=''){
         $('#addSubmitButton').html('<i class="fa fa-send"></i> Submit');
         $('#addSubmitButton').attr('disabled',false);
         if(type == 'add'){
@@ -54,7 +53,7 @@
 
         $.ajax({
             type: "POST",
-            url: "{{ route('company_list_edit') }}",
+            url: "{{ route('company_branch_list_edit') }}",
             data: {p_id,type},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
@@ -65,17 +64,17 @@
                 if(resp.data != ''){
                     var rep = resp.data;
                     $('#p_id').val(rep.id);
-                    $('#company_name').val(rep.company_name);
-                    $('#currency').val(rep.currency);
+                    $('#company_id').val(rep.company_id).trigger('change');
+                    $('#branch_code').val(rep.branch_code);
+                    $('#branch_name').val(rep.branch_name);
+                    $('#country').val(rep.country);
+                    $('#address').val(rep.address);
+                    $('#zip_code').val(rep.zip_code);
                     $('#phone').val(rep.phone);
                     $('#email').val(rep.email);
                     $('#website_url').val(rep.website_url);
-                    $('#fax').val(rep.fax);
-                    $('#gst_no').val(rep.gst_no);
-                    $('#address').val(rep.address);
-                    $('#zip_code').val(rep.zip_code);
                     $('#description').val(rep.description);
-                    $('#company_logo_show').html(rep.company_logo);
+                    $('#branch_logo_show').html(rep.branch_logo);
                     $("#addModal").modal();
                     
                 }else{
@@ -93,17 +92,17 @@
         $('.remove_error').html('');
         var check = 0;
 
-        if($('#company_name').val() == ''){
+        if($('#company_id').val() == ''){
             var check = 1;
-            $('#company_nameError').html('This field is required');
+            $('#company_idError').html('This field is required');
         }
-        if($('#currency').val() == ''){
+        if($('#branch_code').val() == ''){
             var check = 1;
-            $('#currencyError').html('This field is required');
+            $('#branch_codeError').html('This field is required');
         }
-        if($('#address').val() == ''){
+        if($('#branch_name').val() == ''){
             var check = 1;
-            $('#addressError').html('This field is required');
+            $('#branch_nameError').html('This field is required');
         }
         if($('#zip_code').val() == ''){
             var check = 1;
@@ -117,10 +116,6 @@
             var check = 1;
             $('#emailError').html('This field is required');
         }
-        if($('#gst_no').val() == ''){
-            var check = 1;
-            $('#gst_noError').html('This field is required');
-        }
         if(check == 1){
             swal_error('Some fields are required');
             return false;
@@ -133,7 +128,7 @@
         var formData = new FormData($("#addFormId")[0]);
         $.ajax({
             type: "POST",
-            url: "{{ route('company-profile.store') }}",
+            url: "{{ route('company-branch.store') }}",
             data: formData,
             processData: false,
             contentType: false,
@@ -144,7 +139,7 @@
                 $('#addSubmitButton').html('Submit');
                 $('#addSubmitButton').attr('disabled',false);
                 if(resp.status == 'success'){
-                    company_data_table_list();
+                    company_branch_data_table_list();
                     $('#addModal').modal('hide');
                     swal_success(resp.message);
                 }else{

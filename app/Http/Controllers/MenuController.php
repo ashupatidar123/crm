@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 class MenuController extends Controller{
 
     public function index(){
+        check_authorize('list','menu','non_ajax');
         return view('master.menu.index');
     }
 
@@ -49,9 +50,17 @@ class MenuController extends Controller{
         if(!empty($all_records)){
             $recordsTotal = Menu::count();
             $sno = 1+$start_limit;
+            
+            $edit = $view = $delete = '';
+            $action_permission = check_user_action_permission('menu');
+
             foreach($all_records as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_menu('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'menu\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_menu('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'menu\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'menu\');" title="Active"><i class="fa fa-check"></i></button>';
@@ -85,7 +94,13 @@ class MenuController extends Controller{
     }
 
     public function store(Request $request){
+        
         $p_id = ($request->p_id > 0)?$request->p_id:'';
+        if($p_id > 0){
+            check_authorize('edit','menu');
+        }else{
+            check_authorize('add','menu');
+        }
         
         $check = Menu::where('menu_name',$request->menu_name)->where('id','!=',$p_id)->count();
         if($check > 0){
@@ -125,6 +140,7 @@ class MenuController extends Controller{
     }
 
     public function menu_list_edit(Request $request){
+        check_authorize('edit','menu');
         $data = Menu::where('id',$request->p_id)->first();
         echo json_encode(['data'=>$data]);
     }

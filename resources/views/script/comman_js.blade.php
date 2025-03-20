@@ -103,6 +103,15 @@
                             else if(tbl == 'apprisal'){
                                 vessel_apprisal_data_table_list_tab();
                             }
+                            else if(tbl == 'menu_permission_department'){
+                                menu_department_permissiondata_table_list();
+                            }
+                            else if(tbl == 'company'){
+                                company_data_table_list();
+                            }
+                            else if(tbl == 'company_branch'){
+                                company_branch_data_table_list();
+                            }
                             else{
                                 swal_error(resp.message,1800);
                                 location.reload();
@@ -186,6 +195,12 @@
                             }
                             else if(tbl == 'menu_permission_department'){
                                 menu_department_permissiondata_table_list();
+                            }
+                            else if(tbl == 'company'){
+                                company_data_table_list();
+                            }
+                            else if(tbl == 'company_branch'){
+                                company_branch_data_table_list();
                             }
                             else{
                                 location.reload();

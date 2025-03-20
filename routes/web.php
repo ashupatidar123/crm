@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyBranchController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -78,6 +79,13 @@ Route::prefix('user')->middleware('auth')->group(function () {
 
 
 Route::prefix('company')->middleware('auth')->group(function () {
-    /* document routes */
+    /* company profile routes */
     Route::resource('company-profile', CompanyController::class);
+    Route::post('company_list', [CompanyController::class, 'company_list'])->name('company_list');
+    Route::post('company_list_edit', [CompanyController::class, 'company_list_edit'])->name('company_list_edit');
+
+    /* company branch routes */
+    Route::resource('company-branch', CompanyBranchController::class);
+    Route::post('company_branch_list', [CompanyBranchController::class, 'company_branch_list'])->name('company_branch_list');
+    Route::post('company_branch_list_edit', [CompanyBranchController::class, 'company_branch_list_edit'])->name('company_branch_list_edit');
 });

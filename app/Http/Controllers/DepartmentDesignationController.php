@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Session;
 
 class DepartmentDesignationController extends Controller{
     public function index(){
+        check_authorize('list','designation','non_ajax');
+
         $departmentData = Department::select('id','department_name','department_type')->where('is_active',1)->orderBy('department_name','ASC')->limit(100)->get();
         //printr($data);
         return view('master.designation.index',compact('departmentData'));
@@ -53,9 +55,17 @@ class DepartmentDesignationController extends Controller{
         if(!empty($listData)){
             $recordsTotal = DepartmentDesignation::count();
             $sno = 1+$start_limit;
+            
+            $edit = $view = $delete = '';
+            $action_permission = check_user_action_permission('designation');
+
             foreach($listData as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_designation('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'designation\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_designation('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'designation\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'designation\');" title="Active"><i class="fa fa-check"></i></button>';
@@ -85,6 +95,11 @@ class DepartmentDesignationController extends Controller{
 
     public function store(Request $request){
         $p_id = ($request->p_id > 0)?$request->p_id:'';
+        if($p_id > 0){
+            check_authorize('edit','designation');
+        }else{
+            check_authorize('add','designation');
+        }
         
         $check = DepartmentDesignation::where('designation_name',$request->designation_name)->where('id','!=',$p_id)->count();
         if($check > 0){
@@ -116,6 +131,7 @@ class DepartmentDesignationController extends Controller{
     }
 
     public function designation_edit(Request $request){
+        check_authorize('edit','designation');
         $data = DepartmentDesignation::with('single_department')->where('id',$request->p_id)->first();
         $data['department_type'] = @$data->single_department->department_type;
         echo json_encode(['data'=>$data]);

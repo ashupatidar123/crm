@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 class DocumentController extends Controller{
 
     public function index(){
+        check_authorize('list','document','non_ajax');
         return view('master.document.index');
     }
 
@@ -50,9 +51,16 @@ class DocumentController extends Controller{
         if(!empty($users)){
             $recordsTotal = Document::count();
             $sno = 1+$start_limit;
+            $edit = $view = $delete = '';
+            $action_permission = check_user_action_permission('document');
+
             foreach($users as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'document\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_document('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'document\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'document\');" title="Active"><i class="fa fa-check"></i></button>';
@@ -84,6 +92,11 @@ class DocumentController extends Controller{
 
     public function store(Request $request){
         $p_id = ($request->p_id > 0)?$request->p_id:'';
+        if($p_id > 0){
+            check_authorize('edit','document');
+        }else{
+            check_authorize('add','document');
+        }
         
         $check = Document::where('category_name',$request->category_name)->where('id','!=',$p_id)->count();
         if($check > 0){
@@ -115,11 +128,13 @@ class DocumentController extends Controller{
     }
 
     public function document_edit(Request $request){
+        check_authorize('edit','document');
         $data = Document::where('id',$request->p_id)->first();
         echo json_encode(['data'=>$data]);
     }
 
     public function update(Request $request, string $id){
+        check_authorize('edit','document');
         $update_data = [
             'category_name' => $request->category_name,
             'document_type' => $request->document_type,

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 class DepartmentController extends Controller{
     
     public function index(){
+        check_authorize('list','department','non_ajax');
         return view('master.department.index');
     }
 
@@ -50,16 +51,27 @@ class DepartmentController extends Controller{
         if(!empty($users)){
             $recordsTotal = Department::count();
             $sno = 1+$start_limit;
+            
+            $edit = $view = $delete = $permission = '';
+            $action_permission = check_user_action_permission('department');
+
             foreach($users as $record){
-                $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_department('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
-                $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'department\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                if(@$action_permission->edit_access == 'yes'){
+                    $edit = '<button class="btn btn-default btn-sm addEditLoader_'.$record->id.'" onclick="return add_edit_department('.$record->id.',\'edit\');" title="Edit"><i class="fa fa-edit"></i></button>';
+                }
+                if(@$action_permission->delete_access == 'yes'){
+                    $delete = '<button class="btn btn-default btn-sm deleteLoader_'.$record->id.'" onclick="return ajax_delete('.$record->id.',\'department\');" title="Delete"><i class="fa fa-trash"></i></button>';
+                }
 
                 if($record->is_active == 1){
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',1,\'department\');" title="Active"><i class="fa fa-check"></i></button>';
                 }else{
                     $status = '<button class="btn btn-default btn-sm activeInactiveLoader_'.$record->id.'" onclick="return ajax_active_inactive('.$record->id.',2,\'department\');" title="In-Active"><i class="fa fa-close"></i></button>';
                 }
-                $permission = '<a href="'.route('menu_department_permission', ['id'=>$record->id]).'" class="btn btn-default btn-sm" title="Menu permission"><i class="fa fa-key"></i></a>';
+                
+                if(@$action_permission->add_access == 'yes' && @$action_permission->edit_access == 'yes'){
+                    $permission = '<a target="_blank" href="'.route('menu_department_permission', ['id'=>$record->id]).'" class="btn btn-default btn-sm" title="Menu permission"><i class="fa fa-key"></i></a>';
+                }
 
                 $all_data[] = [
                     'sno'=> $sno++,
@@ -83,6 +95,11 @@ class DepartmentController extends Controller{
 
     public function store(Request $request){
         $p_id = ($request->p_id > 0)?$request->p_id:'';
+        if($p_id > 0){
+            check_authorize('edit','department');
+        }else{
+            check_authorize('add','department');
+        }
         
         $check = Department::where('department_name',$request->department_name)->where('id','!=',$p_id)->count();
         if($check > 0){
@@ -113,11 +130,14 @@ class DepartmentController extends Controller{
     }
 
     public function department_edit(Request $request){
+        check_authorize('edit','department');
         $data = Department::where('id',$request->p_id)->first();
         echo json_encode(['data'=>$data]);
     }
 
     public function update(Request $request, string $id){
+        check_authorize('edit','department');
+
         $update_data = [
             'department_name' => $request->department_name,
             'department_type' => $request->department_type,

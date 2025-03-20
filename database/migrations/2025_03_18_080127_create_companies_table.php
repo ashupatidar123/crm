@@ -11,16 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_menu_id');
-            $table->string('menu_name',150)->nullable();
-            $table->string('menu_code',150)->nullable();
-            $table->integer('menu_sequence')->default(0);
-            $table->string('menu_link',150)->nullable();
-            $table->string('menu_icon',150)->nullable();
-            $table->string('description',250)->nullable();
+            $table->string('company_name',150);
+            $table->string('currency',150);
+            $table->string('address',150);
+            $table->integer('zip_code');
+            $table->string('phone',20);
+            $table->string('fax',120);
+            $table->string('email',120);
+            $table->string('website_url',120);
+            $table->string('gst_no',120);
+            $table->string('company_logo',250);
             $table->tinyInteger('is_active')->default(1);
+            $table->string('description',250)->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->nullable();
@@ -33,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('companies');
     }
 };

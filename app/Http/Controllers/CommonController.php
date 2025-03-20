@@ -19,6 +19,8 @@ use App\Models\VesselCheckInOut;
 use App\Models\Menu;
 use App\Models\Apprisal;
 use App\Models\Permission;
+use App\Models\Company;
+use App\Models\CompanyBranch;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -74,6 +76,15 @@ class CommonController extends Controller{
         }
         else if($tbl == 'apprisal'){
             Apprisal::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'menu_permission_department'){
+            Permission::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'company'){
+            Company::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'company_branch'){
+            CompanyBranch::where('id',$request->p_id)->update(['is_active'=>$type]);
         }
         else{
            return response()->json(['status' =>'error','message' => 'Something went wrong'],200); 
@@ -138,6 +149,12 @@ class CommonController extends Controller{
         }
         else if($tbl == 'menu_permission_department'){
             $record_dlt = Permission::find($request->p_id);
+        }
+        else if($tbl == 'company'){
+            $record_dlt = Company::find($request->p_id);
+        }
+        else if($tbl == 'company_branch'){
+            $record_dlt = CompanyBranch::find($request->p_id);
         }
         else{
             return response()->json(['status' =>'error','message' => 'Deletion failed'],201);

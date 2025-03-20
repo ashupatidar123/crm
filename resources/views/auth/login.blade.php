@@ -69,10 +69,10 @@
                             </div>
                         </div>
                         <p id="passwordError" class="text-danger"></p>
-                        <div class="input-group mb-3">
+                        <!-- <div class="input-group mb-3">
                             <div class="g-recaptcha" data-sitekey="6LeTj4sqAAAAAI8296xKQZveu3-qttAbuUv3DVjc"></div>
                             <p id="googleError" class="text-danger"></p> 
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="col-8">
                                 <div class="icheck-primary">
