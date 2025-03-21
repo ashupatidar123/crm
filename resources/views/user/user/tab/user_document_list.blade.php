@@ -106,6 +106,7 @@
                                     <th class="set_action_width4">Action</th>
                                     <th>User Name</th>
                                     <th>Document Name</th>
+                                    <th>Issuing Authority</th>
                                     <th>Category Name</th>
                                     <th>Document Type</th>
                                     <th>Issue Date</th>
@@ -151,7 +152,7 @@
                                     </div>
                                     <div class="show_message"></div>
                                     <div class="card-body row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Document Category<span class="text-danger">*</span></label>
                                                 <select class="form-control select2" name="document_id" id="document_id">
@@ -162,17 +163,26 @@
                                                         @endforeach    
                                                     @endif        
                                                 </select>
-                                                <p class="text-danger" id="document_idError"></p>
+                                                <p class="remove_text text-danger" id="document_idError"></p>
                                             </div>
                                         </div>
                                         
-                                        <div class="col-md-6">    
+                                        <div class="col-md-4">    
                                             <div class="form-group">
                                                 <label>Document Name<span class="text-danger">*</span></label>
                                                 <input type="text" name="document_name" id="document_name" class="form-control" placeholder="Enter document name" required>
-                                                <p class="text-danger" id="document_nameError"></p>
+                                                <p class="remove_text text-danger" id="document_nameError"></p>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-4">    
+                                            <div class="form-group">
+                                                <label>Issuing Authority<span class="text-danger">*</span></label>
+                                                <input type="text" name="issuing_authority" id="issuing_authority" class="form-control" placeholder="Enter issuing authority" required>
+                                                <p class="remove_text text-danger" id="issuing_authorityError"></p>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Issue Date (Optional)</label>
@@ -347,6 +357,10 @@
             if($('#document_id').val() == ''){
                 var check = 1;
                 $('#document_idError').html('This field is required');
+            }
+            if($('#issuing_authority').val() == ''){
+                var check = 1;
+                $('#issuing_authorityError').html('This field is required');
             }
             
             if(check == 1){

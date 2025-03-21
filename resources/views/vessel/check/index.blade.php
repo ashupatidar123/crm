@@ -46,7 +46,7 @@
                                                             <option value="" hidden="">Select vessel</option>
                                                             @if(!empty($vessel))
                                                                 @foreach($vessel as $vsl)
-                                                                    <option  value="{{$vsl->id}}">{{$vsl->vessel_name}} ({{$vsl->vessel_email}})</option>
+                                                                    <option  value="{{$vsl->id}}">{{$vsl->vessel_name}}</option>
                                                                 @endforeach    
                                                             @endif
                                                         </select>
@@ -172,7 +172,7 @@
                                                         <option value="">Select vessel</option>
                                                         @if(!empty($vessel))
                                                             @foreach($vessel as $vsl)
-                                                                <option  value="{{$vsl->id}}">{{$vsl->vessel_name}} ({{$vsl->vessel_email}})</option>
+                                                                <option  value="{{$vsl->id}}">{{$vsl->vessel_name}}</option>
                                                             @endforeach    
                                                         @endif
                                                     </select>

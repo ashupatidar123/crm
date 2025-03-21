@@ -28,7 +28,7 @@ class CompanyBranchController extends Controller{
 
     public function company_branch_list_filter_count($search){
         if(!empty($search)) {
-            $filter_count = CompanyBranch::where('company_name', 'LIKE', '%'.$search.'%')->orWhere('currency', 'LIKE', '%'.$search.'%')->orWhere('zip_code', 'LIKE', '%'.$search.'%')->orWhere('phone', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('website_url', 'LIKE', '%'.$search.'%')->count();
+            $filter_count = CompanyBranch::where('branch_code', 'LIKE', '%'.$search.'%')->orWhere('branch_name', 'LIKE', '%'.$search.'%')->orWhere('country', 'LIKE', '%'.$search.'%')->orWhere('phone', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('website_url', 'LIKE', '%'.$search.'%')->count();
         }else{
             $filter_count = CompanyBranch::count();
         }

@@ -33,6 +33,7 @@
                 { data: 'action' },
                 { data: 'document_user_name' },
                 { data: 'document_name' },
+                { data: 'issuing_authority' },
                 { data: 'category_name' },
                 { data: 'document_type' },
                 { data: 'issue_date' },
@@ -41,7 +42,7 @@
                 { data: 'created_at', type: 'date' }
                 
             ],
-            "order": [[9, 'DESC']],
+            "order": [[10, 'DESC']],
             "lengthMenu": [5,25,75,50,100,500,550,1000],
             "pageLength": pageLength,
             "responsive": true,
@@ -79,6 +80,7 @@
                     $('#p_id').val(rep.id);
                     $("#addEditUserDocumentModal").modal();
                     $('#document_name').val(rep.document_name);
+                    $('#issuing_authority').val(rep.issuing_authority);
                     $('#document_id').val(rep.document_id).trigger('change');
                     $('#issue_date').val(rep.issue_date);
                     $('#expiry_date').val(rep.expiry_date);
@@ -265,6 +267,7 @@
                 { data: 'sno' },
                 { data: 'document_user_name' },
                 { data: 'document_name' },
+                { data: 'issuing_authority' },
                 { data: 'category_name' },
                 { data: 'document_type' },
                 { data: 'issue_date' },

@@ -715,11 +715,11 @@ class UserController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','is_active','','document_name','','document_type','issue_date','expiry_date','user_document','created_at'];
+        $columns = ['','is_active','','document_name','issuing_authority','','document_type','issue_date','expiry_date','user_document','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = UserDocument::with('single_document','single_user')->select('id','document_id','document_name','document_type','issue_date','expiry_date','user_document','created_at','is_active','user_id');
+        $query = UserDocument::with('single_document','single_user')->select('id','document_id','document_name','document_type','issue_date','expiry_date','user_document','created_at','is_active','user_id','issuing_authority');
         
         if(!empty($postData['search_user_name']) && $postData['search_user_name'] == 'all'){
             $query->where('user_id','>',0);
@@ -815,6 +815,7 @@ class UserController extends Controller{
                     'sno'=> $sno++,
                     'action'=>$edit.' '.$status.' '.$access.' '.$delete,
                     'document_name'=> @$record->document_name,
+                    'issuing_authority' => @$record->issuing_authority,
                     'document_user_name'=> @$document_user_name,
                     'category_name'=> @$category_name,
                     'document_type'=> @$record->document_type,
@@ -836,7 +837,7 @@ class UserController extends Controller{
 
     public function add_user_document(Request $request){
         //printr($request->file('user_document'),'pp');
-        if(empty($request->document_name) || empty($request->document_id) || empty($request->user_id)){
+        if(empty($request->document_name) || empty($request->document_id) || empty($request->user_id) || empty($request->issuing_authority)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
         $p_id = !empty(@$request->p_id)?@$request->p_id:'';
@@ -849,6 +850,7 @@ class UserController extends Controller{
             'document_id' => $request->document_id,
             'document_type' => $request->document_type,
             'document_name' => $request->document_name,
+            'issuing_authority' => @$request->issuing_authority,
             'issue_date' => !empty($request->issue_date)?date('Y-m-d',strtotime(str_replace('/','-',$request->issue_date))):null,
             'expiry_date' => !empty($request->expiry_date)?date('Y-m-d',strtotime(str_replace('/','-',$request->expiry_date))):null,
             'is_active' => ($request->is_active==1)?1:2,
@@ -1064,11 +1066,11 @@ class UserController extends Controller{
         $draw  = $request->input('draw');
         $search = !empty($request->input('search.value'))?$request->input('search.value'):'';
 
-        $columns = ['','','document_name','','document_type','issue_date','expiry_date','user_document','created_at'];
+        $columns = ['','','document_name','','','document_type','issue_date','expiry_date','user_document','created_at'];
         $orderColumnIndex = !empty($request->input('order.0.column'))?$columns[$request->input('order.0.column')]:'id';
         $orderDirection   = !empty($request->input('order.0.dir'))?$request->input('order.0.dir'):'DESC';
         
-        $query = UserDocument::with('single_document','single_user')->select('id','document_id','document_name','document_type','issue_date','expiry_date','user_document','created_at','is_active','user_id')->whereIn('id',$all_dc_id);
+        $query = UserDocument::with('single_document','single_user')->select('id','document_id','document_name','issuing_authority','document_type','issue_date','expiry_date','user_document','created_at','is_active','user_id')->whereIn('id',$all_dc_id);
 
         if(!empty($search)) {
             $query->where('document_name', 'LIKE', '%'.$search.'%');
@@ -1153,6 +1155,7 @@ class UserController extends Controller{
                     'sno'=> $sno++,
                     'action'=>$edit.' '.$status.' '.$access.' '.$delete,
                     'document_name'=> @$record->document_name,
+                    'issuing_authority'=> @$record->issuing_authority,
                     'document_user_name'=> @$document_user_name,
                     'category_name'=> @$category_name,
                     'document_type'=> @$record->document_type,
