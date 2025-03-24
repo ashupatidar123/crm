@@ -117,14 +117,14 @@
                                                     <div class="form-group"><input type="text" name="search_m_user" id="search_m_user" class="form-control" placeholder="Search maintion user">
                                                     </div>
                                                 </div> -->
-
+                                                @if(1==11)
                                                 <div class="col-md-12">
                                                     <div class="mention-container">
                                                         <input type="text" id="mentionInput" class="mention-input form-control" placeholder="Type '@' to mention a user..." oninput="showMentionDropdown()">
                                                         <div id="mentionDropdown" class="mention-dropdown form-control"></div>
                                                     </div>
                                                 </div>    
-
+                                                @endif
                                                     
                                                 <div class="col-md-4">
                                                     <div class="form-group">
