@@ -125,22 +125,26 @@
                         $('#setProfileDiv').html(response);
                     }
                     else if(page_type == 'document'){
+                        $('#setProfileDiv').html('');
                         $('#setOtherDocumentDiv').html('');
                         $('#setvesselApprisalDiv').html('');
                         $('#setDocumentDiv').html(response);
                     }
                     else if(page_type == 'other_document'){
+                        $('#setProfileDiv').html('');
                         $('#setDocumentDiv').html('');
                         $('#setvesselApprisalDiv').html('');
                         $('#setOtherDocumentDiv').html(response);
                     }
                     else if(page_type == 'vessel_check_in_out'){
+                        $('#setProfileDiv').html('');
                         $('#setDocumentDiv').html('');
                         $('#setvesselApprisalDiv').html('');
                         $('#setOtherDocumentDiv').html('');
                         $('#setvesselCheckInOutDiv').html(response);
                     }
                     else if(page_type == 'vessel_apprisal'){
+                        $('#setProfileDiv').html('');
                         $('#setDocumentDiv').html('');
                         $('#setOtherDocumentDiv').html('');
                         $('#setvesselCheckInOutDiv').html('');

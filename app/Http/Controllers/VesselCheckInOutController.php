@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Vessel;
+use App\Models\Port;
 use App\Models\VesselCheckInOut;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -11,8 +12,9 @@ class VesselCheckInOutController extends Controller{
 
     public function index(){
         $vessel = Vessel::select('id','vessel_name','vessel_email')->where('is_active',1)->orderBy('vessel_name','ASC')->limit(50)->get();
+        $port = Port::select('id','port_name')->where('is_active',1)->orderBy('port_name','ASC')->limit(50)->get();
         $vessel_user = User::select('id','name_title','first_name','middle_name','last_name','email')->where('department_type','vessel')->where('is_active',1)->orderBy('first_name','ASC')->limit(150)->get();
-        return view('vessel.check.index',compact('vessel','vessel_user'));
+        return view('vessel.check.index',compact('vessel','vessel_user','port'));
     }
 
     public function check_in_out_list_filter_count($search,$postData){
@@ -166,6 +168,7 @@ class VesselCheckInOutController extends Controller{
         }
         
         $data = [
+            'port_id' => $request->port_id,
             'vessel_id' => $request->vessel_id,
             'user_id' => $request->user_id,
             'check_in_date' => !empty($request->check_in_date)?date('Y-m-d',strtotime(str_replace('/','-',$request->check_in_date))):null,
@@ -199,6 +202,7 @@ class VesselCheckInOutController extends Controller{
         $p_id = ($request->check_out_p_id > 0)?$request->check_out_p_id:'';
         
         $data = [
+            'port_id' => $request->check_out_port_id,
             'check_out_date' => !empty($request->check_out_date)?date('Y-m-d',strtotime(str_replace('/','-',$request->check_out_date))):null,
             'check_out_description' => $request->check_out_description,
             'check_status' => 2,

@@ -196,14 +196,14 @@
                                         <tr>
                                             <th>Sno</th>
                                             <th class="set_action_width4">Action</th>
-                                            <th>Country</th>
-                                            <th>State</th>
-                                            <th>City</th>
                                             <th>Address type</th>
-                                            <th>ZIP code</th>
                                             <th>Address 1</th>
                                             <th>Address 2</th>
                                             <th>Address 3</th>
+                                            <th>ZIP code</th>
+                                            <th>Country</th>
+                                            <th>State</th>
+                                            <th>City</th>
                                             <th>Created AT</th>
                                          </tr>
                                     </thead>
@@ -244,6 +244,20 @@
                                             <div class="card-body row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
+                                                        <label>Address Type<span class="text-danger">*</span></label>
+                                                        <select class="form-control select2" name="address_type" id="address_type">
+                                                            <option value="">Select address type</option>
+                                                            <option value="permanent_address">Permanent address</option>
+                                                            <option value="current_address">Current address</option>
+                                                            <option value="office_address">Office address</option>
+                                                            <option value="other_address">Other address</option>
+                                                        </select>
+                                                        <p class="text-danger" id="address_typeError"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
                                                         <label>Country<span class="text-danger">*</span></label>
                                                         <select class="form-control select2" name="country_id" id="country_id" onchange="return get_ajax_state(this.value,'state_id');">
                                                             <option value="">Select country</option>
@@ -268,20 +282,6 @@
                                                             <option value="">Select city</option>
                                                         </select>
                                                         <p class="text-danger" id="cityError"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>Address Type<span class="text-danger">*</span></label>
-                                                        <select class="form-control" name="address_type" id="address_type">
-                                                            <option value="">Select address type</option>
-                                                            <option value="permanent_address">Permanent address</option>
-                                                            <option value="current_address">Current address</option>
-                                                            <option value="office_address">Office address</option>
-                                                            <option value="other_address">Other address</option>
-                                                        </select>
-                                                        <p class="text-danger" id="address_typeError"></p>
                                                     </div>
                                                 </div>
 

@@ -91,6 +91,10 @@
         $('.remove_error').html('');
         var check = 0;
 
+        if($('#port_id').val() == ''){
+            var check = 1;
+            $('#port_idError').html('This field is required');
+        }
         if($('#user_id').val() == ''){
             var check = 1;
             $('#user_idError').html('This field is required');
@@ -154,6 +158,10 @@
         $('.remove_error').html('');
         var check = 0;
 
+        if($('#check_out_port_id').val() == ''){
+            var check = 1;
+            $('#check_out_port_idError').html('This field is required');
+        }
         if($('#check_out_date').val() == ''){
             var check = 1;
             $('#check_out_dateError').html('This field is required');

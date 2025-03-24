@@ -535,14 +535,14 @@
             columns: [
                 { data: 'sno' },
                 { data: 'action' },
-                { data: 'country_id' },
-                { data: 'state_id' },
-                { data: 'city_id' },
                 { data: 'address_type' },
-                { data: 'zip_code' },
                 { data: 'address1' },
                 { data: 'address2' },
                 { data: 'address3' },
+                { data: 'zip_code' },
+                { data: 'country_id' },
+                { data: 'state_id' },
+                { data: 'city_id' },
                 { data: 'created_at', type: 'date' }
             ],
             "lengthMenu": [2,3,5,10],

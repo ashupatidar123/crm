@@ -112,6 +112,9 @@
                             else if(tbl == 'company_branch'){
                                 company_branch_data_table_list();
                             }
+                            else if(tbl == 'port'){
+                                port_data_table_list();
+                            }
                             else{
                                 swal_error(resp.message,1800);
                                 location.reload();
@@ -201,6 +204,9 @@
                             }
                             else if(tbl == 'company_branch'){
                                 company_branch_data_table_list();
+                            }
+                            else if(tbl == 'port'){
+                                port_data_table_list();
                             }
                             else{
                                 location.reload();

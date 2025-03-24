@@ -165,7 +165,22 @@
                                         </div>
                                         <div class="show_message"></div>
                                         <div class="card-body row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Port<span class="text-danger">*</span></label>
+                                                    <select class="form-control select2" name="port_id" id="port_id">  
+                                                        <option value="">Select port</option>
+                                                        @if(!empty($port))
+                                                            @foreach($port as $prt)
+                                                                <option  value="{{$prt->id}}">{{$prt->port_name}}</option>
+                                                            @endforeach    
+                                                        @endif
+                                                    </select>
+                                                    <p class="text-danger remove_error" id="port_idError"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Vessel<span class="text-danger">*</span></label>
                                                     <select class="form-control select2" name="vessel_id" id="vessel_id">  
@@ -180,7 +195,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Vessel user<span class="text-danger">*</span></label>
                                                     <select class="form-control select2" name="user_id" id="user_id">  
@@ -259,14 +274,29 @@
                                         </div>
                                         <div class="show_message"></div>
                                         <div class="card-body row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Port<span class="text-danger">*</span></label>
+                                                    <select class="form-control select2" name="check_out_port_id" id="check_out_port_id">  
+                                                        <option value="">Select port</option>
+                                                        @if(!empty($port))
+                                                            @foreach($port as $prt)
+                                                                <option  value="{{$prt->id}}">{{$prt->port_name}}</option>
+                                                            @endforeach    
+                                                        @endif
+                                                    </select>
+                                                    <p class="text-danger remove_error" id="check_out_port_idError"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Signing Date</label>
                                                     <input type="text" id="db_check_in_date" class="form-control" readonly>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>SignOut Date<span class="text-danger">*</span></label>
                                                     <input type="text" name="check_out_date" id="check_out_date" class="form-control" placeholder="dd/mm/yyyy" readonly>
