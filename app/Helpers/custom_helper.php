@@ -56,7 +56,7 @@ function sidebar_menu_open($menu_url,$menu_slug){
     else if(($menu_url == 'master/menu' || $menu_url == 'master/department' || $menu_url == 'master/designation' || $menu_url == 'master/document' || $menu_url == 'master/region' ||$menu_url == 'master/region/country' || $menu_url == 'master/region/state' || $menu_url == 'master/region/city' || $menu_url=='master/menu-department-permission') && ($menu_slug == 'master_management')){
         $menu_open = 'menu-is-opening menu-open';
     }
-    else if(($menu_url == 'vessel/vessel' || $menu_url == 'vessel/vessel-category' || $menu_url == 'vessel/check-in-out') && ($menu_slug == 'vessel_management')){
+    else if(($menu_url == 'vessel/vessel' || $menu_url == 'vessel/vessel-category' || $menu_url == 'vessel/check-in-out' || $menu_url == 'vessel/port-management') && ($menu_slug == 'vessel_management')){
         $menu_open = 'menu-is-opening menu-open';
     }
     else if(($menu_url == 'company/company-profile' || $menu_url == 'company/company-branch') && ($menu_slug == 'company_config')){
@@ -73,7 +73,7 @@ function sidebar_menu_active($menu_uri,$menu_slug){
     else if(($menu_uri=='menu' || $menu_uri=='department' || $menu_uri=='designation' || $menu_uri=='document' || $menu_uri=='region' || $menu_uri=='menu-department-permission') && ($menu_slug=='master_management')){
         $menu_active = 'active';
     }
-    else if(($menu_uri=='vessel' || $menu_uri=='vessel-category' || $menu_uri=='check-in-out') && ($menu_slug=='vessel_management')){
+    else if(($menu_uri=='vessel' || $menu_uri=='vessel-category' || $menu_uri=='check-in-out' || $menu_uri == 'port-management') && ($menu_slug=='vessel_management')){
         $menu_active = 'active';
     }
     else if(($menu_uri=='company-profile' || $menu_uri=='company-branch') && ($menu_slug=='company_config')){
