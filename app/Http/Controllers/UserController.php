@@ -35,10 +35,16 @@ class UserController extends Controller{
         return view('dashboard');
     }
 
-    public function user(){
-        check_authorize('list','user','non_ajax');
-        $action_permission = check_user_action_permission('user');
-        return view('user.user.user_list',compact('action_permission'));
+    public function user($user_department_type='office'){
+        if($user_department_type == 'office'){
+            $p_type = 'office_members';
+        }
+        else if($user_department_type == 'vessel'){
+            $p_type = 'crew_members';
+        }
+        check_authorize('list',$p_type,'non_ajax');
+        $action_permission = check_user_action_permission($p_type);
+        return view('user.user.user_list',compact('action_permission','user_department_type'));
     }
 
     public function user_list_filter_count($search,$postData){
@@ -49,7 +55,7 @@ class UserController extends Controller{
 
         $filter_count = User::with('single_department','single_designation')->where('id','>',0);
         if(!empty($search)) {
-            $filter_count = User::with('single_department','single_designation')->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('login_id', 'LIKE', '%'.$search.'%');
+            $filter_count = User::with('single_department','single_designation')->where('first_name', 'LIKE', '%'.$search.'%');
         }
         if(!empty($postData['search_name'])) {
             $filter_count->where('first_name', 'LIKE', '%'.$postData['search_name'].'%');
@@ -73,12 +79,15 @@ class UserController extends Controller{
         if(!empty($search_designation_name)){
             $filter_count->where('department_designation_id',$search_designation_name);
         }
+        $filter_count->where('department_type',$postData['user_department_type']);
+        
         return $filter_count->count();
     }
 
     public function user_list(Request $request){
         $postData = $request->input();
 
+        $user_department_type = !empty($request->input('user_department_type'))?$request->input('user_department_type'):'office';
         $start_limit = !empty($request->input('start_limit'))?$request->input('start_limit'):0;
         $end_limit = !empty($request->input('end_limit'))?$request->input('end_limit'):10;
         if($start_limit < 1){
@@ -105,7 +114,7 @@ class UserController extends Controller{
         $query = User::with('single_department','single_designation')->select('id','department_id','department_designation_id','name_title','first_name','middle_name','last_name','login_id','email','date_birth','created_at','is_active');
         
         if(!empty($search)) {
-            $query->where('first_name', 'LIKE', '%'.$search.'%')->orWhere('login_id', 'LIKE', '%'.$search.'%')->orWhere('id', 'LIKE', '%'.$search.'%')->orWhere('email', 'LIKE', '%'.$search.'%');
+            $query->where('first_name', 'LIKE', '%'.$search.'%');
         }
         if(!empty($search_name)){
             $query->where('first_name', 'LIKE', '%'.$search_name.'%'); 
@@ -129,6 +138,8 @@ class UserController extends Controller{
         if(!empty($search_designation_name)){
             $query->where('department_designation_id',$search_designation_name);
         }
+        $query->where('department_type',$user_department_type);
+
         $query->orderBy($orderColumnIndex, $orderDirection);
         $users = $query->offset($start_limit)->limit($end_limit)->get(); 
         //printr($users);
@@ -137,7 +148,7 @@ class UserController extends Controller{
         if(!empty($users)){
             $action_permission = check_user_action_permission('user');
 
-            $recordsTotal = User::count();
+            $recordsTotal = User::where('department_type',$user_department_type)->count();
             $sno = 1+$start_limit;
             foreach($users as $record){
                 $edit = $view = $delete = $details = '';
@@ -204,7 +215,7 @@ class UserController extends Controller{
     }
 
     public function showAddUser(){
-        check_authorize('add','user','non_ajax');
+        check_authorize('add','office_members','non_ajax');
 
         $user = User::where('id',Auth::user()->id)->first();
         $role = Role::select('id','role_name','rank')->where('is_active',1)->get();
@@ -213,7 +224,7 @@ class UserController extends Controller{
     }
 
     public function add_user(Request $request){
-        check_authorize('add','user','non_ajax');
+        check_authorize('add','office_members','non_ajax');
 
         if(empty($request->first_name) || empty($request->login_id) || empty($request->department_type) || empty($request->department_designation_id) || empty($request->department_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
@@ -293,7 +304,7 @@ class UserController extends Controller{
     }
 
     public function showEditUser(Request $request){
-        check_authorize('edit','user','non_ajax');
+        check_authorize('edit','office_members','non_ajax');
 
         $data = User::where('id',$request->id)->first();
         if(empty($data)){
@@ -304,7 +315,7 @@ class UserController extends Controller{
     }
 
     public function update_user(Request $request){
-        check_authorize('edit','user','non_ajax');
+        check_authorize('edit','office_members','non_ajax');
         if(empty($request->first_name) || empty($request->department_type) || empty($request->department_id) || empty($request->department_designation_id) || empty($request->user_id) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
@@ -467,6 +478,9 @@ class UserController extends Controller{
         $id = !empty($request->p_id)?$request->p_id:'';
         $show_type = !empty($request->type)?$request->type:'all';
         $department_type = !empty($request->department_type)?trim($request->department_type):'';
+        if(empty($department_type)){
+            $department_type = !empty($request->user_department_type)?trim($request->user_department_type):'';
+        }
         
         if($show_type == 'ajax_list'){
             if(empty($department_type)){
@@ -495,6 +509,7 @@ class UserController extends Controller{
         $id = !empty($request->p_id)?$request->p_id:'';
         $show_type = !empty($request->type)?$request->type:'all';
         $department_id = !empty($request->department_id)?trim($request->department_id):'';
+
         if($show_type == 'ajax_list'){
             $data = DepartmentDesignation::select('id','designation_name')->where('department_id',$department_id)->where('is_active',1)->orderBy('rank','ASC')->limit(500)->get();
             $html = '<option value="" hidden="">Select designation</option>';

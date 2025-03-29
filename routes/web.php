@@ -10,6 +10,8 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyBranchController;
+use App\Http\Controllers\TaskTypeController;
+use App\Http\Controllers\SourceController;
 
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -48,7 +50,9 @@ Route::prefix('user')->middleware('auth')->group(function () {
     Route::post('get_department_record', [UserController::class, 'get_department_record'])->name('get_department_record');
     Route::post('get_designation_record', [UserController::class, 'get_designation_record'])->name('get_designation_record');
 
+    Route::get('user/{name}', [UserController::class, 'user']);
     Route::get('user', [UserController::class, 'user'])->name('user');
+
     Route::post('user_list', [UserController::class, 'user_list']);
     Route::post('user_address_list', [UserController::class, 'user_address_list']);
     Route::post('address_edit', [UserController::class, 'address_edit']);
@@ -88,4 +92,16 @@ Route::prefix('company')->middleware('auth')->group(function () {
     Route::resource('company-branch', CompanyBranchController::class);
     Route::post('company_branch_list', [CompanyBranchController::class, 'company_branch_list'])->name('company_branch_list');
     Route::post('company_branch_list_edit', [CompanyBranchController::class, 'company_branch_list_edit'])->name('company_branch_list_edit');
+});
+
+Route::prefix('task')->middleware('auth')->group(function () {
+    /* task type routes */
+    Route::resource('task-type', TaskTypeController::class);
+    Route::post('task_type_list', [TaskTypeController::class, 'task_type_list'])->name('task_type_list');
+    Route::post('task_type_list_edit', [TaskTypeController::class, 'task_type_list_edit'])->name('task_type_list_edit');
+
+    /* source routes */
+    Route::resource('source', SourceController::class);
+    Route::post('source_list', [SourceController::class, 'source_list'])->name('source_list');
+    Route::post('source_list_edit', [SourceController::class, 'source_list_edit'])->name('source_list_edit');
 });

@@ -22,6 +22,8 @@ use App\Models\Permission;
 use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\Port;
+use App\Models\TaskType;
+use App\Models\Source;
 
 use App\Models\UserAddress;
 use App\Models\Country;
@@ -89,6 +91,12 @@ class CommonController extends Controller{
         }
         else if($tbl == 'port'){
             Port::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'task_type'){
+            TaskType::where('id',$request->p_id)->update(['is_active'=>$type]);
+        }
+        else if($tbl == 'source'){
+            Source::where('id',$request->p_id)->update(['is_active'=>$type]);
         }
         else{
            return response()->json(['status' =>'error','message' => 'Something went wrong'],200); 
@@ -162,6 +170,12 @@ class CommonController extends Controller{
         }
         else if($tbl == 'port'){
             $record_dlt = Port::find($request->p_id);
+        }
+        else if($tbl == 'task_type'){
+            $record_dlt = TaskType::find($request->p_id);
+        }
+        else if($tbl == 'source'){
+            $record_dlt = Source::find($request->p_id);
         }
         else{
             return response()->json(['status' =>'error','message' => 'Deletion failed'],201);

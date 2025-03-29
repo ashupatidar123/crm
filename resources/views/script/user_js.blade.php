@@ -14,14 +14,15 @@
         var search_start_date = $('#search_start_date').val();
         var search_end_date = $('#search_end_date').val();
         var summernote = $('#summernote').val();
-        
+        var user_department_type = $('#user_department_type').val();
+
         $('#tableList').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 url: '{{url("user/user_list")}}',
                 type: 'POST',
-                data:{start_limit,end_limit,search_name,search_email,search_department_type,search_department_name,search_designation_name,search_start_date,search_end_date,summernote},
+                data:{start_limit,end_limit,search_name,search_email,search_department_type,search_department_name,search_designation_name,search_start_date,search_end_date,summernote,user_department_type},
                 headers: {
                     'X-CSRF-TOKEN': csrf_token
                 },
@@ -103,11 +104,16 @@
             var department_type = $('#search_department_type').val();
         }
         
+        var user_department_type = '';
+        if($('#user_department_type').val() != undefined){
+            var user_department_type = $('#user_department_type').val();
+        }
+        
         var type = 'ajax_list';
         $.ajax({
             type: "POST",
             url: "{{route('get_department_record')}}",
-            data: {p_id,type,department_type},
+            data: {p_id,type,department_type,user_department_type},
             headers: {
                 'X-CSRF-TOKEN': csrf_token
             },

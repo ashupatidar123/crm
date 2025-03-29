@@ -29,6 +29,7 @@
         <!-- /.container-fluid -->
     </section>
     <!-- Main content -->
+    <input type="hidden" value="{{@$user_department_type}}" id="user_department_type">
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -36,7 +37,7 @@
                     <!-- /.card -->
                     <div class="card card-primary">
                         <div class="card-header card_header_color">
-                            <h3 class="card-title">All Users</h3>
+                            <h3 class="card-title">All {{$user_department_type}} Users</h3>
                         </div>
                         <div class="modal-body">
                             <form method="POST" id="userSearch">
@@ -57,6 +58,7 @@
                                                     </div>
                                                 </div>
                                                 
+                                                @if(1==2)
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <select class="form-control" name="search_department_type" id="search_department_type" onchange="return get_department_record('','search_department_name');">
@@ -66,6 +68,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                                @endif
 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
@@ -149,7 +152,7 @@
                                         <th>Name</th>
                                         <th>Login ID</th>
                                         <th>Email</th>
-                                        <th>Date</th>
+                                        <th>Created AT</th>
                                         <th>Department Name</th>
                                         <th>Designation name</th>
                                     </tr>

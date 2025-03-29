@@ -25,6 +25,7 @@
 
                     $check_menu_url = Request::segment(1).'/'.Request::segment(2);
                     $check_menu_url_region = 'master/region/'.Request::segment(3);
+                    $check_menu_url_user = 'user/user/'.Request::segment(3);
                 ?>
                 @if(!empty($permission_menu))
                     @foreach($permission_menu as $d_menu)
@@ -45,7 +46,7 @@
                                 $s_menu_link = !empty($s_menu['menu_link']) ?$s_menu['menu_link']: '#';
 
                                 $sub_nav_active = '';
-                                if($s_menu_link == $check_menu_url || $check_menu_url_region == $s_menu_link){
+                                if($s_menu_link == $check_menu_url || $check_menu_url_region == $s_menu_link || $check_menu_url_user == $s_menu_link){
                                     $sub_nav_active = 'nav_active';
                                 }
                             ?>

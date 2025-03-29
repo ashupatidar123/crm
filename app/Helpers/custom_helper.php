@@ -62,6 +62,9 @@ function sidebar_menu_open($menu_url,$menu_slug){
     else if(($menu_url == 'company/company-profile' || $menu_url == 'company/company-branch') && ($menu_slug == 'company_config')){
         $menu_open = 'menu-is-opening menu-open';
     }
+    else if(($menu_url == 'task/task-type' || $menu_url == 'task/source') && ($menu_slug == 'task_management')){
+        $menu_open = 'menu-is-opening menu-open';
+    }
     return $menu_open;
 }
 
@@ -77,6 +80,9 @@ function sidebar_menu_active($menu_uri,$menu_slug){
         $menu_active = 'active';
     }
     else if(($menu_uri=='company-profile' || $menu_uri=='company-branch') && ($menu_slug=='company_config')){
+        $menu_active = 'active';
+    }
+    else if(($menu_uri=='task-type' || $menu_uri=='source') && ($menu_slug=='task_management')){
         $menu_active = 'active';
     }
     return $menu_active;

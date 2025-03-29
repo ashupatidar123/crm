@@ -115,6 +115,12 @@
                             else if(tbl == 'port'){
                                 port_data_table_list();
                             }
+                            else if(tbl == 'task_type'){
+                                task_type_data_table_list();
+                            }
+                            else if(tbl == 'source'){
+                                source_data_table_list();
+                            }
                             else{
                                 swal_error(resp.message,1800);
                                 location.reload();
@@ -207,6 +213,12 @@
                             }
                             else if(tbl == 'port'){
                                 port_data_table_list();
+                            }
+                            else if(tbl == 'task_type'){
+                                task_type_data_table_list();
+                            }
+                            else if(tbl == 'source'){
+                                source_data_table_list();
                             }
                             else{
                                 location.reload();
