@@ -266,12 +266,18 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function(resp) {
+                var department_type = $('#department_type').val();
+                if(department_type == 'office'){
+                    url = "{{url('user/user/office')}}";
+                }else{
+                    url = "{{url('user/user/vessel')}}";
+                }
                 $('#submitRegister').html('<i class="fa fa-send"></i> Submit');
                 $('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
                     window.setTimeout(function(){
-                        window.location.href = "{{url('user/user')}}";
+                        window.location.href = url;
                     },3000);
                 }else{
                     swal_error(resp.s_msg);
@@ -350,12 +356,19 @@
                 'X-CSRF-TOKEN': csrf_token
             },
             success: function(resp) {
+                var department_type = $('#department_type').val();
+                if(department_type == 'office'){
+                    url = "{{url('user/user/office')}}";
+                }else{
+                    url = "{{url('user/user/vessel')}}";
+                }
+
                 $('#userSubmitButton').html('<i class="fa fa-send"></i> Submit');
                 $('.show_message').html(resp.message);
                 if(resp.status == 'success'){
                     swal_success(resp.s_msg);
                     window.setTimeout(function(){
-                        window.location.href = "{{url('user/user')}}";
+                        window.location.href = url;
                     },3000);
                 }else{
                     swal_error(resp.s_msg);

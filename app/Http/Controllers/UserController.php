@@ -146,7 +146,8 @@ class UserController extends Controller{
         $all_data = [];
         $recordsTotal = $recordsFiltered = 0;
         if(!empty($users)){
-            $action_permission = check_user_action_permission('user');
+            $perm = ($user_department_type=='vessel')?'crew_members':'office_members';
+            $action_permission = check_user_action_permission($perm);
 
             $recordsTotal = User::where('department_type',$user_department_type)->count();
             $sno = 1+$start_limit;
@@ -224,11 +225,12 @@ class UserController extends Controller{
     }
 
     public function add_user(Request $request){
-        check_authorize('add','office_members','non_ajax');
 
         if(empty($request->first_name) || empty($request->login_id) || empty($request->department_type) || empty($request->department_designation_id) || empty($request->department_id) || empty($request->password) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
+        $perm = ($request->department_type=='vessel')?'crew_members':'office_members';
+        check_authorize('add',$perm,'non_ajax');
 
         $checkEmail = User::where(['email' => $request->email])->count();
         if($checkEmail > 0){
@@ -315,10 +317,12 @@ class UserController extends Controller{
     }
 
     public function update_user(Request $request){
-        check_authorize('edit','office_members','non_ajax');
+        
         if(empty($request->first_name) || empty($request->department_type) || empty($request->department_id) || empty($request->department_designation_id) || empty($request->user_id) || empty($request->email)){
             return response()->json(['status' =>'failed','message' => '<p class="alert alert-danger">All fields are required...</p>','s_msg'=>'All fields are required...'],200);
         }
+        $perm = ($request->department_type=='vessel')?'crew_members':'office_members';
+        check_authorize('edit',$perm,'non_ajax');
 
         $checkEmail = User::where('id', '!=',$request->user_id)->where('email',$request->email)->count();
         if($checkEmail > 0){
